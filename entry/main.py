@@ -11,6 +11,7 @@ style.theme_use("equilux")
 bg = style.lookup('TLabel', 'background')
 fg = style.lookup('TLabel', 'foreground')
 window.configure(bg=style.lookup('TLabel', 'background'))
+
 newChar = RangeCalculator(window)
 
 lblGreeting = ttk.Label(master=window, text="Welcome to the BattleTracker")
@@ -18,5 +19,13 @@ lblGreeting.grid(row=0, column=0)
 btnOpen = ttk.Button(master=window, text="Input Stats")
 btnOpen.bind("<Button>", lambda e: newChar.generateWindow())
 btnOpen.grid(row=1, column=0)
+
+def showLabel(label):
+    lblTest = ttk.Label(master=window, text=newChar.collectStats()["name"])
+    lblTest.grid(row=2, column=1)
+
+btnShow = ttk.Button(master=window, text="Show name")
+btnShow.bind("<Button>", lambda e: showLabel(e))
+btnShow.grid(row=2, column=0)
 
 window.mainloop()

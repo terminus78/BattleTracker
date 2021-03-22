@@ -43,34 +43,34 @@ class RangeCalculator:
                 frRow += 1
 
         lblName = ttk.Label(master=frame1_1, text="Name")
-        entName = ttk.Entry(master=frame1_1, width=10)
+        self.entName = ttk.Entry(master=frame1_1, width=10)
         lblName.grid(row=0, column=0, sticky="w")
-        entName.grid(row=0, column=1, sticky="e")
+        self.entName.grid(row=0, column=1, sticky="e")
 
         lblHP = ttk.Label(master=frame1_2, text="HP")
-        entHP = ttk.Entry(master=frame1_2, width=8)
+        self.entHP = ttk.Entry(master=frame1_2, width=8)
         lblHP.grid(row=0, column=0, sticky="w")
-        entHP.grid(row=0, column=1, sticky="e")
+        self.entHP.grid(row=0, column=1, sticky="e")
 
         lblCoord = ttk.Label(master=frame2_1, text="Coordinate")
-        entXCoord = ttk.Entry(master=frame2_1, width=2)
+        self.entXCoord = ttk.Entry(master=frame2_1, width=2)
         lblX = ttk.Label(master=frame2_1, text="X")
-        entYCoord = ttk.Entry(master=frame2_1, width=2)
+        self.entYCoord = ttk.Entry(master=frame2_1, width=2)
         lblY = ttk.Label(master=frame2_1, text="Y")
-        entZCoord = ttk.Entry(master=frame2_1, width=2)
+        self.entZCoord = ttk.Entry(master=frame2_1, width=2)
         lblZ = ttk.Label(master=frame2_1, text="Z")
         lblCoord.grid(row=0, column=0, sticky="w")
-        entXCoord.grid(row=0, column=1, sticky="e")
+        self.entXCoord.grid(row=0, column=1, sticky="e")
         lblX.grid(row=0, column=2, sticky="e")
-        entYCoord.grid(row=0, column=3, sticky="e")
+        self.entYCoord.grid(row=0, column=3, sticky="e")
         lblY.grid(row=0, column=4, sticky="e")
-        entZCoord.grid(row=0, column=5, sticky="e")
+        self.entZCoord.grid(row=0, column=5, sticky="e")
         lblZ.grid(row=0, column=6, sticky="e")
 
         lblHeight = ttk.Label(master=frame2_2, text="Height (Blocks)")
-        entHeight = ttk.Entry(master=frame2_2, width=8)
+        self.entHeight = ttk.Entry(master=frame2_2, width=8)
         lblHeight.grid(row=0, column=0, sticky="w")
-        entHeight.grid(row=0, column=1, sticky="e")
+        self.entHeight.grid(row=0, column=1, sticky="e")
 
         frameSizeLeft = ttk.Frame(master=frame3_1)
         frameSizeRight = ttk.Frame(master=frame3_1)
@@ -92,15 +92,15 @@ class RangeCalculator:
         rbnGargantuan.grid(row=2, column=0, sticky="w")
 
         lblNotes = ttk.Label(master=lowerFrame, text="Notes")
-        txtNotes = tk.Text(master=lowerFrame)
+        self.txtNotes = tk.Text(master=lowerFrame)
         lblNotes.grid(row=0, column=0)
-        txtNotes.grid(row=1, column=0, sticky="w")
+        self.txtNotes.grid(row=1, column=0, sticky="w")
 
-        btnSubmit = ttk.Button(master=underFrame, command=rangeWin.destroy, text="Submit")
+        btnSubmit = ttk.Button(master=underFrame, command=self.collectStats, text="Submit")
         btnSubmit.grid(row=0, column=0)
 
     def collectStats(self):
-        stats = {
+        self.stats = {
             "name": self.entName.get(),
             "hP": self.entHP.get(),
             "coordinate": [self.entXCoord.get(), self.entYCoord.get(), self.entZCoord.get()],
@@ -108,4 +108,4 @@ class RangeCalculator:
             "size": self.radValue,
             "notes": self.txtNotes.get(1.0, tk.END)
         }
-    
+        return self.stats
