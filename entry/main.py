@@ -22,7 +22,17 @@ btnOpen.grid(row=1, column=0)
 
 def showLabel(label):
     lblTest = ttk.Label(master=window, text=newChar.collectStats()["name"])
-    lblTest.grid(row=2, column=1)
+    lblTest.grid(row=3, column=0)
+    lblTest = ttk.Label(master=window, text=newChar.collectStats()["hP"])
+    lblTest.grid(row=3, column=1)
+    lblTest = ttk.Label(master=window, text=newChar.collectStats()["coordinate"])
+    lblTest.grid(row=4, column=0)
+    lblTest = ttk.Label(master=window, text=newChar.collectStats()["height"])
+    lblTest.grid(row=4, column=1)
+    lblTest = ttk.Label(master=window, text=newChar.collectStats()["size"])
+    lblTest.grid(row=5, column=0)
+    lblTest = ttk.Label(master=window, text=newChar.collectStats()["notes"])
+    lblTest.grid(row=5, column=1)
 
 btnShow = ttk.Button(master=window, text="Show name")
 btnShow.bind("<Button>", lambda e: showLabel(e))
