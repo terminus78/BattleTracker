@@ -2,25 +2,22 @@ import math
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedStyle
+import pathlib
+import json
 
 
-class RangeCalculator:
-    def __init__(self, win = None):
-        self.win = win
-        self.radValue = ""
-        self.stats = {}
-
-    def generateWindow(self):
-        rangeWin = tk.Toplevel(master=self.win)
-        rangeWin.title("Range Calculator")
-        style = ThemedStyle(rangeWin)
+class RangeCalculator(object):
+    def __init__(self, master):
+        self.rangeWin = tk.Toplevel(master)
+        self.rangeWin.title("Range Calculator")
+        style = ThemedStyle(self.rangeWin)
         style.theme_use("equilux")
         bg = style.lookup('TLabel', 'background')
         fg = style.lookup('TLabel', 'foreground')
-        rangeWin.configure(bg=style.lookup('TLabel', 'background'))
-        upperFrame = ttk.Frame(master=rangeWin)
-        lowerFrame = ttk.Frame(master=rangeWin)
-        underFrame = ttk.Frame(master=rangeWin)
+        self.rangeWin.configure(bg=style.lookup('TLabel', 'background'))
+        upperFrame = ttk.Frame(master=self.rangeWin)
+        lowerFrame = ttk.Frame(master=self.rangeWin)
+        underFrame = ttk.Frame(master=self.rangeWin)
 
         frame1_1 = ttk.Frame(master=upperFrame)
         frame1_2 = ttk.Frame(master=upperFrame)
@@ -41,6 +38,9 @@ class RangeCalculator:
             if frCol == 2:
                 frCol = 0
                 frRow += 1
+        
+        self.radValue = ""
+        self.stats = {}
 
         lblName = ttk.Label(master=frame1_1, text="Name")
         self.entName = ttk.Entry(master=frame1_1, width=10)
@@ -96,16 +96,31 @@ class RangeCalculator:
         lblNotes.grid(row=0, column=0)
         self.txtNotes.grid(row=1, column=0, sticky="w")
 
-        btnSubmit = ttk.Button(master=underFrame, command=self.collectStats, text="Submit")
+        btnSubmit = ttk.Button(master=underFrame, command=self.submit, text="Submit")
         btnSubmit.grid(row=0, column=0)
 
-    def collectStats(self):
+    def submit(self):
+        nameGet = self.entName.get()
         self.stats = {
-            "name": self.entName.get(),
-            "hP": self.entHP.get(),
-            "coordinate": [self.entXCoord.get(), self.entYCoord.get(), self.entZCoord.get()],
-            "height": self.entHeight.get(),
-            "size": self.radValue,
-            "notes": self.txtNotes.get(1.0, tk.END)
+            nameGet:{
+                "name": nameGet,
+                "hP": self.entHP.get(),
+                "coordinate": [self.entXCoord.get(), self.entYCoord.get(), self.entZCoord.get()],
+                "height": self.entHeight.get(),
+                "size": self.radValue,
+                "notes": self.txtNotes.get(1.0, tk.END)
+            }
         }
-        return self.stats
+        self.writeFile()
+        self.rangeWin.destroy()
+
+    def writeFile(self):
+        creatureCache = pathlib.Path("creatureCache.json")
+        if creatureCache.exists() == False:
+            with open("creatureCache.json", "w") as savefile:
+                statJSON = json.dump(self.stats, savefile)
+        else:
+            with open("creatureCache.json", "r") as savefile:
+                readObj = json.loads("creatureCache.json")
+                readObj.update(self.stats)
+                
