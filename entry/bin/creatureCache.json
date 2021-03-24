@@ -1,0 +1,26 @@
+{
+    "beast": {
+        "name": "beast",
+        "hP": "55",
+        "coordinate": [
+            "1",
+            "1",
+            "1"
+        ],
+        "height": "1",
+        "size": "",
+        "notes": "Let's see what happens.\n"
+    },
+    "dog": {
+        "name": "dog",
+        "hP": "2",
+        "coordinate": [
+            "2",
+            "2",
+            "2"
+        ],
+        "height": "2",
+        "size": "",
+        "notes": "Doggo\n"
+    }
+}

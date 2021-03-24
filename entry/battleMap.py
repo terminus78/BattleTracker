@@ -6,7 +6,7 @@ import os
 from tkinter import ttk, font
 from ttkthemes import ThemedStyle
 from tooltip import *
-from PIL import Image
+from PIL import Image, ImageTk
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
@@ -29,7 +29,7 @@ class BattleMap(object):
         self.mapFrames = []
 
         for i in range(self.mapSize[0]):
-            mapFrames.append([])
+            self.mapFrames.append([])
             for j in range(self.mapSize[1]):
                 self.space = ttk.Frame(master=gridFrame, relief=tk.RAISED, borderwidth=1)
                 self.space.grid(row=i, column=j, sticky='nsew')
@@ -43,6 +43,8 @@ class BattleMap(object):
                 self.mapFrames[i].append(self.space)
         
         self.tokenList = []
+        self.initializeTokens()
+        self.placeTokens()
     
     def initializeTokens(self):
         creatureCache = "./entry/bin/creatureCache.json"
@@ -57,10 +59,10 @@ class BattleMap(object):
         j = 0
         for being in self.tokenList:
             if being["coordinate"][0] != "" and being["coordinate"][1] != "":
-                rowPos = int(being["coordinate"][1])
-                colPos = int(being["coordinate"][0])
-                allyImg = ImageTk.PhotoImage(Image.open("./entry/bin/allyToken.png"))
-                lblUnit = ttk.Label(master=self.mapFrames[colPos][rowPos], text="!IMG")
+                rowPos = int(being["coordinate"][1]) - 1
+                colPos = int(being["coordinate"][0]) - 1
+                allyImg = ImageTk.PhotoImage(Image.open("./entry/bin/allyToken.png").resize((16,16)))
+                lblUnit = ttk.Label(master=self.mapFrames[colPos][rowPos], text="!img", image=allyImg)
                 lblUnit.grid(row=i, column=j, sticky="w")
                 i += 1
                 if i >= 2:

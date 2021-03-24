@@ -94,7 +94,7 @@ class StatCollector(object):
 
         lblNotes = ttk.Label(master=lowerFrame, text="Notes", font=papyrusFont)
         self.txtNotes = tk.Text(master=lowerFrame, height=5, width=52)
-        self.txtNotes.configure(font=papyrusFont)
+        self.txtNotes.configure(font=("Papyrus", "9"))
         lblNotes.grid(row=0, column=0)
         self.txtNotes.grid(row=1, column=0, sticky="w")
 
