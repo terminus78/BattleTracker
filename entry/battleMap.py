@@ -6,6 +6,7 @@ import os
 from tkinter import ttk, font
 from ttkthemes import ThemedStyle
 from tooltip import *
+from PIL import Image
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
@@ -25,15 +26,43 @@ class BattleMap(object):
         gridFrame = ttk.Frame(master=self.mapWin)
         gridFrame.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
         
-        mapFrames = []
+        self.mapFrames = []
 
         for i in range(self.mapSize[0]):
+            mapFrames.append([])
             for j in range(self.mapSize[1]):
-                space = ttk.Frame(master=gridFrame, relief=tk.RAISED, borderwidth=1)
-                space.grid(row=i, column=j, sticky='nsew')
+                self.space = ttk.Frame(master=gridFrame, relief=tk.RAISED, borderwidth=1)
+                self.space.grid(row=i, column=j, sticky='nsew')
                 gridFrame.rowconfigure(i, weight=1, minsize=10)
                 gridFrame.columnconfigure(j, weight=1, minsize=10)
-                #lblGrid = ttk.Label(master=space, text=f"{i+1}, {j+1}")
+                #lblGrid = ttk.Label(master=self.space, text=f"{i+1}, {j+1}")
                 #lblGrid.grid(row=0, column=0, sticky='nw')
-                CreateToolTip(space, text=f"{i+1}, {j+1}")
-                mapFrames.append(space)
+                CreateToolTip(self.space, text=f"{i+1}, {j+1}")
+                #self.spaceUnit = ttk.Frame(master=self.space)
+                #self.spaceUnit.grid(row=0, column=0, sticky='nw')
+                self.mapFrames[i].append(self.space)
+        
+        self.tokenList = []
+    
+    def initializeTokens(self):
+        creatureCache = "./entry/bin/creatureCache.json"
+        if os.path.exists(creatureCache) == True:
+            with open(creatureCache, "r") as savefile:
+                creatures = json.load(savefile)
+        for being in creatures.keys():
+            self.tokenList.append(creatures[being])
+    
+    def placeTokens(self):
+        i = 0
+        j = 0
+        for being in self.tokenList:
+            if being["coordinate"][0] != "" and being["coordinate"][1] != "":
+                rowPos = int(being["coordinate"][1])
+                colPos = int(being["coordinate"][0])
+                allyImg = ImageTk.PhotoImage(Image.open("./entry/bin/allyToken.png"))
+                lblUnit = ttk.Label(master=self.mapFrames[colPos][rowPos], text="!IMG")
+                lblUnit.grid(row=i, column=j, sticky="w")
+                i += 1
+                if i >= 2:
+                    j += 1
+                    i = 0
