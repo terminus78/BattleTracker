@@ -1,12 +1,13 @@
-import math
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, font
 from ttkthemes import ThemedStyle
 import pathlib
 import json
+import os
 
+papyrusFont = ('Papyrus', '14')
 
-class RangeCalculator(object):
+class StatCollector(object):
     def __init__(self, master):
         self.rangeWin = tk.Toplevel(master)
         self.rangeWin.title("Range Calculator")
@@ -42,23 +43,23 @@ class RangeCalculator(object):
         self.radValue = ""
         self.stats = {}
 
-        lblName = ttk.Label(master=frame1_1, text="Name")
+        lblName = ttk.Label(master=frame1_1, text="Name", font=papyrusFont)
         self.entName = ttk.Entry(master=frame1_1, width=10)
         lblName.grid(row=0, column=0, sticky="w")
         self.entName.grid(row=0, column=1, sticky="e")
 
-        lblHP = ttk.Label(master=frame1_2, text="HP")
+        lblHP = ttk.Label(master=frame1_2, text="HP", font=papyrusFont)
         self.entHP = ttk.Entry(master=frame1_2, width=8)
         lblHP.grid(row=0, column=0, sticky="w")
         self.entHP.grid(row=0, column=1, sticky="e")
 
-        lblCoord = ttk.Label(master=frame2_1, text="Coordinate")
+        lblCoord = ttk.Label(master=frame2_1, text="Coordinate", font=papyrusFont)
         self.entXCoord = ttk.Entry(master=frame2_1, width=2)
-        lblX = ttk.Label(master=frame2_1, text="X")
+        lblX = ttk.Label(master=frame2_1, text="X", font=papyrusFont)
         self.entYCoord = ttk.Entry(master=frame2_1, width=2)
-        lblY = ttk.Label(master=frame2_1, text="Y")
+        lblY = ttk.Label(master=frame2_1, text="Y", font=papyrusFont)
         self.entZCoord = ttk.Entry(master=frame2_1, width=2)
-        lblZ = ttk.Label(master=frame2_1, text="Z")
+        lblZ = ttk.Label(master=frame2_1, text="Z", font=papyrusFont)
         lblCoord.grid(row=0, column=0, sticky="w")
         self.entXCoord.grid(row=0, column=1, sticky="e")
         lblX.grid(row=0, column=2, sticky="e")
@@ -67,14 +68,14 @@ class RangeCalculator(object):
         self.entZCoord.grid(row=0, column=5, sticky="e")
         lblZ.grid(row=0, column=6, sticky="e")
 
-        lblHeight = ttk.Label(master=frame2_2, text="Height (Blocks)")
+        lblHeight = ttk.Label(master=frame2_2, text="Height (Blocks)", font=papyrusFont)
         self.entHeight = ttk.Entry(master=frame2_2, width=8)
         lblHeight.grid(row=0, column=0, sticky="w")
         self.entHeight.grid(row=0, column=1, sticky="e")
 
         frameSizeLeft = ttk.Frame(master=frame3_1)
         frameSizeRight = ttk.Frame(master=frame3_1)
-        lblSize = ttk.Label(master=frame3_1, text="Size Class")
+        lblSize = ttk.Label(master=frame3_1, text="Size Class", font=papyrusFont)
         rbnTiny = ttk.Radiobutton(master=frameSizeLeft, text="Tiny", variable= self.radValue, value="Tiny")
         rbnSmall = ttk.Radiobutton(master=frameSizeRight, text="Small", variable= self.radValue, value="Small")
         rbnMedium = ttk.Radiobutton(master=frameSizeLeft, text="Medium", variable= self.radValue, value="Medium")
@@ -91,8 +92,9 @@ class RangeCalculator(object):
         rbnHuge.grid(row=2, column=0, sticky="w")
         rbnGargantuan.grid(row=2, column=0, sticky="w")
 
-        lblNotes = ttk.Label(master=lowerFrame, text="Notes")
-        self.txtNotes = tk.Text(master=lowerFrame)
+        lblNotes = ttk.Label(master=lowerFrame, text="Notes", font=papyrusFont)
+        self.txtNotes = tk.Text(master=lowerFrame, height=5, width=52)
+        self.txtNotes.configure(font=papyrusFont)
         lblNotes.grid(row=0, column=0)
         self.txtNotes.grid(row=1, column=0, sticky="w")
 
@@ -115,12 +117,13 @@ class RangeCalculator(object):
         self.rangeWin.destroy()
 
     def writeFile(self):
-        creatureCache = pathlib.Path("creatureCache.json")
-        if creatureCache.exists() == False:
-            with open("creatureCache.json", "w") as savefile:
-                statJSON = json.dump(self.stats, savefile)
+        creatureCache = "./entry/bin/creatureCache.json"
+        if os.path.exists(creatureCache) == False:
+            with open(creatureCache, "w") as savefile:
+                json.dump(self.stats, savefile, indent=4)
         else:
-            with open("creatureCache.json", "r") as savefile:
-                readObj = json.loads("creatureCache.json")
+            with open(creatureCache, "r") as savefile:
+                readObj = json.load(savefile)
                 readObj.update(self.stats)
-                
+            with open(creatureCache, "w") as savefile:
+                json.dump(readObj, savefile, indent=4)

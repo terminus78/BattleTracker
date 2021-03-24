@@ -1,4 +1,6 @@
-from rangeCalculator import RangeCalculator
+from statCollector import StatCollector
+from battleMap import BattleMap
+from tooltip import *
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedStyle
@@ -20,29 +22,16 @@ class mainWindow(object):
         self.lblGreeting.grid(row=0, column=0)
         self.btnOpen = ttk.Button(master, command=self.inputWindow, text="Input Stats")
         self.btnOpen.grid(row=1, column=0)
-        self.btnShow = ttk.Button(master, command=self.showLabel, text="Show name")
-        self.btnShow.grid(row=2, column=0)
-        self.btnShow["state"] = "disabled"
+        self.btnMap = ttk.Button(master, command=self.showMap, text="Show Map")
+        self.btnMap.grid(row=2, column=0)
     
     def inputWindow(self):
-        self.inWin = RangeCalculator(self.master)
+        self.inWin = StatCollector(self.master)
         self.btnOpen["state"] = "disabled"
         self.btnOpen["state"] = "normal"
-        self.btnShow["state"] = "normal"
 
-    def showLabel(self):
-        lblTest = ttk.Label(master=window, text=self.inWin.stats["name"])
-        lblTest.grid(row=3, column=0)
-        lblTest = ttk.Label(master=window, text=self.inWin.stats["hP"])
-        lblTest.grid(row=3, column=1)
-        lblTest = ttk.Label(master=window, text=self.inWin.stats["coordinate"])
-        lblTest.grid(row=4, column=0)
-        lblTest = ttk.Label(master=window, text=self.inWin.stats["height"])
-        lblTest.grid(row=4, column=1)
-        lblTest = ttk.Label(master=window, text=self.inWin.stats["size"])
-        lblTest.grid(row=5, column=0)
-        lblTest = ttk.Label(master=window, text=self.inWin.stats["notes"])
-        lblTest.grid(row=5, column=1)
+    def showMap(self):
+        self.mapWin = BattleMap([32, 46], self.master)
 
 battleWin = mainWindow(window)
 
