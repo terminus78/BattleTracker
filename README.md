@@ -7,7 +7,7 @@ tkinter
 ttkthemes
 
 ## Dependencies
-- Python 3.9.2
+- Python 3.9.2  
 - ttkthemes (equilux)
 
 ## License
