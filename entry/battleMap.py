@@ -30,10 +30,10 @@ class BattleMap(object):
 
         for i in range(self.mapSize[0]):
             self.mapFrames.append([])
+            gridFrame.rowconfigure(i, weight=1, minsize=10)
             for j in range(self.mapSize[1]):
                 self.space = ttk.Frame(master=gridFrame, relief=tk.RAISED, borderwidth=1)
                 self.space.grid(row=i, column=j, sticky='nsew')
-                gridFrame.rowconfigure(i, weight=1, minsize=10)
                 gridFrame.columnconfigure(j, weight=1, minsize=10)
                 #lblGrid = ttk.Label(master=self.space, text=f"{i+1}, {j+1}")
                 #lblGrid.grid(row=0, column=0, sticky='nw')
@@ -55,16 +55,22 @@ class BattleMap(object):
             self.tokenList.append(creatures[being])
     
     def placeTokens(self):
-        i = 0
-        j = 0
+        #i = 0
+        #j = 0
         for being in self.tokenList:
             if being["coordinate"][0] != "" and being["coordinate"][1] != "":
                 rowPos = int(being["coordinate"][1]) - 1
                 colPos = int(being["coordinate"][0]) - 1
-                allyImg = ImageTk.PhotoImage(Image.open("./entry/bin/allyToken.png").resize((16,16)))
-                lblUnit = ttk.Label(master=self.mapFrames[colPos][rowPos], text="!img", image=allyImg)
-                lblUnit.grid(row=i, column=j, sticky="w")
+                allyPath = "allyToken.png"
+                allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((20,20)))
+                self.mapFrames[colPos][rowPos].columnconfigure(0, weight=1, minsize=5)
+                self.mapFrames[colPos][rowPos].rowconfigure(0, weight=1, minsize=5)
+                lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=allyImg, borderwidth=0)
+                lblUnit.image = allyImg
+                lblUnit.grid(row=0, column=0, padx=2, pady=2, sticky="nsew")
+                '''
                 i += 1
                 if i >= 2:
                     j += 1
                     i = 0
+                '''
