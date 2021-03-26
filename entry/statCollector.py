@@ -40,7 +40,8 @@ class StatCollector(object):
                 frCol = 0
                 frRow += 1
         
-        self.radValue = ""
+        self.radSize = tk.StringVar()
+        self.radFoeFriend = tk.StringVar()
         self.stats = {}
 
         lblName = ttk.Label(master=frame1_1, text="Name", font=papyrusFont)
@@ -53,6 +54,7 @@ class StatCollector(object):
         lblHP.grid(row=0, column=0, sticky="w")
         self.entHP.grid(row=0, column=1, sticky="e")
 
+        '''
         lblCoord = ttk.Label(master=frame2_1, text="Coordinate", font=papyrusFont)
         self.entXCoord = ttk.Entry(master=frame2_1, width=2)
         lblX = ttk.Label(master=frame2_1, text="X", font=papyrusFont)
@@ -67,6 +69,22 @@ class StatCollector(object):
         lblY.grid(row=0, column=4, sticky="e")
         self.entZCoord.grid(row=0, column=5, sticky="e")
         lblZ.grid(row=0, column=6, sticky="e")
+        '''
+
+        frameFFUpper = ttk.Frame(master=frame2_1)
+        frameFFLower = ttk.Frame(master=frame2_1)
+        lblFF = ttk.Label(master=frameFFUpper, text="Strategic Status", font=papyrusFont)
+        rbnAlly = ttk.Radiobutton(master=frameFFLower, text="Ally", variable= self.radFoeFriend, value="ally")
+        rbnEnemy = ttk.Radiobutton(master=frameFFLower, text="Enemy", variable= self.radFoeFriend, value="enemy")
+        rbnBystander = ttk.Radiobutton(master=frameFFLower, text="Bystander", variable= self.radFoeFriend, value="bystander")
+        rbnDead = ttk.Radiobutton(master=frameFFLower, text="Dead", variable= self.radFoeFriend, value="dead")
+        frameFFUpper.grid(row=0, column=0, sticky="w")
+        frameFFLower.grid(row=1, column=0, sticky="w")
+        lblFF.grid(row=0, column=0, sticky="w")
+        rbnAlly.grid(row=0, column=0, sticky="w")
+        rbnEnemy.grid(row=0, column=1, sticky="w")
+        rbnBystander.grid(row=0, column=2, sticky="w")
+        rbnDead.grid(row=0, column=3, sticky="w")
 
         lblHeight = ttk.Label(master=frame2_2, text="Height (Blocks)", font=papyrusFont)
         self.entHeight = ttk.Entry(master=frame2_2, width=8)
@@ -76,12 +94,12 @@ class StatCollector(object):
         frameSizeLeft = ttk.Frame(master=frame3_1)
         frameSizeRight = ttk.Frame(master=frame3_1)
         lblSize = ttk.Label(master=frame3_1, text="Size Class", font=papyrusFont)
-        rbnTiny = ttk.Radiobutton(master=frameSizeLeft, text="Tiny", variable= self.radValue, value="Tiny")
-        rbnSmall = ttk.Radiobutton(master=frameSizeRight, text="Small", variable= self.radValue, value="Small")
-        rbnMedium = ttk.Radiobutton(master=frameSizeLeft, text="Medium", variable= self.radValue, value="Medium")
-        rbnLarge = ttk.Radiobutton(master=frameSizeRight, text="Large", variable= self.radValue, value="Large")
-        rbnHuge = ttk.Radiobutton(master=frameSizeLeft, text="Huge", variable= self.radValue, value="Huge")
-        rbnGargantuan = ttk.Radiobutton(master=frameSizeRight, text="Gargantuan", variable= self.radValue, value="Gargantuan")
+        rbnTiny = ttk.Radiobutton(master=frameSizeLeft, text="Tiny", variable= self.radSize, value="tiny")
+        rbnSmall = ttk.Radiobutton(master=frameSizeRight, text="Small", variable= self.radSize, value="small")
+        rbnMedium = ttk.Radiobutton(master=frameSizeLeft, text="Medium", variable= self.radSize, value="medium")
+        rbnLarge = ttk.Radiobutton(master=frameSizeRight, text="Large", variable= self.radSize, value="large")
+        rbnHuge = ttk.Radiobutton(master=frameSizeLeft, text="Huge", variable= self.radSize, value="huge")
+        rbnGargantuan = ttk.Radiobutton(master=frameSizeRight, text="Gargantuan", variable= self.radSize, value="gargantuan")
         lblSize.grid(row=0, column=0)
         frameSizeLeft.grid(row=1, column=0)
         frameSizeRight.grid(row=1, column=1)
@@ -94,7 +112,7 @@ class StatCollector(object):
 
         lblNotes = ttk.Label(master=lowerFrame, text="Notes", font=papyrusFont)
         self.txtNotes = tk.Text(master=lowerFrame, height=5, width=52)
-        self.txtNotes.configure(font=("Papyrus", "9"))
+        self.txtNotes.configure(font=("Papyrus", "12"))
         lblNotes.grid(row=0, column=0)
         self.txtNotes.grid(row=1, column=0, sticky="w")
 
@@ -107,9 +125,11 @@ class StatCollector(object):
             nameGet:{
                 "name": nameGet,
                 "hP": self.entHP.get(),
-                "coordinate": [self.entXCoord.get(), self.entYCoord.get(), self.entZCoord.get()],
+                "type": self.radFoeFriend.get(),
                 "height": self.entHeight.get(),
-                "size": self.radValue,
+                "size": self.radSize.get(),
+                "coordinate": ["", "", ""],
+                "status": "normal",
                 "notes": self.txtNotes.get(1.0, tk.END)
             }
         }

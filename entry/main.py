@@ -7,18 +7,20 @@ from ttkthemes import ThemedStyle
 
 window = tk.Tk()
 window.title("BattleTracker")
+window.iconphoto(True, tk.PhotoImage(file='bystanderToken.png'))
 window.columnconfigure(0, minsize=200)
 window.rowconfigure([0, 1, 2], minsize=50)
-style = ThemedStyle(window)
-style.theme_use("equilux")
-bg = style.lookup('TLabel', 'background')
-fg = style.lookup('TLabel', 'foreground')
-window.configure(bg=style.lookup('TLabel', 'background'))
+styleDark = ThemedStyle(window)
+styleDark.theme_use("equilux")
+bg = styleDark.lookup('TLabel', 'background')
+fg = styleDark.lookup('TLabel', 'foreground')
+window.configure(bg=styleDark.lookup('TLabel', 'background'))
+papyrusFont = ('Papyrus', 14)
 
 class mainWindow(object):
     def __init__(self, master):
         self.master = master
-        self.lblGreeting = ttk.Label(master, text="Welcome to the BattleTracker")
+        self.lblGreeting = ttk.Label(master, text="Welcome to the BattleTracker", font=papyrusFont)
         self.lblGreeting.grid(row=0, column=0)
         self.btnOpen = ttk.Button(master, command=self.inputWindow, text="Input Stats")
         self.btnOpen.grid(row=1, column=0)
@@ -27,8 +29,8 @@ class mainWindow(object):
     
     def inputWindow(self):
         self.inWin = StatCollector(self.master)
-        self.btnOpen["state"] = "disabled"
-        self.btnOpen["state"] = "normal"
+        #self.btnOpen["state"] = "disabled"
+        #self.btnOpen["state"] = "normal"
 
     def showMap(self):
         self.mapWin = BattleMap([32, 46], self.master)

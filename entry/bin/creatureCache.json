@@ -1,26 +1,128 @@
 {
-    "beast": {
-        "name": "beast",
-        "hP": "55",
-        "coordinate": [
-            "1",
-            "1",
-            "1"
-        ],
+    "Test Monkey": {
+        "name": "Test Monkey",
+        "hP": "5",
+        "type": "bystander",
         "height": "1",
-        "size": "",
-        "notes": "Let's see what happens.\n"
-    },
-    "dog": {
-        "name": "dog",
-        "hP": "2",
+        "size": "medium",
         "coordinate": [
-            "2",
-            "2",
-            "2"
+            "",
+            "",
+            ""
         ],
-        "height": "2",
-        "size": "",
-        "notes": "Doggo\n"
+        "status": "normal",
+        "notes": "Test monkey is bestest monkey\n"
+    },
+    "TestDog": {
+        "name": "TestDog",
+        "hP": "5",
+        "type": "ally",
+        "height": "1",
+        "size": "small",
+        "coordinate": [
+            "1",
+            "1",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "Boof\n"
+    },
+    "TestBird": {
+        "name": "TestBird",
+        "hP": "1",
+        "type": "enemy",
+        "height": "1",
+        "size": "tiny",
+        "coordinate": [
+            "",
+            "",
+            ""
+        ],
+        "status": "normal",
+        "notes": "Skwauk\n"
+    },
+    "TestCat": {
+        "name": "TestCat",
+        "hP": "6",
+        "type": "dead",
+        "height": "1",
+        "size": "small",
+        "coordinate": [
+            "20",
+            "32",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "Aww sad kitty\n"
+    },
+    "TestChicken": {
+        "name": "TestChicken",
+        "hP": "1",
+        "type": "bystander",
+        "height": "1",
+        "size": "tiny",
+        "coordinate": [
+            "5",
+            "16",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "He never wanted this\n"
+    },
+    "TestPig": {
+        "name": "TestPig",
+        "hP": "10",
+        "type": "ally",
+        "height": "1",
+        "size": "medium",
+        "coordinate": [
+            "19",
+            "7",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "An unlikely but hardy friend\n"
+    },
+    "TestShark": {
+        "name": "TestShark",
+        "hP": "15",
+        "type": "enemy",
+        "height": "1",
+        "size": "medium",
+        "coordinate": [
+            "29",
+            "29",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "What the hell is a shark doing here?\n"
+    },
+    "TestLemming": {
+        "name": "TestLemming",
+        "hP": "0",
+        "type": "dead",
+        "height": "1",
+        "size": "tiny",
+        "coordinate": [
+            "30",
+            "30",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "Well, we saw that coming\n"
+    },
+    "TestBigBad": {
+        "name": "TestBigBad",
+        "hP": "50",
+        "type": "enemy",
+        "height": "3",
+        "size": "huge",
+        "coordinate": [
+            "16",
+            "23",
+            "0"
+        ],
+        "status": "normal",
+        "notes": "Oof\n"
     }
 }
