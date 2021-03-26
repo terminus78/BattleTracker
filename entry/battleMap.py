@@ -32,13 +32,13 @@ class BattleMap(object):
         self.sideBoard.grid(row=1, column=0, padx=5, pady=10, sticky="nsw")
         self.sideCount = 0
         allyPath = "allyToken.png"
-        self.allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((20,20)))
+        self.allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((15,15)))
         enemyPath = "enemyToken.png"
-        self.enemyImg = ImageTk.PhotoImage(Image.open(enemyPath).resize((20,20)))
+        self.enemyImg = ImageTk.PhotoImage(Image.open(enemyPath).resize((15,15)))
         bystanderPath = "bystanderToken.png"
-        self.bystanderImg = ImageTk.PhotoImage(Image.open(bystanderPath).resize((20,20)))
+        self.bystanderImg = ImageTk.PhotoImage(Image.open(bystanderPath).resize((15,15)))
         deadPath = "deadToken.png"
-        self.deadImg = ImageTk.PhotoImage(Image.open(deadPath).resize((20,20)))
+        self.deadImg = ImageTk.PhotoImage(Image.open(deadPath).resize((15,15)))
         
         self.mapFrames = []
 
@@ -91,8 +91,10 @@ class BattleMap(object):
                 self.mapFrames[colPos][rowPos].rowconfigure(0, weight=1, minsize=5)
                 lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray37", borderwidth=0)
                 lblUnit.image = tokenImg
-                lblUnit.grid(row=0, column=0, padx=2, pady=2, sticky="nsew")
+                lblUnit.grid(row=0, column=0, sticky="nsew")
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
+                #lblUnit.bind("<FocusOut>", self.em.focusShiftOut)
+                #lblUnit.bind("<FocusIn", self.em.focusShiftIn)
                 CreateToolTip(lblUnit, text=being["name"])
                 '''
                 i += 1
