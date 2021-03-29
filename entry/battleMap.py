@@ -8,9 +8,14 @@ from ttkthemes import ThemedStyle
 from tooltip import *
 from PIL import Image, ImageTk
 from eventManager import EventManager
+from globals import Globals
+
+glbs = Globals()
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
+        # Window definition
+        glbs.setOpenBattleWin(True)
         self.mapSize = mapSize
         self.mapWin = tk.Toplevel(master)
         self.mapWin.title("Battle Map")
@@ -23,7 +28,10 @@ class BattleMap(object):
         self.mapWin.rowconfigure(1, weight=1, minsize=100)
         self.mapWin.columnconfigure(0, minsize=50)
         self.mapWin.columnconfigure(1, weight=1, minsize=100)
+        self.mapWin.columnconfigure(2, minsize=50)
         self.em = EventManager(self.mapWin)
+
+        # Board Setup
         lblMap = ttk.Label(master=self.mapWin, text="BattleMap", font=('Papyrus', '16'))
         lblMap.grid(row=0, column=0)
         gridFrame = ttk.Frame(master=self.mapWin)
@@ -31,6 +39,17 @@ class BattleMap(object):
         self.sideBoard = ttk.Frame(master=self.mapWin)
         self.sideBoard.grid(row=1, column=0, padx=5, pady=10, sticky="nsw")
         self.sideCount = 0
+        self.toolBar = ttk.Frame(master=self.mapWin)
+        self.toolBar.grid(row=1, column=2, padx=5, pady=10, sticky="nse")
+        moveIconPath = "icons8-circled-down-left-32.png"
+        moveIcon = ImageTk.PhotoImage(Image.open(moveIconPath))
+
+        # Toolbar Buttons
+        self.btnMove = ttk.Button(master=self.toolBar, command=self.em.moveToken, image=moveIcon)
+        self.btnMove.grid(row=0, column=0, sticky="n")
+        self.btnMove.image = moveIcon
+
+        # Image paths
         allyPath = "allyToken.png"
         self.allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((15,15)))
         enemyPath = "enemyToken.png"
@@ -41,7 +60,9 @@ class BattleMap(object):
         self.deadImg = ImageTk.PhotoImage(Image.open(deadPath).resize((15,15)))
         
         self.mapFrames = []
+        self.tokenList = []
 
+        # Space frames
         for i in range(self.mapSize[0]):
             self.mapFrames.append([])
             gridFrame.rowconfigure(i, weight=1, minsize=10)
@@ -49,14 +70,10 @@ class BattleMap(object):
                 self.space = ttk.Frame(master=gridFrame, relief=tk.RAISED, borderwidth=1)
                 self.space.grid(row=i, column=j, sticky='nsew')
                 gridFrame.columnconfigure(j, weight=1, minsize=10)
-                #lblGrid = ttk.Label(master=self.space, text=f"{i+1}, {j+1}")
-                #lblGrid.grid(row=0, column=0, sticky='nw')
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
-                #self.spaceUnit = ttk.Frame(master=self.space)
-                #self.spaceUnit.grid(row=0, column=0, sticky='nw')
+                self.space.bind("<Button-1>", lambda event, arg=(self.tokenList, [i, j]): self.em.tokenSelect(event, arg))
                 self.mapFrames[i].append(self.space)
         
-        self.tokenList = []
         self.initializeTokens()
         self.placeTokens()
     
@@ -69,8 +86,6 @@ class BattleMap(object):
             self.tokenList.append(creatures[being])
     
     def placeTokens(self):
-        #i = 0
-        #j = 0
         for being in self.tokenList:
             tokenType = being["type"]
             if tokenType == "ally":
@@ -85,23 +100,16 @@ class BattleMap(object):
                 raise NameError("Token type not specified.")
             
             if being["coordinate"][0] != "" and being["coordinate"][1] != "":
-                rowPos = int(being["coordinate"][1]) - 1
-                colPos = int(being["coordinate"][0]) - 1
+                rowPos = int(being["coordinate"][1])
+                colPos = int(being["coordinate"][0])
                 self.mapFrames[colPos][rowPos].columnconfigure(0, weight=1, minsize=5)
                 self.mapFrames[colPos][rowPos].rowconfigure(0, weight=1, minsize=5)
                 lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray37", borderwidth=0)
                 lblUnit.image = tokenImg
                 lblUnit.grid(row=0, column=0, sticky="nsew")
+                lblUnit.bind("<Button-1>", lambda event, arg=(self.tokenList, [rowPos, colPos]): self.em.tokenSelect(event, arg))
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
-                #lblUnit.bind("<FocusOut>", self.em.focusShiftOut)
-                #lblUnit.bind("<FocusIn", self.em.focusShiftIn)
                 CreateToolTip(lblUnit, text=being["name"])
-                '''
-                i += 1
-                if i >= 2:
-                    j += 1
-                    i = 0
-                '''
             else:
                 self.unusedTokens(being, tokenImg)
     
@@ -110,6 +118,26 @@ class BattleMap(object):
         nextCol = self.sideCount % 2
         lblSideUnit = tk.Label(master=self.sideBoard, image=tokenImg, bg="gray37", borderwidth=0)
         lblSideUnit.grid(row=nextRow, column=nextCol, padx=5, pady=5, sticky="ne")
+        lblSideUnit.bind("<Button-1>", lambda event, arg=self.tokenList: self.em.tokenSelect(event, arg))
+        lblSideUnit.bind("<Button-3>", self.em.rightClickMenu)
         lblSideUnit.image = tokenImg
         CreateToolTip(lblSideUnit, text=creature["name"])
         self.sideCount += 1
+
+    def refreshMap(self):
+        if Globals.getFirstSelected() is not None and glbs.getSecondSelected() is not None:
+            self.tokenList[foundIndex]["coordinate"][1] = glbs.getSecondSelected()[1]
+            self.tokenList[foundIndex]["coordinate"][0] = glbs.getSecondSelected()[0]
+        for space in self.mapFrames:
+            removeMapList = space.grid_slaves()
+            removeMapList.destroy()
+        removeSideList = self.sideBoard.grid_slaves()
+        removeSideList.destroy()
+
+        self.placeTokens()
+        foundIndex = 0
+        glbs.setFirstSelected(None)
+        glbs.setSecondSelected(None)
+
+    def getTokenList(self):
+        return self.tokenList

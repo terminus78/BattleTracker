@@ -1,11 +1,14 @@
 import math
 import tkinter as tk
 from tkinter import ttk
+from globals import Globals
 
-class EventManager:
+glbs = Globals()
+
+class EventManager():
     def __init__(self, root):
-        super()
         self.root = root
+        self.moveFlag = False
         
     def rightClickMenu(self, event):
         self.event = event
@@ -32,6 +35,44 @@ class EventManager:
         finally:
             self.tokenMenu.grab_release()
 
-    #def focusShiftOut(self):
+    def tokenSelect(self, event, arg):
+        print("Called tokenSelect")
+        eventInfo = event.widget.grid_info()
+        #position = [eventInfo["row"], eventInfo["column"]]
+        position = arg[1]
+        occupied = False
+        glbs.setFoundIndex(0)
+        index = glbs.getFoundIndex()
+        tokenList = arg[0]
+        if self.moveFlag:
+            if glbs.getFirstSelected() is None:
+                for being in tokenList:
+                    if being["coordinate"][0] != "" and being["coordinate"][1] != "":
+                        rowPos = int(being["coordinate"][1])
+                        colPos = int(being["coordinate"][0])
 
-    #def focusShiftIn(self):
+                        if rowPos == position[0] and colPos == position[1]:
+                            glbs.setFirstSelected(being)
+                            print(glbs.getFirstSelected())
+                            break
+                    index += 1
+                    glbs.setFoundIndex(index)
+            else:
+                for being in tokenList:
+                    if being["coordinate"][0] != "" and being["coordinate"][1] != "":
+                        rowPos = int(being["coordinate"][1])
+                        colPos = int(being["coordinate"][0])
+
+                        if rowPos == position[0] and colPos == position[1]:
+                            occupied = True
+                if not occupied:
+                    glbs.setSecondSelected(position)
+                    print(glbs.getFirstSelected())
+
+            if glbs.getFirstSelected() is not None and glbs.getSecondSelected() is not None:
+                refreshNecessary = True
+                self.moveFlag = False
+        print(f"Move flag {self.moveFlag}")
+
+    def moveToken(self):
+        self.moveFlag = True

@@ -4,11 +4,14 @@ from ttkthemes import ThemedStyle
 import pathlib
 import json
 import os
+from globals import Globals
 
 papyrusFont = ('Papyrus', '14')
+glbs = Globals()
 
 class StatCollector(object):
     def __init__(self, master):
+        glbs.setInputWinOpen(True)
         self.rangeWin = tk.Toplevel(master)
         self.rangeWin.title("Range Calculator")
         style = ThemedStyle(self.rangeWin)
