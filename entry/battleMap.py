@@ -8,6 +8,7 @@ from ttkthemes import ThemedStyle
 from tooltip import *
 from PIL import Image, ImageTk
 from eventManager import EventManager
+from calc import Calculator
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
@@ -26,10 +27,15 @@ class BattleMap(object):
         self.mapWin.columnconfigure(1, weight=1, minsize=100)
         self.mapWin.columnconfigure(2, minsize=50)
         self.em = EventManager(self.mapWin)
+        self.calculator = Calculator(self.mapWin)
 
         # Board Setup
         lblMap = ttk.Label(master=self.mapWin, text="BattleMap", font=('Papyrus', '16'))
-        lblMap.grid(row=0, column=0)
+        lblMap.grid(row=0, column=0, sticky='w')
+        btnSave = ttk.Button(master=self.mapWin, command=self.saveGame,text="Save")
+        btnSave.grid(row=0, column=1, sticky='e')
+        btnClear = ttk.Button(master=self.mapWin, command=self.clearMap,text="Clear Map")
+        btnClear.grid(row=0, column=2, sticky='e')
         gridFrame = ttk.Frame(master=self.mapWin)
         gridFrame.grid(row=1, column=1, padx=10, pady=10, sticky='nsew')
         self.sideBoard = ttk.Frame(master=self.mapWin)
@@ -38,7 +44,9 @@ class BattleMap(object):
         self.toolBar = ttk.Frame(master=self.mapWin)
         self.toolBar.grid(row=1, column=2, padx=5, pady=10, sticky="nse")
         moveIconPath = "icons8-circled-down-left-32.png"
-        moveIcon = ImageTk.PhotoImage(Image.open(moveIconPath))
+        moveIcon = ImageTk.PhotoImage(Image.open(moveIconPath).resize((20,20)))
+        trigIconPath = "3228996421547464107-128.png"
+        trigIcon = ImageTk.PhotoImage(Image.open(trigIconPath).resize((20,20)))
 
         # Image paths
         allyPath = "allyToken.png"
@@ -71,6 +79,10 @@ class BattleMap(object):
         self.btnMove.grid(row=0, column=0, sticky="n")
         self.btnMove.image = moveIcon
 
+        self.btnTrig = ttk.Button(master=self.toolBar, command=lambda arg=(self.tokenList): self.calculator.trigWin(arg), image=trigIcon)
+        self.btnTrig.grid(row=1, column=0, sticky='n')
+        self.btnTrig.image = trigIcon
+
         self.placeTokens()
     
     def initializeTokens(self):
@@ -78,8 +90,8 @@ class BattleMap(object):
         if os.path.exists(creatureCache) == True:
             with open(creatureCache, "r") as savefile:
                 creatures = json.load(savefile)
-        for being in creatures.keys():
-            self.tokenList.append(creatures[being])
+        for being in creatures.values():
+            self.tokenList.append(being)
     
     def placeTokens(self):
         for being in self.tokenList:
@@ -104,7 +116,7 @@ class BattleMap(object):
                 lblUnit.image = tokenImg
                 lblUnit.grid(row=0, column=0, sticky="nsew")
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
-                CreateToolTip(lblUnit, text=being["name"])
+                CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
             else:
                 self.unusedTokens(being, tokenImg)
     
@@ -118,8 +130,9 @@ class BattleMap(object):
         CreateToolTip(lblSideUnit, text=creature["name"])
         self.sideCount += 1
 
-    def refreshMap(self, arg):
-        self.tokenList = arg
+    def refreshMap(self, arg=None):
+        if arg is not None:
+            self.tokenList = arg
         for row in self.mapFrames:
             for col in row:
                 removeTokens = col.grid_slaves()
@@ -130,10 +143,29 @@ class BattleMap(object):
         if len(removeSideList) > 0:
             for sideToken in removeSideList:
                 sideToken.destroy()
-
-        self.em.moveWin.destroy()
+        
+        if arg is not None:
+            self.em.moveWin.destroy()
 
         self.placeTokens()
+
+    def saveGame(self):
+        newTokenDict = {}
+        for being in self.tokenList:
+            name = being["name"]
+            newTokenDict[name] = being
+        creatureCache = "./entry/bin/creatureCache.json"
+        if os.path.exists(creatureCache) == False:
+            with open(creatureCache, "w") as savefile:
+                json.dump(newTokenDict, savefile, indent=4)
+        else:
+            with open(creatureCache, "w") as savefile:
+                json.dump(newTokenDict, savefile, indent=4)
+
+    def clearMap(self):
+        for being in self.tokenList:
+            being["coordinate"] = ['', '', '']
+        self.refreshMap()
 
     def getTokenList(self):
         return self.tokenList
