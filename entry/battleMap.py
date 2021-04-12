@@ -8,14 +8,10 @@ from ttkthemes import ThemedStyle
 from tooltip import *
 from PIL import Image, ImageTk
 from eventManager import EventManager
-from globals import Globals
-
-glbs = Globals()
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
         # Window definition
-        glbs.setOpenBattleWin(True)
         self.mapSize = mapSize
         self.mapWin = tk.Toplevel(master)
         self.mapWin.title("Battle Map")
@@ -44,11 +40,6 @@ class BattleMap(object):
         moveIconPath = "icons8-circled-down-left-32.png"
         moveIcon = ImageTk.PhotoImage(Image.open(moveIconPath))
 
-        # Toolbar Buttons
-        self.btnMove = ttk.Button(master=self.toolBar, command=self.em.moveToken, image=moveIcon)
-        self.btnMove.grid(row=0, column=0, sticky="n")
-        self.btnMove.image = moveIcon
-
         # Image paths
         allyPath = "allyToken.png"
         self.allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((15,15)))
@@ -71,10 +62,15 @@ class BattleMap(object):
                 self.space.grid(row=i, column=j, sticky='nsew')
                 gridFrame.columnconfigure(j, weight=1, minsize=10)
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
-                self.space.bind("<Button-1>", lambda event, arg=(self.tokenList, [i, j]): self.em.tokenSelect(event, arg))
                 self.mapFrames[i].append(self.space)
         
         self.initializeTokens()
+
+        # Toolbar Buttons
+        self.btnMove = ttk.Button(master=self.toolBar, command=lambda arg=[self.tokenList, self.mapSize]:[self.em.moveToken(arg), self.waitDestroyMoveWin()], image=moveIcon)
+        self.btnMove.grid(row=0, column=0, sticky="n")
+        self.btnMove.image = moveIcon
+
         self.placeTokens()
     
     def initializeTokens(self):
@@ -89,7 +85,7 @@ class BattleMap(object):
         for being in self.tokenList:
             tokenType = being["type"]
             if tokenType == "ally":
-                    tokenImg = self.allyImg
+                tokenImg = self.allyImg
             elif tokenType == "enemy":
                 tokenImg = self.enemyImg
             elif tokenType == "bystander":
@@ -107,7 +103,6 @@ class BattleMap(object):
                 lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray37", borderwidth=0)
                 lblUnit.image = tokenImg
                 lblUnit.grid(row=0, column=0, sticky="nsew")
-                lblUnit.bind("<Button-1>", lambda event, arg=(self.tokenList, [rowPos, colPos]): self.em.tokenSelect(event, arg))
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
                 CreateToolTip(lblUnit, text=being["name"])
             else:
@@ -118,26 +113,30 @@ class BattleMap(object):
         nextCol = self.sideCount % 2
         lblSideUnit = tk.Label(master=self.sideBoard, image=tokenImg, bg="gray37", borderwidth=0)
         lblSideUnit.grid(row=nextRow, column=nextCol, padx=5, pady=5, sticky="ne")
-        lblSideUnit.bind("<Button-1>", lambda event, arg=self.tokenList: self.em.tokenSelect(event, arg))
         lblSideUnit.bind("<Button-3>", self.em.rightClickMenu)
         lblSideUnit.image = tokenImg
         CreateToolTip(lblSideUnit, text=creature["name"])
         self.sideCount += 1
 
-    def refreshMap(self):
-        if Globals.getFirstSelected() is not None and glbs.getSecondSelected() is not None:
-            self.tokenList[foundIndex]["coordinate"][1] = glbs.getSecondSelected()[1]
-            self.tokenList[foundIndex]["coordinate"][0] = glbs.getSecondSelected()[0]
-        for space in self.mapFrames:
-            removeMapList = space.grid_slaves()
-            removeMapList.destroy()
+    def refreshMap(self, arg):
+        self.tokenList = arg
+        for row in self.mapFrames:
+            for col in row:
+                removeTokens = col.grid_slaves()
+                if len(removeTokens) > 0:
+                    for token in removeTokens:
+                        token.destroy()
         removeSideList = self.sideBoard.grid_slaves()
-        removeSideList.destroy()
+        if len(removeSideList) > 0:
+            for sideToken in removeSideList:
+                sideToken.destroy()
+
+        self.em.moveWin.destroy()
 
         self.placeTokens()
-        foundIndex = 0
-        glbs.setFirstSelected(None)
-        glbs.setSecondSelected(None)
 
     def getTokenList(self):
         return self.tokenList
+
+    def waitDestroyMoveWin(self):
+        self.em.moveWin.protocol("WM_DELETE_WINDOW", lambda arg=(self.em.tokenList): self.refreshMap(arg))

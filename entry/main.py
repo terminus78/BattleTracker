@@ -4,7 +4,6 @@ from tooltip import *
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedStyle
-from globals import Globals
 
 window = tk.Tk()
 window.title("BattleTracker")
@@ -17,7 +16,6 @@ bg = styleDark.lookup('TLabel', 'background')
 fg = styleDark.lookup('TLabel', 'foreground')
 window.configure(bg=styleDark.lookup('TLabel', 'background'))
 papyrusFont = ('Papyrus', 14)
-glbs = Globals()
 
 class mainWindow(object):
     def __init__(self, master):
@@ -36,9 +34,5 @@ class mainWindow(object):
         self.mapWin = BattleMap([32, 46], self.master)
 
 battleWin = mainWindow(window)
-
-if glbs.getOpenBattleWin():
-    if glbs.getRefresh():
-        self.mapWin.refreshMap()
 
 window.mainloop()
