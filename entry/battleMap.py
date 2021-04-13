@@ -1,15 +1,18 @@
 import math
+import random
 import tkinter as tk
 import pathlib
 import json
 import os
-from tkinter import ttk, font
+from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 from tooltip import *
 from PIL import Image, ImageTk
 from eventManager import EventManager
 from calc import Calculator
 from statCollector import StatCollector
+from quotes import Quote
+from target import Target
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
@@ -27,6 +30,9 @@ class BattleMap(object):
         self.topFrame.pack(side='top', fill='x')
         self.topFrame.columnconfigure(0, weight=1)
         self.topFrame.rowconfigure(0, minsize=100)
+        self.quoteFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge')
+        self.quoteFrame.pack(side='top', fill='x')
+        self.quoteFrame.columnconfigure(0, minsize=20)
         self.bottomFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge')
         self.bottomFrame.pack(side='top', fill='both', expand=True)
         self.bottomFrame.columnconfigure(0, minsize=50)
@@ -35,6 +41,9 @@ class BattleMap(object):
         self.bottomFrame.rowconfigure(0, weight=1, minsize=100)
         self.em = EventManager(self.mapWin)
         self.calculator = Calculator(self.mapWin)
+        self.quoter = Quote()
+        self.countQuotes = 0
+        self.target = Target(self.mapWin)
 
         # Board Setup
         lblMap = ttk.Label(master=self.topFrame, text="BattleMap", font=('Papyrus', '16'))
@@ -47,6 +56,13 @@ class BattleMap(object):
         btnInput.grid(row=0, column=3, sticky='se')
         btnReset = ttk.Button(master=self.topFrame, command=lambda: self.refreshMap(reset=True), text="Reset Map")
         btnReset.grid(row=0, column=4, sticky='se')
+        btnRestart = ttk.Button(master=self.topFrame, command=self.fullReset, text="Reset Battle")
+        btnRestart.grid(row=0, column=5, sticky='se')
+        btnCloseAll = ttk.Button(master=self.topFrame, command=self.master.destroy, text="Close All")
+        btnCloseAll.grid(row=0, column=6, sticky='se')
+        self.lblQuote = ttk.Label(master=self.quoteFrame, text="", font=('Papyrus', '12'))
+        self.lblQuote.grid(row=0, column=0, sticky='w', pady=5)
+        self.findQuote()
         gridFrame = ttk.Frame(master=self.bottomFrame)
         gridFrame.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
         self.sideBoard = ttk.Frame(master=self.bottomFrame)
@@ -54,19 +70,21 @@ class BattleMap(object):
         self.sideCount = 0
         self.toolBar = ttk.Frame(master=self.bottomFrame)
         self.toolBar.grid(row=0, column=2, padx=5, pady=10, sticky="nse")
-        moveIconPath = "icons8-circled-down-left-32.png"
+        moveIconPath = "entry/bin/icons8-circled-down-left-32.png"
         moveIcon = ImageTk.PhotoImage(Image.open(moveIconPath).resize((20,20)))
-        trigIconPath = "3228996421547464107-128.png"
+        trigIconPath = "entry/bin/3228996421547464107-128.png"
         trigIcon = ImageTk.PhotoImage(Image.open(trigIconPath).resize((20,20)))
+        targetIconPath = "entry/bin/11749495271547546487-128.png"
+        targetIcon = ImageTk.PhotoImage(Image.open(targetIconPath).resize((20,20)))
 
         # Image paths
-        allyPath = "allyToken.png"
+        allyPath = "entry/bin/allyToken.png"
         self.allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((15,15)))
-        enemyPath = "enemyToken.png"
+        enemyPath = "entry/bin/enemyToken.png"
         self.enemyImg = ImageTk.PhotoImage(Image.open(enemyPath).resize((15,15)))
-        bystanderPath = "bystanderToken.png"
+        bystanderPath = "entry/bin/bystanderToken.png"
         self.bystanderImg = ImageTk.PhotoImage(Image.open(bystanderPath).resize((15,15)))
-        deadPath = "deadToken.png"
+        deadPath = "entry/bin/deadToken.png"
         self.deadImg = ImageTk.PhotoImage(Image.open(deadPath).resize((15,15)))
         
         self.mapFrames = []
@@ -95,6 +113,11 @@ class BattleMap(object):
         self.btnTrig.grid(row=1, column=0, sticky='n')
         self.btnTrig.image = trigIcon
         CreateToolTip(self.btnTrig, text="Distance", leftDisp=True)
+
+        self.btnTarget = ttk.Button(master=self.toolBar, command=self.targetItem,image=targetIcon)
+        self.btnTarget.grid(row=2, column=0, sticky='n')
+        self.btnTarget.image = targetIcon
+        CreateToolTip(self.btnTarget, text="Target", leftDisp=True)
 
         self.placeTokens()
     
@@ -201,3 +224,22 @@ class BattleMap(object):
 
     def openTrig(self):
         self.calculator.trigWin(self.tokenList)
+
+    def targetItem(self):
+        self.target.targetWindow(self.tokenList)
+
+    def fullReset(self):
+        emptyDict = {}
+        creatureCache = "./entry/bin/creatureCache.json"
+        makeSure = messagebox.askokcancel("Warning", "Confirm request to delete ALL tokens and FULL RESET MAP.")
+        if makeSure:
+            if os.path.exists(creatureCache) == True:
+                with open(creatureCache, "w") as savefile:
+                    json.dump(emptyDict, savefile, indent=4)
+                self.refreshMap(reset=True)
+
+    def findQuote(self):
+        lastIndex = len(self.quoter.quoteList) - 1
+        randIndex = random.randint(0, lastIndex)
+        randomQuote = self.quoter.getQuote(randIndex)
+        self.lblQuote.config(text=randomQuote)

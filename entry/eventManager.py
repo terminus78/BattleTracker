@@ -58,11 +58,10 @@ class EventManager():
         for being in self.tokenList:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
-        selOption = tk.StringVar()
-        selOption.set(names[0])
-        dropSelection = ttk.OptionMenu(self.selectionFrame, selOption, *names)
-        dropSelection.grid(row=0, column=1, sticky='w')
-        self.btnCurrCoord = ttk.Button(master=self.selectionFrame, text="Show Current Coordinate", command=lambda arg=[selOption, names, coordinates]: self.showCoord(arg))
+        self.dropSelection = ttk.Combobox(self.selectionFrame, width=27, values=names)
+        self.dropSelection.grid(row=0, column=1, sticky='w')
+        self.dropSelection.current()
+        self.btnCurrCoord = ttk.Button(master=self.selectionFrame, text="Show Current Coordinate", command=lambda arg=[names, coordinates]: self.showCoord(arg))
         self.btnCurrCoord.grid(row=1, column=0, sticky='w')
         self.lblActCoord = ttk.Label(master=self.selectionFrame, text=" ", font=self.font)
         self.lblActCoord.grid(row=1, column=1, sticky='w')
@@ -74,18 +73,18 @@ class EventManager():
         self.entRowCoord.grid(row=0, column=1, sticky='w')
         self.entColCoord.grid(row=0, column=2, sticky='w')
         self.entZCoord.grid(row=0, column=3, sticky='w')
-        self.btnSet = ttk.Button(master=self.moveFinishFrame, text="Set Position", command=lambda arg=[selOption, False]: self.setNewCoord(arg))
+        self.btnSet = ttk.Button(master=self.moveFinishFrame, text="Set Position", command=lambda arg=[False]: self.setNewCoord(arg))
         self.btnSet.grid(row=0, column=0, sticky='w')
-        self.btnRemove = ttk.Button(master=self.moveFinishFrame, text="Remove Token", command=lambda arg=[selOption, True]: self.setNewCoord(arg))
+        self.btnRemove = ttk.Button(master=self.moveFinishFrame, text="Remove Token", command=lambda arg=[True]: self.setNewCoord(arg))
         self.btnRemove.grid(row=0, column=1, sticky='w')
         self.lblSetFinished = ttk.Label(master=self.moveFinishFrame, text=" ", font=self.font)
         self.lblSetFinished.grid(row=0, column=2, sticky='w')
 
     def showCoord(self, arg):
-        selOption = arg[0]
-        names = arg[1]
-        coordinates = arg[2]
-        index = names.index(selOption.get())
+        selOption = self.dropSelection.get()
+        names = arg[0]
+        coordinates = arg[1]
+        index = names.index(selOption)
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
@@ -96,7 +95,7 @@ class EventManager():
         self.lblActCoord.config(text="{0}: {1}: {2}".format(row, col, z))
 
     def setNewCoord(self, arg):
-        removingToken = arg[1]
+        removingToken = arg[0]
         if removingToken == False and (self.entRowCoord.get() == "" or self.entColCoord.get() == "" or self.entZCoord.get() == ""):
             messagebox.showwarning("Warning", "Coordinate Fields Can't Be Empty!")
             return
@@ -110,8 +109,8 @@ class EventManager():
                 return
         else:
             newCoord = ["", "", ""]
-        selOption = arg[0]
-        name = selOption.get()
+        selOption = self.dropSelection.get()
+        name = selOption
         for being in self.tokenList:
             '''
             if being["coordinate"][0] == str(newCoord[0]) and being["coordinate"][1] == str(newCoord[1]):
