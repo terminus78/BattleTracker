@@ -7,7 +7,7 @@ from ttkthemes import ThemedStyle
 
 window = tk.Tk()
 window.title("BattleTracker")
-window.iconphoto(True, tk.PhotoImage(file='bystanderToken.png'))
+#window.iconphoto(True, tk.PhotoImage(file='allyToken.png'))
 window.columnconfigure(0, minsize=200)
 window.rowconfigure([0, 1, 2], minsize=50)
 styleDark = ThemedStyle(window)
@@ -22,7 +22,7 @@ class mainWindow(object):
         self.master = master
         self.lblGreeting = ttk.Label(master, text="Welcome to the BattleTracker", font=papyrusFont)
         self.lblGreeting.grid(row=0, column=0)
-        self.btnOpen = ttk.Button(master, command=self.inputWindow, text="Input Stats")
+        self.btnOpen = ttk.Button(master, command=self.inputWindow, text="Input Creatures")
         self.btnOpen.grid(row=1, column=0)
         self.btnMap = ttk.Button(master, command=self.showMap, text="Show Map")
         self.btnMap.grid(row=2, column=0)

@@ -124,5 +124,19 @@
         ],
         "status": "normal",
         "notes": "Oof\n"
+    },
+    "TestFox": {
+        "name": "TestFox",
+        "hP": "5",
+        "type": "bystander",
+        "height": "1",
+        "size": "small",
+        "coordinate": [
+            "",
+            "",
+            ""
+        ],
+        "status": "normal",
+        "notes": "Foxy\n"
     }
 }
