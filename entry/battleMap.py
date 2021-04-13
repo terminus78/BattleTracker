@@ -89,10 +89,12 @@ class BattleMap(object):
         self.btnMove = ttk.Button(master=self.toolBar, command=self.moveToken, image=moveIcon)
         self.btnMove.grid(row=0, column=0, sticky="n")
         self.btnMove.image = moveIcon
+        CreateToolTip(self.btnMove, text="Move Token", leftDisp=True)
 
         self.btnTrig = ttk.Button(master=self.toolBar, command=self.openTrig, image=trigIcon)
         self.btnTrig.grid(row=1, column=0, sticky='n')
         self.btnTrig.image = trigIcon
+        CreateToolTip(self.btnTrig, text="Distance", leftDisp=True)
 
         self.placeTokens()
     
