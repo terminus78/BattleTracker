@@ -11,9 +11,6 @@ class Calculator():
 
     def trigWin(self, arg):
         self.tokenList = arg
-        print("#############")
-        print(self.tokenList)
-        print(" ")
         self.trig = tk.Toplevel(self.root)
         self.trig.title("Trig Calculator")
         style = ThemedStyle(self.trig)

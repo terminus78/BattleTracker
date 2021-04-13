@@ -163,9 +163,6 @@ class BattleMap(object):
 
         if reset:
             self.initializeTokens()
-            print("!!!!!!!!!!!!!!!!!!")
-            print(self.tokenList)
-            print(" ")
 
         self.placeTokens()
 
