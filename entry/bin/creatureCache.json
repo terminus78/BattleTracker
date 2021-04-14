@@ -1,18 +1,4 @@
 {
-    "Test Monkey": {
-        "name": "Test Monkey",
-        "hP": "5",
-        "type": "bystander",
-        "height": "1",
-        "size": "medium",
-        "coordinate": [
-            "",
-            "",
-            ""
-        ],
-        "status": "normal",
-        "notes": "Test monkey is bestest monkey\n"
-    },
     "TestDog": {
         "name": "TestDog",
         "hP": "5",
@@ -24,7 +10,9 @@
             "1",
             "0"
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "Boof\n"
     },
     "TestBird": {
@@ -38,7 +26,9 @@
             "",
             ""
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "Skwauk\n"
     },
     "TestCat": {
@@ -52,7 +42,9 @@
             "32",
             "0"
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "Aww sad kitty\n"
     },
     "TestChicken": {
@@ -66,7 +58,9 @@
             "16",
             "0"
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "He never wanted this\n"
     },
     "TestPig": {
@@ -80,7 +74,9 @@
             "7",
             "0"
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "An unlikely but hardy friend\n"
     },
     "TestShark": {
@@ -94,7 +90,9 @@
             "29",
             "0"
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "What the hell is a shark doing here?\n"
     },
     "TestLemming": {
@@ -108,7 +106,9 @@
             "",
             ""
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "Well, we saw that coming\n"
     },
     "TestBigBad": {
@@ -122,7 +122,9 @@
             "23",
             "0"
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "Oof\n"
     },
     "TestFox": {
@@ -136,7 +138,25 @@
             "",
             ""
         ],
-        "status": "normal",
+        "condition": [
+            "normal"
+        ],
         "notes": "Foxy\n"
+    },
+    "TestApe": {
+        "name": "TestApe",
+        "hP": 10,
+        "type": "enemy",
+        "height": "1",
+        "size": "medium",
+        "coordinate": [
+            1,
+            1,
+            0
+        ],
+        "condition": [
+            "normal"
+        ],
+        "notes": "\n"
     }
 }

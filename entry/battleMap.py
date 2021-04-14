@@ -168,7 +168,7 @@ class BattleMap(object):
         CreateToolTip(lblSideUnit, text=creature["name"])
         self.sideCount += 1
 
-    def refreshMap(self, tokens=None, reset=False):
+    def refreshMap(self, tokens=None, reset=False, origWin=None):
         if tokens is not None:
             self.tokenList = tokens
         for row in self.mapFrames:
@@ -182,9 +182,12 @@ class BattleMap(object):
             for sideToken in removeSideList:
                 sideToken.destroy()
         self.sideCount = 0
-        
-        if tokens is not None:
+
+        if origWin == 'em':
             self.em.moveWin.destroy()
+        
+        if origWin == 'target':
+            self.target.targetWin.destroy()
 
         if reset:
             self.initializeTokens()
@@ -213,7 +216,7 @@ class BattleMap(object):
         return self.tokenList
 
     def waitDestroyMoveWin(self):
-        self.em.moveWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.em.tokenList): self.refreshMap(tokens=stuff))
+        self.em.moveWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.em.tokenList): self.refreshMap(tokens=stuff, origWin='em'))
 
     def inputCreatureWindow(self):
         self.inWin = StatCollector(self.master)
@@ -227,6 +230,7 @@ class BattleMap(object):
 
     def targetItem(self):
         self.target.targetWindow(self.tokenList)
+        self.target.targetWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.target.tokenList): self.refreshMap(tokens=stuff, origWin='target'))
 
     def fullReset(self):
         emptyDict = {}

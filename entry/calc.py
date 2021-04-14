@@ -33,27 +33,23 @@ class Calculator():
         for being in self.tokenList:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
-        selOrigin = tk.StringVar()
-        #selOrigin.set(names[0])
-        selDestination = tk.StringVar()
-        #selDestination.set(names[0])
         lblFrom = ttk.Label(master=self.fromFrame, text="Origin", font=self.font)
         lblFrom.grid(row=0, column=0, sticky='w')
-        dropOrigin = ttk.OptionMenu(self.fromFrame, selOrigin, *names)
-        dropOrigin.grid(row=0, column=1, sticky='w')
-        btnSelectOrig = ttk.Button(master=self.fromFrame, text="Select Origin", command=lambda arg=[selOrigin, names, coordinates]: self.showOrigin(arg))
+        self.dropOrigin = ttk.Combobox(self.fromFrame, width=27, values=names)
+        self.dropOrigin.grid(row=0, column=1, sticky='w')
+        btnSelectOrig = ttk.Button(master=self.fromFrame, text="Show Origin", command=lambda arg=[names, coordinates]: self.showOrigin(arg))
         btnSelectOrig.grid(row=1, column=0, sticky='w')
         self.lblOrigCoord = ttk.Label(master=self.fromFrame, text=" ", font=self.font)
         self.lblOrigCoord.grid(row=1, column=1, sticky='w')
         lblTo = ttk.Label(master=self.toFrame, text="Destination", font=self.font)
         lblTo.grid(row=0, column=0, sticky='w')
-        dropDestination = ttk.OptionMenu(self.toFrame, selDestination, *names)
-        dropDestination.grid(row=0, column=1, sticky='w')
-        btnSelectDest = ttk.Button(master=self.toFrame, text="Select Destination", command=lambda arg=[selDestination, names, coordinates]: self.showDestination(arg))
+        self.dropDestination = ttk.Combobox(self.toFrame, width=27, values=names)
+        self.dropDestination.grid(row=0, column=1, sticky='w')
+        btnSelectDest = ttk.Button(master=self.toFrame, text="Show Destination", command=lambda arg=[names, coordinates]: self.showDestination(arg))
         btnSelectDest.grid(row=1, column=0, sticky='w')
         self.lblDestCoord = ttk.Label(master=self.toFrame, text=" ", font=self.font)
         self.lblDestCoord.grid(row=1, column=1, sticky='w')
-        self.btnCalculate = ttk.Button(master=self.resultFrame, text="Calculate Distance", command=lambda arg=[selOrigin, selDestination, names, coordinates]: self.findDist(arg))
+        self.btnCalculate = ttk.Button(master=self.resultFrame, text="Calculate Distance", command=lambda arg=[names, coordinates]: self.findDist(arg))
         self.btnCalculate.grid(row=0, column=0)
         self.lblActCalcResult = ttk.Label(master=self.resultFrame, text="Ready", font=self.font)
         self.lblActCalcResult.grid(row=1, column=0)
@@ -65,10 +61,10 @@ class Calculator():
         self.lblCalcInfo3.grid(row=2, column=0)
 
     def showOrigin(self, arg):
-        selOrigin = arg[0]
-        names = arg[1]
-        coordinates = arg[2]
-        index = names.index(selOrigin.get())
+        selOrigin = self.dropOrigin.get()
+        names = arg[0]
+        coordinates = arg[1]
+        index = names.index(selOrigin)
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
@@ -79,10 +75,10 @@ class Calculator():
         self.lblOrigCoord.config(text="{0}: {1}: {2}".format(row, col, z))
 
     def showDestination(self, arg):
-        selDestination = arg[0]
-        names = arg[1]
-        coordinates = arg[2]
-        index = names.index(selDestination.get())
+        selDestination = self.dropDestination.get()
+        names = arg[0]
+        coordinates = arg[1]
+        index = names.index(selDestination)
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
@@ -93,12 +89,12 @@ class Calculator():
         self.lblDestCoord.config(text="{0}: {1}: {2}".format(row, col, z))
     
     def findDist(self, arg):
-        origin = arg[0]
-        destination = arg[1]
-        names = arg[2]
-        coordinates = arg[3]
-        indexOrigin = names.index(origin.get())
-        indexDest = names.index(destination.get())
+        origin = self.dropOrigin.get()
+        destination = self.dropDestination.get()
+        names = arg[0]
+        coordinates = arg[1]
+        indexOrigin = names.index(origin)
+        indexDest = names.index(destination)
         coordOrigin = coordinates[indexOrigin]
         coordDest = coordinates[indexDest]
         if coordOrigin[0] == "" or coordOrigin[1] == "" or coordOrigin[2] == "":

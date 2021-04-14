@@ -12,10 +12,11 @@ class EventManager():
         self.event = event
         self.tokenMenu = tk.Menu(self.root, tearoff=0)
         #self.trigMenu = tk.Menu(self.tokenMenu, tearoff=0)
-        self.aoeMenu = tk.Menu(self.tokenMenu, tearoff=0)
-        self.tokenMenu.add_command(label="Stats")
-        self.tokenMenu.add_command(label="Damage")
-        self.tokenMenu.add_command(label="Heal")
+        #self.aoeMenu = tk.Menu(self.tokenMenu, tearoff=0)
+        #self.tokenMenu.add_command(label="Target Creature")
+        #self.tokenMenu.add_command(label="Damage")
+        #self.tokenMenu.add_command(label="Heal")
+        self.tokenMenu.add_command(label="Conditions Info")
         self.tokenMenu.add_separator()
         #self.tokenMenu.add_cascade(label="Trig Functions", menu=self.trigMenu)
         #self.trigMenu.add_command(label="Distance", command=findDistance)
@@ -119,4 +120,4 @@ class EventManager():
             '''
             if being["name"] == name:
                 being["coordinate"] = [str(newCoord[0]), str(newCoord[1]), str(newCoord[2])]
-        self.lblSetFinished.config(text="Position Set!")
+        self.lblSetFinished.config(text="Position set! Please close window.")

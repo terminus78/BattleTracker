@@ -26,11 +26,13 @@ class StatCollector(object):
         frame2_2 = ttk.Frame(master=upperFrame)
         frame3_1 = ttk.Frame(master=upperFrame)
         frame3_2 = ttk.Frame(master=upperFrame)
+
         frameList = [frame1_1, frame1_2, frame2_1, frame2_2, frame3_1, frame3_2]
 
         upperFrame.grid(row=0, column=0, sticky="w")
         lowerFrame.grid(row=1, column=0, sticky="w")
         underFrame.grid(row=2, column=0, pady=8)
+
         frRow = 0
         frCol = 0
         for fr in frameList:
@@ -38,7 +40,7 @@ class StatCollector(object):
             frCol += 1
             if frCol == 2:
                 frCol = 0
-                frRow += 1
+                frRow += 1.
         
         self.radSize = tk.StringVar()
         self.radFoeFriend = tk.StringVar()
@@ -129,7 +131,7 @@ class StatCollector(object):
                 "height": self.entHeight.get(),
                 "size": self.radSize.get(),
                 "coordinate": ["", "", ""],
-                "status": "normal",
+                "condition": ["normal"],
                 "notes": self.txtNotes.get(1.0, tk.END)
             }
         }
