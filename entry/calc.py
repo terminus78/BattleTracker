@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
+
 class Calculator():
     def __init__(self, root):
         self.root = root

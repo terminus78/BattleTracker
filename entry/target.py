@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
+
 class Target():
     def __init__(self, root):
         self.root = root
@@ -103,6 +104,7 @@ class Target():
         rbnDead = ttk.Radiobutton(master=self.actionFrame, text="Dead", variable= self.type, value="dead")
         rbnDead.grid(row=3, column=3, sticky='nw')
 
+        '''
         lblMove = ttk.Label(master=self.actionFrame, text="Move Target", font=self.regFont)
         lblMove.grid(row=4, column=0, sticky='nw')
         moveFrame = ttk.Frame(master=self.actionFrame)
@@ -113,6 +115,7 @@ class Target():
         self.entCol.grid(row=0, column=1, sticky='ne')
         self.entZ = ttk.Entry(master=moveFrame, width=5)
         self.entZ.grid(row=0, column=2, sticky='ne')
+        '''
 
         lblChangeCondition = ttk.Label(master=self.actionFrame, text="Change Condition", font=self.regFont)
         lblChangeCondition.grid(row=5, column=0, sticky='nw')
@@ -186,7 +189,15 @@ class Target():
         self.lblActType.config(text=objTarget['type'])
         self.lblActHeight.config(text=objTarget['height'])
         self.lblActSize.config(text=objTarget['size'])
-        self.lblActCoord.config(text="{0}: {1}: {2}".format(objTarget['coordinate'][0], objTarget['coordinate'][1], objTarget['coordinate'][2]))
+        if objTarget['coordinate'][0] != "" and objTarget['coordinate'][1] != "" and objTarget['coordinate'][2] != "":
+            row = int(objTarget['coordinate'][0]) + 1
+            col = int(objTarget['coordinate'][1]) + 1
+            z = int(objTarget['coordinate'][2])
+        else:
+            row = ""
+            col = ""
+            z = ""
+        self.lblActCoord.config(text="{0}: {1}: {2}".format(row, col, z))
         allConditions = ""
         for cond in objTarget['condition']:
             if allConditions == "":
@@ -231,6 +242,10 @@ class Target():
 
     def onSubmit(self):
         selTarget = self.dropTargets.get()
+        if selTarget == "" or selTarget is None:
+            messagebox.showinfo("Info", "Must select target creature.")
+            return
+
         index = self.names.index(selTarget)
         objTarget = self.tokenList[index]
 
@@ -251,6 +266,7 @@ class Target():
         newType = self.type.get()
         if newType == "":
             newType = objTarget['type']
+        '''
         testRow = self.entRow.get()
         testCol = self.entCol.get()
         testZ = self.entZ.get()
@@ -272,6 +288,7 @@ class Target():
                 newZ = int(objTarget['coordinate'][2])
         if offMap:
             newRow, newCol, newZ = ("" for i in range(3))
+        '''
         newCondition = []
         if self.condNormal.get() == 1:
             newCondition.append("normal")
@@ -306,6 +323,7 @@ class Target():
                 newCondition.append("stunned")
             if self.condUnconscious.get() == 1:
                 newCondition.append("unconscious")
+
         noNotes = self.checkDelete.get()
         newNotes = self.txtChangeNotes.get(1.0, tk.END)
         if noNotes == 0 and newNotes == "":
@@ -318,11 +336,7 @@ class Target():
             "type": newType,
             "height": objTarget['height'],
             "size": objTarget['size'],
-            "coordinate": [
-                newRow,
-                newCol,
-                newZ
-            ],
+            "coordinate": objTarget['coordinate'],
             "condition": newCondition,
             "notes": newNotes
         }
@@ -338,8 +352,7 @@ class Target():
 
     def deleteToken(self):
         selTarget = self.dropTargets.get()
-        print(selTarget)
-        if selTarget != "" or selTarget is not None:
+        if selTarget != "" and selTarget is not None:
             goAhead = messagebox.askokcancel("Warning", "You are about to delete this creature.\nAre you sure?")
             if goAhead:
                 index = self.names.index(selTarget)
@@ -347,3 +360,5 @@ class Target():
                 self.btnSubmit.state(['disabled'])
                 self.btnDeleteTarget.state(['disabled'])
                 self.lblCloseWindow.grid(row=1, column=0, columnspan=2)
+        else:
+            messagebox.showinfo("Info", "Must select a target creature.")

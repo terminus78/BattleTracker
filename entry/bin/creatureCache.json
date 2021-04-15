@@ -6,14 +6,14 @@
         "height": "1",
         "size": "small",
         "coordinate": [
-            "1",
-            "1",
-            "0"
+            1,
+            1,
+            0
         ],
         "condition": [
             "normal"
         ],
-        "notes": "Boof\n"
+        "notes": "\n"
     },
     "TestBird": {
         "name": "TestBird",
@@ -158,5 +158,21 @@
             "normal"
         ],
         "notes": "\n"
+    },
+    "TestBiggerGooder": {
+        "name": "TestBiggerGooder",
+        "hP": "400",
+        "type": "ally",
+        "height": "4",
+        "size": "gargantuan",
+        "coordinate": [
+            "7",
+            "5",
+            "0"
+        ],
+        "condition": [
+            "normal"
+        ],
+        "notes": "When godzilla decides to help...\n"
     }
 }

@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
+from bigHelper2D import correctPlacement
+
 class EventManager():
     def __init__(self, root):
         self.root = root
@@ -74,6 +76,38 @@ class EventManager():
         self.entRowCoord.grid(row=0, column=1, sticky='w')
         self.entColCoord.grid(row=0, column=2, sticky='w')
         self.entZCoord.grid(row=0, column=3, sticky='w')
+
+        self.lblOrThis = ttk.Label(master=self.moveToFrame, text="or move a number of spaces", font=self.font)
+        #self.lblOrThis.grid(row=1, column=0, columnspan=4)
+
+        self.lblFwdBack = ttk.Label(master=self.moveToFrame, text="Forward/Back", font=self.font)
+        #self.lblFwdBack.grid(row=2, column=0, sticky='w')
+        self.entRowDelta = ttk.Entry(master=self.moveToFrame, width=5)
+        #self.entRowDelta.grid(row=2, column=1, sticky='w')
+        self.fwdOrBack = tk.StringVar()
+        self.rbnMoveFwd = ttk.Radiobutton(master=self.moveToFrame, text="Forward", variable=self.fwdOrBack, value='forward')
+        #self.rbnMoveFwd.grid(row=2, column=2)
+        self.rbnMoveBack = ttk.Radiobutton(master=self.moveToFrame, text="Back", variable=self.fwdOrBack, value='back')
+        #self.rbnMoveBack.grid(row=2, column=3)
+        self.lblLeftRight = ttk.Label(master=self.moveToFrame, text="Left/Right", font=self.font)
+        #self.lblLeftRight.grid(row=3, column=0, sticky='w')
+        self.entColDelta = ttk.Entry(master=self.moveToFrame, width=5)
+        #self.entColDelta.grid(row=3, column=1, sticky='w')
+        self.leftOrRight = tk.StringVar()
+        self.rbnMoveLeft = ttk.Radiobutton(master=self.moveToFrame, text="Left", variable=self.leftOrRight, value='left')
+        #self.rbnMoveLeft.grid(row=3, column=2)
+        self.rbnMoveRight = ttk.Radiobutton(master=self.moveToFrame, text="Right", variable=self.leftOrRight, value='right')
+        #self.rbnMoveRight.grid(row=3, column=3)
+        self.lblUpDown = ttk.Label(master=self.moveToFrame, text="Up/Down", font=self.font)
+        #self.lblUpDown.grid(row=4, column=0, sticky='w')
+        self.entZDelta = ttk.Entry(master=self.moveToFrame, width=5)
+        #self.entZDelta.grid(row=4, column=1, sticky='w')
+        self.upOrDown = tk.StringVar()
+        self.rbnMoveUp = ttk.Radiobutton(master=self.moveToFrame, text="Up", variable=self.upOrDown, value='up')
+        #self.rbnMoveUp.grid(row=4, column=2)
+        self.rbnMoveDown = ttk.Radiobutton(master=self.moveToFrame, text="Down", variable=self.upOrDown, value='down')
+        #self.rbnMoveDown.grid(row=4, column=3)
+
         self.btnSet = ttk.Button(master=self.moveFinishFrame, text="Set Position", command=lambda arg=[False]: self.setNewCoord(arg))
         self.btnSet.grid(row=0, column=0, sticky='w')
         self.btnRemove = ttk.Button(master=self.moveFinishFrame, text="Remove Token", command=lambda arg=[True]: self.setNewCoord(arg))
@@ -86,38 +120,150 @@ class EventManager():
         names = arg[0]
         coordinates = arg[1]
         index = names.index(selOption)
-        if coordinates[index][0] != "" and coordinates[index][1] != "":
+        if coordinates[index][0] != "" and coordinates[index][1] != "" and coordinates[index][2] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
+
+            self.lblOrThis.grid(row=1, column=0, columnspan=4)
+            self.lblFwdBack.grid(row=2, column=0, sticky='w')
+            self.entRowDelta.grid(row=2, column=1, sticky='w')
+            self.rbnMoveFwd.grid(row=2, column=2)
+            self.rbnMoveBack.grid(row=2, column=3)
+            self.lblLeftRight.grid(row=3, column=0, sticky='w')
+            self.entColDelta.grid(row=3, column=1, sticky='w')
+            self.rbnMoveLeft.grid(row=3, column=2)
+            self.rbnMoveRight.grid(row=3, column=3)
+            self.lblUpDown.grid(row=4, column=0, sticky='w')
+            self.entZDelta.grid(row=4, column=1, sticky='w')
+            self.rbnMoveUp.grid(row=4, column=2)
+            self.rbnMoveDown.grid(row=4, column=3)
+
         else:
             row = coordinates[index][0]
             col = coordinates[index][1]
+
         z = coordinates[index][2]
         self.lblActCoord.config(text="{0}: {1}: {2}".format(row, col, z))
 
     def setNewCoord(self, arg):
         removingToken = arg[0]
-        if removingToken == False and (self.entRowCoord.get() == "" or self.entColCoord.get() == "" or self.entZCoord.get() == ""):
+        selOption = self.dropSelection.get()
+        if selOption == "":
+            messagebox.showinfo("Info", "Must select a creature.")
+            return
+
+        nameList = []
+        for being in self.tokenList:
+            nameList.append(being['name'])
+        index = nameList.index(selOption)
+        size = self.tokenList[index]['size']
+        oneSpace = False
+        if size == 'tiny' or size == 'small' or size == 'medium':
+            oneSpace = True
+        anyMoveAllowed = False
+        goForwardBack = self.fwdOrBack.get()
+        goLeftRight = self.leftOrRight.get()
+        goUpDown = self.upOrDown.get()
+        deltaFBStr = self.entRowDelta.get()
+        deltaLRStr = self.entColDelta.get()
+        deltaUDStr = self.entZDelta.get()
+
+        if goForwardBack != "" or goLeftRight != "" or goUpDown != "":
+            coordinate = self.tokenList[index]['coordinate']
+            if coordinate[0] != "" and coordinate[1] != "" and coordinate[2] != "":
+                anyMoveAllowed = True
+
+        if removingToken == False and anyMoveAllowed == False and (self.entRowCoord.get() == "" or self.entColCoord.get() == "" or self.entZCoord.get() == ""):
             messagebox.showwarning("Warning", "Coordinate Fields Can't Be Empty!")
             return
+
         if removingToken == False:
-            newCoord = [int(self.entRowCoord.get()) - 1, int(self.entColCoord.get()) - 1, int(self.entZCoord.get())]
-            if newCoord[0] > self.mapSize[0] or newCoord[0] < 0:
-                messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")
-                return
-            if newCoord[1] > self.mapSize[1] or newCoord[1] < 0:
-                messagebox.showerror("Error", "Column Coordinate Out of Range of Map!")
-                return
+            if anyMoveAllowed:
+                for i in range(3):
+                    coordinate[i] = int(coordinate[i])
+                '''
+                try:
+                    deltaFB = int(deltaFBStr)
+                    deltaLR = int(deltaLRStr)
+                    deltaUD = int(deltaUDStr)
+                except ValueError:
+                    messagebox.showwarning("Warning", "Move fields must be integers!")
+                    return
+                '''
+                try:
+                    deltaFB = int(deltaFBStr)
+                except ValueError:
+                    deltaFB = 0
+                try:
+                    deltaLR = int(deltaLRStr)
+                except ValueError:
+                    deltaLR = 0
+                try:
+                    deltaUD = int(deltaUDStr)
+                except ValueError:
+                    deltaUD = 0
+
+                if deltaFB < 0 or deltaLR < 0 or deltaUD < 0:
+                    messagebox.showwarning("Warning", "Move fields cannot be negative!")
+                    return
+                if goForwardBack == 'forward':
+                    coordinate[0] -= deltaFB
+                    if oneSpace:
+                        if coordinate[0] < 0:
+                            coordinate[0] = 0
+                    else:
+                        coordinate = correctPlacement(coordinate, size, self.mapSize)
+                if goForwardBack == 'back':
+                    coordinate[0] += deltaFB
+                    if oneSpace:
+                        if coordinate[0] < self.mapSize[0] - 1:
+                            coordinate[0] = self.mapSize[0] - 1
+                    else:
+                        coordinate = correctPlacement(coordinate, size, self.mapSize)
+                if goLeftRight == 'left':
+                    coordinate[1] -= deltaLR
+                    if oneSpace:
+                        if coordinate[1] < 0:
+                            coordinate[1] = 0
+                    else:
+                        coordinate = correctPlacement(coordinate, size, self.mapSize)
+                if goLeftRight == 'right':
+                    coordinate[1] += deltaLR
+                    if oneSpace:
+                        if coordinate[1] < self.mapSize[1] - 1:
+                            coordinate[1] = self.mapSize[1] - 1
+                    else:
+                        coordinate = correctPlacement(coordinate, size, self.mapSize)
+                if goUpDown == 'down':
+                    coordinate[2] -= deltaUD
+                if goUpDown == 'up':
+                    coordinate[2] += deltaUD
+
+                newCoord = coordinate
+                    
+            else:
+                try:
+                    newRow = int(self.entRowCoord.get()) - 1
+                    newCol = int(self.entColCoord.get()) - 1
+                    newZ = int(self.entZCoord.get())
+                    newCoord = [newRow, newCol, newZ]
+                except ValueError:
+                    messagebox.showwarning("Warning", "Set Coordinate fields must be integers!")
+                    return
+                if newCoord[0] > self.mapSize[0] - 1 or newCoord[0] < 0:
+                    messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")
+                    return
+                if newCoord[1] > self.mapSize[1] - 1 or newCoord[1] < 0:
+                    messagebox.showerror("Error", "Column Coordinate Out of Range of Map!")
+                    return
         else:
             newCoord = ["", "", ""]
-        selOption = self.dropSelection.get()
-        name = selOption
         for being in self.tokenList:
             '''
             if being["coordinate"][0] == str(newCoord[0]) and being["coordinate"][1] == str(newCoord[1]):
                     messagebox.showerror("Error", "Space already taken!")
                     return
             '''
-            if being["name"] == name:
+            if being["name"] == selOption:
                 being["coordinate"] = [str(newCoord[0]), str(newCoord[1]), str(newCoord[2])]
         self.lblSetFinished.config(text="Position set! Please close window.")

@@ -1,9 +1,10 @@
-from statCollector import StatCollector
-from battleMap import BattleMap
-from tooltip import *
 import tkinter as tk
 from tkinter import ttk
 from ttkthemes import ThemedStyle
+
+from statCollector import StatCollector
+from battleMap import BattleMap
+from tooltip import *
 
 window = tk.Tk()
 window.title("BattleTracker")
@@ -16,6 +17,7 @@ bg = styleDark.lookup('TLabel', 'background')
 fg = styleDark.lookup('TLabel', 'foreground')
 window.configure(bg=styleDark.lookup('TLabel', 'background'))
 papyrusFont = ('Papyrus', 14)
+
 
 class mainWindow(object):
     def __init__(self, master):

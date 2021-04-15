@@ -1,11 +1,13 @@
-import tkinter as tk
-from tkinter import ttk, font
-from ttkthemes import ThemedStyle
 import pathlib
 import json
 import os
 
+import tkinter as tk
+from tkinter import ttk, font
+from ttkthemes import ThemedStyle
+
 papyrusFont = ('Papyrus', '14')
+
 
 class StatCollector(object):
     def __init__(self, master):
@@ -40,7 +42,7 @@ class StatCollector(object):
             frCol += 1
             if frCol == 2:
                 frCol = 0
-                frRow += 1.
+                frRow += 1
         
         self.radSize = tk.StringVar()
         self.radFoeFriend = tk.StringVar()

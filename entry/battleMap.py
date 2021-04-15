@@ -1,18 +1,23 @@
 import math
 import random
-import tkinter as tk
 import pathlib
 import json
 import os
+
+import PIL.Image
+from PIL import ImageTk
+import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
+
 from tooltip import *
-from PIL import Image, ImageTk
 from eventManager import EventManager
 from calc import Calculator
 from statCollector import StatCollector
 from quotes import Quote
 from target import Target
+from conditionInfo import explainConditions
+
 
 class BattleMap(object):
     def __init__(self, mapSize, master):
@@ -71,21 +76,21 @@ class BattleMap(object):
         self.toolBar = ttk.Frame(master=self.bottomFrame)
         self.toolBar.grid(row=0, column=2, padx=5, pady=10, sticky="nse")
         moveIconPath = "entry/bin/icons8-circled-down-left-32.png"
-        moveIcon = ImageTk.PhotoImage(Image.open(moveIconPath).resize((20,20)))
+        moveIcon = ImageTk.PhotoImage(image=PIL.Image.open(moveIconPath).resize((20,20)))
         trigIconPath = "entry/bin/3228996421547464107-128.png"
-        trigIcon = ImageTk.PhotoImage(Image.open(trigIconPath).resize((20,20)))
+        trigIcon = ImageTk.PhotoImage(image=PIL.Image.open(trigIconPath).resize((20,20)))
         targetIconPath = "entry/bin/11749495271547546487-128.png"
-        targetIcon = ImageTk.PhotoImage(Image.open(targetIconPath).resize((20,20)))
+        targetIcon = ImageTk.PhotoImage(image=PIL.Image.open(targetIconPath).resize((20,20)))
 
         # Image paths
         allyPath = "entry/bin/allyToken.png"
-        self.allyImg = ImageTk.PhotoImage(Image.open(allyPath).resize((15,15)))
+        self.allyImg = ImageTk.PhotoImage(image=PIL.Image.open(allyPath).resize((15,15)))
         enemyPath = "entry/bin/enemyToken.png"
-        self.enemyImg = ImageTk.PhotoImage(Image.open(enemyPath).resize((15,15)))
+        self.enemyImg = ImageTk.PhotoImage(image=PIL.Image.open(enemyPath).resize((15,15)))
         bystanderPath = "entry/bin/bystanderToken.png"
-        self.bystanderImg = ImageTk.PhotoImage(Image.open(bystanderPath).resize((15,15)))
+        self.bystanderImg = ImageTk.PhotoImage(image=PIL.Image.open(bystanderPath).resize((15,15)))
         deadPath = "entry/bin/deadToken.png"
-        self.deadImg = ImageTk.PhotoImage(Image.open(deadPath).resize((15,15)))
+        self.deadImg = ImageTk.PhotoImage(image=PIL.Image.open(deadPath).resize((15,15)))
         
         self.mapFrames = []
         self.tokenList = []
@@ -118,6 +123,11 @@ class BattleMap(object):
         self.btnTarget.grid(row=2, column=0, sticky='n')
         self.btnTarget.image = targetIcon
         CreateToolTip(self.btnTarget, text="Target", leftDisp=True)
+
+        self.btnCondInfo = ttk.Button(master=self.toolBar, command=self.showCondInfo, text="Conditions")
+        self.btnCondInfo.grid(row=3, column=0, sticky='n')
+        #self.btnCondInfo.image = targetIcon
+        CreateToolTip(self.btnCondInfo, text="Condition Info", leftDisp=True)
 
         self.placeTokens()
     
@@ -155,6 +165,34 @@ class BattleMap(object):
                 lblUnit.grid(row=rowCount, column=colCount, sticky='n')
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
                 CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
+                spaceTaken = 1
+                if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
+                    if being["size"] == "large":
+                        spaceNeed = 4
+                    elif being["size"] == "huge":
+                        spaceNeed = 9
+                    else:
+                        spaceNeed = 16
+                    rowOffset = 0
+                    colOffset = 0
+                    goToNextRow = math.sqrt(spaceNeed)
+                    for i in range(1, spaceNeed):
+                        if i < spaceNeed:
+                            colOffset += 1
+                            if colOffset == goToNextRow:
+                                colOffset = 0
+                                rowOffset += 1
+                            rowPos = int(being["coordinate"][1]) + rowOffset
+                            colPos = int(being["coordinate"][0]) + colOffset
+                            lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray37", borderwidth=0)
+                            lblUnit.image = tokenImg
+                            spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
+                            rowCount = int(spaceCount / 3)
+                            colCount = spaceCount % 3
+                            lblUnit.grid(row=rowCount, column=colCount, sticky='n')
+                            lblUnit.bind("<Button-3>", self.em.rightClickMenu)
+                            CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
+
             else:
                 self.unusedTokens(being, tokenImg)
     
@@ -247,3 +285,6 @@ class BattleMap(object):
         randIndex = random.randint(0, lastIndex)
         randomQuote = self.quoter.getQuote(randIndex)
         self.lblQuote.config(text=randomQuote)
+
+    def showCondInfo(self):
+        explainConditions(self.mapWin)
