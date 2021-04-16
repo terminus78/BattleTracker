@@ -22,7 +22,7 @@ papyrusFont = ('Papyrus', 14)
 class mainWindow(object):
     def __init__(self, master):
         self.master = master
-        self.countdown = 5
+        self.countdown = 3
         self.lblGreeting = ttk.Label(master, text="Welcome to the BattleTracker", font=papyrusFont)
         self.lblGreeting.grid(row=0, column=0)
         #self.btnOpen = ttk.Button(master, command=self.inputWindow, text="Input Creatures")

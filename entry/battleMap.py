@@ -16,7 +16,7 @@ from calc import Calculator
 from statCollector import StatCollector
 from quotes import Quote
 from target import Target
-from conditionInfo import explainConditions
+from conditionInfo import InfoClass
 
 
 class BattleMap(object):
@@ -49,6 +49,7 @@ class BattleMap(object):
         self.quoter = Quote()
         self.countQuotes = 0
         self.target = Target(self.mapWin)
+        self.info = InfoClass(self.mapWin)
 
         # Board Setup
         lblMap = ttk.Label(master=self.topFrame, text="BattleMap", font=('Papyrus', '16'))
@@ -287,4 +288,4 @@ class BattleMap(object):
         self.lblQuote.config(text=randomQuote)
 
     def showCondInfo(self):
-        explainConditions(self.mapWin)
+        self.info.explainConditions()
