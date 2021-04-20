@@ -95,14 +95,14 @@ class Target():
         lblChangeType = ttk.Label(master=self.actionFrame, text="Change Type", font=self.regFont)
         lblChangeType.grid(row=2, column=0, sticky='nw')
         self.type = tk.StringVar()
-        rbnAlly = ttk.Radiobutton(master=self.actionFrame, text="Ally", variable= self.type, value="ally")
-        rbnAlly.grid(row=2, column=2, sticky='nw')
-        rbnEnemy = ttk.Radiobutton(master=self.actionFrame, text="Enemy", variable= self.type, value="enemy")
-        rbnEnemy.grid(row=2, column=3, sticky='nw')
-        rbnBystander = ttk.Radiobutton(master=self.actionFrame, text="Bystander", variable= self.type, value="bystander")
-        rbnBystander.grid(row=3, column=2, sticky='nw')
-        rbnDead = ttk.Radiobutton(master=self.actionFrame, text="Dead", variable= self.type, value="dead")
-        rbnDead.grid(row=3, column=3, sticky='nw')
+        self.rbnAlly = ttk.Radiobutton(master=self.actionFrame, text="Ally", variable= self.type, value="ally")
+        self.rbnAlly.grid(row=2, column=2, sticky='nw')
+        self.rbnEnemy = ttk.Radiobutton(master=self.actionFrame, text="Enemy", variable= self.type, value="enemy")
+        self.rbnEnemy.grid(row=2, column=3, sticky='nw')
+        self.rbnBystander = ttk.Radiobutton(master=self.actionFrame, text="Bystander", variable= self.type, value="bystander")
+        self.rbnBystander.grid(row=3, column=2, sticky='nw')
+        self.rbnDead = ttk.Radiobutton(master=self.actionFrame, text="Dead", variable= self.type, value="dead")
+        self.rbnDead.grid(row=3, column=3, sticky='nw')
 
         '''
         lblMove = ttk.Label(master=self.actionFrame, text="Move Target", font=self.regFont)
@@ -146,13 +146,13 @@ class Target():
         self.cbnFright.grid(row=7, column=3, sticky='nw')
         self.cbnGrappled = ttk.Checkbutton(master=self.actionFrame, text="Grappled", variable=self.condGrappled)
         self.cbnGrappled.grid(row=8, column=2, sticky='nw')
-        self.cbnIncapacitated = ttk.Checkbutton(master=self.actionFrame, text="Incapacitated", variable=self.condIncapacitated)
+        self.cbnIncapacitated = ttk.Checkbutton(master=self.actionFrame, text="Incapacitated", variable=self.condIncapacitated, command=self.connectedCond)
         self.cbnIncapacitated.grid(row=8, column=3, sticky='nw')
         self.cbnInvisible = ttk.Checkbutton(master=self.actionFrame, text="Invisible", variable=self.condInvisible)
         self.cbnInvisible.grid(row=9, column=2, sticky='nw')
-        self.cbnParalyzed = ttk.Checkbutton(master=self.actionFrame, text="Paralyzed", variable=self.condParalyzed)
+        self.cbnParalyzed = ttk.Checkbutton(master=self.actionFrame, text="Paralyzed", variable=self.condParalyzed, command=self.connectedCond)
         self.cbnParalyzed.grid(row=9, column=3, sticky='nw')
-        self.cbnPetrified = ttk.Checkbutton(master=self.actionFrame, text="Petrified", variable=self.condPetrified)
+        self.cbnPetrified = ttk.Checkbutton(master=self.actionFrame, text="Petrified", variable=self.condPetrified, command=self.connectedCond)
         self.cbnPetrified.grid(row=10, column=2, sticky='nw')
         self.cbnPoisoned = ttk.Checkbutton(master=self.actionFrame, text="Poisoned", variable=self.condPoisoned)
         self.cbnPoisoned.grid(row=12, column=2, sticky='nw')
@@ -160,19 +160,24 @@ class Target():
         self.cbnProne.grid(row=10, column=3, sticky='nw')
         self.cbnRestrained = ttk.Checkbutton(master=self.actionFrame, text="Restrained", variable=self.condRestrained)
         self.cbnRestrained.grid(row=11, column=2, sticky='nw')
-        self.cbnStunned = ttk.Checkbutton(master=self.actionFrame, text="Stunned", variable=self.condStunned)
+        self.cbnStunned = ttk.Checkbutton(master=self.actionFrame, text="Stunned", variable=self.condStunned, command=self.connectedCond)
         self.cbnStunned.grid(row=11, column=3, sticky='nw')
-        self.cbnUnconscious = ttk.Checkbutton(master=self.actionFrame, text="Unconscious", variable=self.condUnconscious)
+        self.cbnUnconscious = ttk.Checkbutton(master=self.actionFrame, text="Unconscious", variable=self.condUnconscious, command=self.connectedCond)
         self.cbnUnconscious.grid(row=12, column=3, sticky='nw')
+        lblExhaustion = ttk.Label(master=self.actionFrame, text="Exhaustion", font=self.regFont)
+        lblExhaustion.grid(row=13, column=2, columnspan=2)
+        self.exhaustionLevel = tk.IntVar()
+        self.sldrExhaustion = tk.Scale(master=self.actionFrame, from_=0, to=6, variable=self.exhaustionLevel, orient=tk.HORIZONTAL, tickinterval=1, bg='gray28', fg='gray70', font=self.smallFont, highlightbackground='gray28', highlightcolor='gray28')
+        self.sldrExhaustion.grid(row=14, column=2, columnspan=2)
 
         lblChangeNotes = ttk.Label(master=self.actionFrame, text="Change Notes", font=self.regFont)
-        lblChangeNotes.grid(row=13, column=0, sticky='nw')
+        lblChangeNotes.grid(row=15, column=0, sticky='nw')
         self.checkDelete = tk.IntVar()
         cbnDeleteNotes = ttk.Checkbutton(master=self.actionFrame, text="Delete Notes", variable=self.checkDelete)
-        cbnDeleteNotes.grid(row=13, column=1, sticky='ne')
+        cbnDeleteNotes.grid(row=15, column=1, sticky='ne')
         self.txtChangeNotes = tk.Text(master=self.actionFrame, height=5, width=52)
         self.txtChangeNotes.configure(font=self.smallFont)
-        self.txtChangeNotes.grid(row=14, column=0, columnspan=4)
+        self.txtChangeNotes.grid(row=16, column=0, columnspan=4)
 
         self.btnSubmit = ttk.Button(master=self.submitFrame, command=self.onSubmit, text="Submit", width=20)
         self.btnSubmit.grid(row=0, column=0, sticky='e')
@@ -224,6 +229,7 @@ class Target():
             self.cbnRestrained.state(['disabled'])
             self.cbnStunned.state(['disabled'])
             self.cbnUnconscious.state(['disabled'])
+            self.sldrExhaustion.config(state=tk.DISABLED, fg='gray40')
         else:
             self.cbnBlind.state(['!disabled'])
             self.cbnCharmed.state(['!disabled'])
@@ -239,6 +245,7 @@ class Target():
             self.cbnRestrained.state(['!disabled'])
             self.cbnStunned.state(['!disabled'])
             self.cbnUnconscious.state(['!disabled'])
+            self.sldrExhaustion.config(state=tk.NORMAL, fg='gray70')
 
     def onSubmit(self):
         selTarget = self.dropTargets.get()
@@ -258,9 +265,9 @@ class Target():
         except ValueError:
             hPDelta = 0
         if self.healHurt.get() == 'heal':
-            newHP = hPDelta + int(objTarget['hP'])
+            newHP = str(hPDelta + int(objTarget['hP']))
         elif self.healHurt.get() == 'damage':
-            newHP = int(self.objTarget['hP']) - hPDelta
+            newHP = str(int(self.objTarget['hP']) - hPDelta)
         else:
             newHP = objTarget['hP']
         newType = self.type.get()
@@ -323,6 +330,9 @@ class Target():
                 newCondition.append("stunned")
             if self.condUnconscious.get() == 1:
                 newCondition.append("unconscious")
+            lvlExh = self.exhaustionLevel.get()
+            if lvlExh > 0:
+                newCondition.append("exhaustion level " + str(lvlExh))
 
         noNotes = self.checkDelete.get()
         newNotes = self.txtChangeNotes.get(1.0, tk.END)
@@ -362,3 +372,17 @@ class Target():
                 self.lblCloseWindow.grid(row=1, column=0, columnspan=2)
         else:
             messagebox.showinfo("Info", "Must select a target creature.")
+        
+    def connectedCond(self):
+        incap = self.condIncapacitated.get()
+        parlz = self.condParalyzed.get()
+        petr = self.condPetrified.get()
+        stun = self.condStunned.get()
+        aslp = self.condUnconscious.get()
+        if parlz == 1 or petr == 1 or stun == 1 or aslp == 1:
+            self.condIncapacitated.set(1)
+    '''
+    def exhLevel6(self):
+        exhaustion = self.exhaustionLevel.get()
+        if exhaustion == 6:
+    '''

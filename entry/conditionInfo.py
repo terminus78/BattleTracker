@@ -318,7 +318,7 @@ class InfoClass():
             width=80
             )
         txtLevel6Info.grid(row=42, column=2, sticky='w')
-        txtExhausionContinued = tk.Text(
+        txtExhaustionContinued = tk.Text(
             master=infoFrame,
             font=self.regFont,
             wrap=tk.WORD,
@@ -328,7 +328,7 @@ class InfoClass():
             height=12,
             width=80
             )
-        txtExhausionContinued.grid(row=43, column=2, sticky='w')
+        txtExhaustionContinued.grid(row=43, column=2, sticky='w')
 
         fontToCheck = tk.font.Font(family='Papyrus', size='12')
         bullet_width = fontToCheck.measure("\u2022 ")
@@ -409,10 +409,33 @@ class InfoClass():
         txtLevel5Info.insert(tk.END, "\u2022 Speed reduced to 0.", 'bulleted')
         txtLevel6Info.insert(tk.END, "\u2022 Death.", 'bulleted')
 
-        txtExhausionContinued.insert(tk.END, "If an already exhausted creature suffers another Effect that causes exhaustion, its current level of exhaustion increases by the amount specified in the effect's description.\n\n")
-        txtExhausionContinued.insert(tk.END, "A creature suffers the Effect of its current level of exhaustion as well as all lower levels. For example, a creature suffering level 2 exhaustion has its speed halved and has disadvantage on Ability Checks.\n\n")
-        txtExhausionContinued.insert(tk.END, "An Effect that removes exhaustion reduces its level as specified in the effect's description, with all exhaustion Effects Ending if a creature's exhaustion level is reduced below 1.\n\n")
-        txtExhausionContinued.insert(tk.END, "Finishing a Long Rest reduces a creature's exhaustion level by 1, provided that the creature has also ingested some food and drink.")
+        txtExhaustionContinued.insert(tk.END, "If an already exhausted creature suffers another Effect that causes exhaustion, its current level of exhaustion increases by the amount specified in the effect's description.\n\n")
+        txtExhaustionContinued.insert(tk.END, "A creature suffers the Effect of its current level of exhaustion as well as all lower levels. For example, a creature suffering level 2 exhaustion has its speed halved and has disadvantage on Ability Checks.\n\n")
+        txtExhaustionContinued.insert(tk.END, "An Effect that removes exhaustion reduces its level as specified in the effect's description, with all exhaustion Effects Ending if a creature's exhaustion level is reduced below 1.\n\n")
+        txtExhaustionContinued.insert(tk.END, "Finishing a Long Rest reduces a creature's exhaustion level by 1, provided that the creature has also ingested some food and drink.")
+
+        txtBlindInfo.configure(state='disabled')
+        txtCharmedInfo.configure(state='disabled')
+        txtDeafInfo.configure(state='disabled')
+        txtFrightInfo.configure(state='disabled')
+        txtGrappledInfo.configure(state='disabled')
+        txtIncapacitatedInfo.configure(state='disabled')
+        txtInvisibleInfo.configure(state='disabled')
+        txtParalyzedInfo.configure(state='disabled')
+        txtPetrifiedInfo.configure(state='disabled')
+        txtPoisonedInfo.configure(state='disabled')
+        txtProneInfo.configure(state='disabled')
+        txtRestrainedInfo.configure(state='disabled')
+        txtStunnedInfo.configure(state='disabled')
+        txtUnconsciousInfo.configure(state='disabled')
+        txtExhaustionInfo.configure(state='disabled')
+        txtLevel1Info.configure(state='disabled')
+        txtLevel2Info.configure(state='disabled')
+        txtLevel3Info.configure(state='disabled')
+        txtLevel4Info.configure(state='disabled')
+        txtLevel5Info.configure(state='disabled')
+        txtLevel6Info.configure(state='disabled')
+        txtExhaustionContinued.configure(state='disabled')
 
     def onMousewheel(self, event):
         self.conditionCanvas.yview_scroll(int(-1 * (event.delta/120)), 'units')

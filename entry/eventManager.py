@@ -127,20 +127,34 @@ class EventManager():
             self.lblOrThis.grid(row=1, column=0, columnspan=4)
             self.lblFwdBack.grid(row=2, column=0, sticky='w')
             self.entRowDelta.grid(row=2, column=1, sticky='w')
-            self.rbnMoveFwd.grid(row=2, column=2)
-            self.rbnMoveBack.grid(row=2, column=3)
+            self.rbnMoveFwd.grid(row=2, column=2, sticky='w')
+            self.rbnMoveBack.grid(row=2, column=3, sticky='w')
             self.lblLeftRight.grid(row=3, column=0, sticky='w')
             self.entColDelta.grid(row=3, column=1, sticky='w')
-            self.rbnMoveLeft.grid(row=3, column=2)
-            self.rbnMoveRight.grid(row=3, column=3)
+            self.rbnMoveLeft.grid(row=3, column=2, sticky='w')
+            self.rbnMoveRight.grid(row=3, column=3, sticky='w')
             self.lblUpDown.grid(row=4, column=0, sticky='w')
             self.entZDelta.grid(row=4, column=1, sticky='w')
-            self.rbnMoveUp.grid(row=4, column=2)
-            self.rbnMoveDown.grid(row=4, column=3)
+            self.rbnMoveUp.grid(row=4, column=2, sticky='w')
+            self.rbnMoveDown.grid(row=4, column=3, sticky='w')
 
         else:
             row = coordinates[index][0]
             col = coordinates[index][1]
+            if len(self.moveToFrame.grid_slaves()) > 4:
+                self.lblOrThis.grid_forget()
+                self.lblFwdBack.grid_forget()
+                self.entRowDelta.grid_forget()
+                self.rbnMoveFwd.grid_forget()
+                self.rbnMoveBack.grid_forget()
+                self.lblLeftRight.grid_forget()
+                self.entColDelta.grid_forget()
+                self.rbnMoveLeft.grid_forget()
+                self.rbnMoveRight.grid_forget()
+                self.lblUpDown.grid_forget()
+                self.entZDelta.grid_forget()
+                self.rbnMoveUp.grid_forget()
+                self.rbnMoveDown.grid_forget()
 
         z = coordinates[index][2]
         self.lblActCoord.config(text="{0}: {1}: {2}".format(row, col, z))

@@ -1,0 +1,13 @@
+To Do List:
+
+	# Grid labels
+	# Exhaustion conditions
+	# Connected condtitions
+	# Condtitions info button pic
+	- Trig calculation fix for large and up
+	- Field highlighting
+	- Input scrubbing
+	- Temp HP
+	- Max HP
+	- Round/Initiative Tracker
+	# Save file naming and handling

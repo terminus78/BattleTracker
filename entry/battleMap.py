@@ -3,6 +3,7 @@ import random
 import pathlib
 import json
 import os
+from zipfile import ZipFile
 
 import PIL.Image
 from PIL import ImageTk
@@ -20,10 +21,16 @@ from conditionInfo import InfoClass
 
 
 class BattleMap(object):
-    def __init__(self, mapSize, master):
+    def __init__(self, master):
+        self.regFont = ('Papyrus', '14')
+        self.smallFont = ("Papyrus", "9")
+        self.bigFont = ("Papyrus", "16")
         # Window definition
         self.master = master
-        self.mapSize = mapSize
+        with ZipFile(self.master.filename, 'r') as savefile:
+            prefBytes = savefile.read('preferences.json')
+            prefObj = json.loads(prefBytes.decode('utf-8'))
+            self.mapSize = prefObj['mapSize']
         self.mapWin = tk.Toplevel(self.master)
         self.mapWin.title("Battle Map")
         style = ThemedStyle(self.mapWin)
@@ -66,9 +73,15 @@ class BattleMap(object):
         btnRestart.grid(row=0, column=5, sticky='se')
         btnCloseAll = ttk.Button(master=self.topFrame, command=self.master.destroy, text="Close All")
         btnCloseAll.grid(row=0, column=6, sticky='se')
-        self.lblQuote = ttk.Label(master=self.quoteFrame, text="", font=('Papyrus', '12'))
+        self.lblQuote = ttk.Label(master=self.quoteFrame, text="", font=self.regFont)
         self.lblQuote.grid(row=0, column=0, sticky='w', pady=5)
         self.findQuote()
+        '''
+        topGridLabelFrame = ttk.Frame(master=self.bottomFrame)
+        topGridLabelFrame.grid(row=0, column=2)
+        leftGridLabelFrame = ttk.Frame(master=self.bottomFrame)
+        leftGridLabelFrame.grid(row=1, column=1)
+        '''
         gridFrame = ttk.Frame(master=self.bottomFrame)
         gridFrame.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
         self.sideBoard = ttk.Frame(master=self.bottomFrame)
@@ -76,34 +89,49 @@ class BattleMap(object):
         self.sideCount = 0
         self.toolBar = ttk.Frame(master=self.bottomFrame)
         self.toolBar.grid(row=0, column=2, padx=5, pady=10, sticky="nse")
-        moveIconPath = "entry/bin/icons8-circled-down-left-32.png"
-        moveIcon = ImageTk.PhotoImage(image=PIL.Image.open(moveIconPath).resize((20,20)))
-        trigIconPath = "entry/bin/3228996421547464107-128.png"
-        trigIcon = ImageTk.PhotoImage(image=PIL.Image.open(trigIconPath).resize((20,20)))
-        targetIconPath = "entry/bin/11749495271547546487-128.png"
-        targetIcon = ImageTk.PhotoImage(image=PIL.Image.open(targetIconPath).resize((20,20)))
 
         # Image paths
-        allyPath = "entry/bin/allyToken.png"
+        moveIconPath = "entry\\bin\\icons8-circled-down-left-32.png"
+        moveIcon = ImageTk.PhotoImage(image=PIL.Image.open(moveIconPath).resize((20,20)))
+        trigIconPath = "entry\\bin\\3228996421547464107-128.png"
+        trigIcon = ImageTk.PhotoImage(image=PIL.Image.open(trigIconPath).resize((20,20)))
+        targetIconPath = "entry\\bin\\11749495271547546487-128.png"
+        targetIcon = ImageTk.PhotoImage(image=PIL.Image.open(targetIconPath).resize((20,20)))
+        condInfoIconPath = "entry\\bin\\2780604101548336129-128.png"
+        condInfoIcon = ImageTk.PhotoImage(image=PIL.Image.open(condInfoIconPath).resize((20,20)))
+
+        allyPath = "entry\\bin\\allyToken.png"
         self.allyImg = ImageTk.PhotoImage(image=PIL.Image.open(allyPath).resize((15,15)))
-        enemyPath = "entry/bin/enemyToken.png"
+        enemyPath = "entry\\bin\\enemyToken.png"
         self.enemyImg = ImageTk.PhotoImage(image=PIL.Image.open(enemyPath).resize((15,15)))
-        bystanderPath = "entry/bin/bystanderToken.png"
+        bystanderPath = "entry\\bin\\bystanderToken.png"
         self.bystanderImg = ImageTk.PhotoImage(image=PIL.Image.open(bystanderPath).resize((15,15)))
-        deadPath = "entry/bin/deadToken.png"
+        deadPath = "entry\\bin\\deadToken.png"
         self.deadImg = ImageTk.PhotoImage(image=PIL.Image.open(deadPath).resize((15,15)))
         
         self.mapFrames = []
         self.tokenList = []
 
+        # Grid labels
+        for colSpot in range(self.mapSize[1]):
+            lblGridTop = ttk.Label(master=gridFrame, text=colSpot+1, font=self.smallFont)
+            lblGridTop.grid(row=0, column=colSpot+1)
+            gridFrame.columnconfigure(colSpot+1, weight=1, minsize=10)
+
+        for rowSpot in range(self.mapSize[0]):
+            lblGridSide = ttk.Label(master=gridFrame, text=rowSpot+1, font=self.smallFont)
+            lblGridSide.grid(row=rowSpot+1, column=0)
+            gridFrame.rowconfigure(rowSpot+1, weight=1, minsize=10)
+
+        gridFrame.columnconfigure(0, weight=1, minsize=10)
+        gridFrame.rowconfigure(0, weight=1, minsize=10)
+
         # Space frames
         for i in range(self.mapSize[0]):
             self.mapFrames.append([])
-            gridFrame.rowconfigure(i, weight=1, minsize=10)
             for j in range(self.mapSize[1]):
                 self.space = ttk.Frame(master=gridFrame, relief=tk.RAISED, borderwidth=1)
-                self.space.grid(row=i, column=j, sticky='nsew')
-                gridFrame.columnconfigure(j, weight=1, minsize=10)
+                self.space.grid(row=i+1, column=j+1, sticky='nsew')
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.mapFrames[i].append(self.space)
         
@@ -125,19 +153,19 @@ class BattleMap(object):
         self.btnTarget.image = targetIcon
         CreateToolTip(self.btnTarget, text="Target", leftDisp=True)
 
-        self.btnCondInfo = ttk.Button(master=self.toolBar, command=self.showCondInfo, text="Conditions")
+        self.btnCondInfo = ttk.Button(master=self.toolBar, command=self.showCondInfo, image=condInfoIcon)
         self.btnCondInfo.grid(row=3, column=0, sticky='n')
-        #self.btnCondInfo.image = targetIcon
+        self.btnCondInfo.image = condInfoIcon
         CreateToolTip(self.btnCondInfo, text="Condition Info", leftDisp=True)
 
         self.placeTokens()
-    
+
     def initializeTokens(self):
         self.tokenList = []
-        creatureCache = "./entry/bin/creatureCache.json"
-        if os.path.exists(creatureCache) == True:
-            with open(creatureCache, "r") as savefile:
-                creatures = json.load(savefile)
+        with ZipFile(self.master.filename, "r") as savefile:
+            creatBytes = savefile.read('creatures.json')
+            creatStr = creatBytes.decode('utf-8')
+            creatures = json.loads(creatStr)
         for being in creatures.values():
             self.tokenList.append(being)
     
@@ -238,13 +266,14 @@ class BattleMap(object):
         for being in self.tokenList:
             name = being["name"]
             newTokenDict[name] = being
-        creatureCache = "./entry/bin/creatureCache.json"
-        if os.path.exists(creatureCache) == False:
-            with open(creatureCache, "w") as savefile:
-                json.dump(newTokenDict, savefile, indent=4)
-        else:
-            with open(creatureCache, "w") as savefile:
-                json.dump(newTokenDict, savefile, indent=4)
+        prefDict = {
+            "mapSize": self.mapSize
+        }
+        prefJSON = json.dumps(prefDict, indent=4)
+        with ZipFile(self.master.filename, "w") as savefile:
+            creatJSON = json.dumps(newTokenDict, indent=4)
+            savefile.writestr('preferences.json', prefJSON)
+            savefile.writestr('creatures.json', creatJSON)
 
     def clearMap(self):
         for being in self.tokenList:
@@ -258,7 +287,7 @@ class BattleMap(object):
         self.em.moveWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.em.tokenList): self.refreshMap(tokens=stuff, origWin='em'))
 
     def inputCreatureWindow(self):
-        self.inWin = StatCollector(self.master)
+        self.inWin = StatCollector(self.master, self.mapSize)
 
     def moveToken(self):
         self.em.moveToken([self.tokenList, self.mapSize])
@@ -273,13 +302,17 @@ class BattleMap(object):
 
     def fullReset(self):
         emptyDict = {}
-        creatureCache = "./entry/bin/creatureCache.json"
         makeSure = messagebox.askokcancel("Warning", "Confirm request to delete ALL tokens and FULL RESET MAP.")
         if makeSure:
-            if os.path.exists(creatureCache) == True:
-                with open(creatureCache, "w") as savefile:
-                    json.dump(emptyDict, savefile, indent=4)
-                self.refreshMap(reset=True)
+            prefDict = {
+                "mapSize": self.mapSize
+            }
+            prefJSON = json.dumps(prefDict, indent=4)
+            with ZipFile(self.master.filename, "w") as savefile:
+                creatJSON = json.dumps(emptyDict)
+                savefile.writestr('preferences.json', prefJSON)
+                savefile.writestr('creatures.json', creatJSON)
+            self.refreshMap(reset=True)
 
     def findQuote(self):
         lastIndex = len(self.quoter.quoteList) - 1

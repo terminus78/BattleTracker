@@ -1,6 +1,7 @@
 import pathlib
 import json
 import os
+from zipfile import ZipFile
 
 import tkinter as tk
 from tkinter import ttk, font
@@ -10,8 +11,10 @@ papyrusFont = ('Papyrus', '14')
 
 
 class StatCollector(object):
-    def __init__(self, master):
-        self.rangeWin = tk.Toplevel(master)
+    def __init__(self, master, mapSize):
+        self.master = master
+        self.mapSize = mapSize
+        self.rangeWin = tk.Toplevel(self.master)
         self.rangeWin.title("Range Calculator")
         style = ThemedStyle(self.rangeWin)
         style.theme_use("equilux")
@@ -141,13 +144,15 @@ class StatCollector(object):
         self.rangeWin.destroy()
 
     def writeFile(self):
-        creatureCache = "./entry/bin/creatureCache.json"
-        if os.path.exists(creatureCache) == False:
-            with open(creatureCache, "w") as savefile:
-                json.dump(self.stats, savefile, indent=4)
-        else:
-            with open(creatureCache, "r") as savefile:
-                readObj = json.load(savefile)
-                readObj.update(self.stats)
-            with open(creatureCache, "w") as savefile:
-                json.dump(readObj, savefile, indent=4)
+        prefDict = {
+            "mapSize": self.mapSize
+        }
+        prefJSON = json.dumps(prefDict, indent=4)
+        with ZipFile(self.master.filename, "r") as savefile:
+            readBytes = savefile.read('creatures.json')
+            readObj = json.loads(readBytes.decode('utf-8'))
+            readObj.update(self.stats)
+        with ZipFile(self.master.filename, "w") as savefile:
+            readJSON = json.dumps(readObj, indent=4)
+            savefile.writestr('preferences.json', prefJSON)
+            savefile.writestr('creatures.json', readJSON)
