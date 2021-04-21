@@ -4,6 +4,7 @@ To Do List:
 	# Exhaustion conditions
 	# Connected condtitions
 	# Condtitions info button pic
+	# Grid relative distance calculation
 	- Trig calculation fix for large and up
 	- Field highlighting
 	- Input scrubbing
