@@ -7,8 +7,9 @@ To Do List:
 	# Grid relative distance calculation
 	- Trig calculation fix for large and up
 	- Field highlighting
-	- Input scrubbing
-	- Temp HP
-	- Max HP
+	#T Input scrubbing
+	# Temp HP
+	# Max HP
 	- Round/Initiative Tracker
 	# Save file naming and handling
+	- Collisions

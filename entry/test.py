@@ -188,6 +188,7 @@ with ZipFile("H:\\Projects\\Programs\\Calculator\\First Battle.brpg", "w") as sa
     prefJSON = json.dumps(prefDict, indent=4)
     savefile.writestr('preferences.json', prefJSON)
     savefile.writestr('creatures.json', testJSON)
-'''
+
 var1, var2, var3 = [1, 2, 3]
 print("{0} {1} {2}".format(var1, var2, var3))
+'''

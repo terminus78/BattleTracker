@@ -33,6 +33,21 @@ class mainWindow(object):
         self.master = master
         self.countdown = 3
         self.master.cwd = os.getcwd()
+        #print(self.master.cwd)
+        self.cacheLoc = self.master.cwd + "\\entry\\bin\\cache.json"
+        #print(self.cacheLoc)
+        try:
+            with open(self.cacheLoc, 'r') as cachefile:
+                self.cacheInfo = json.load(cachefile)
+        except IOError:
+            with open(self.cacheLoc, 'w') as cachefile:
+                defaultLoc = {
+                    'lastDir': 'C:\\'
+                }
+                json.dump(defaultLoc, cachefile, indent=4)
+            with open(self.cacheLoc, 'r') as cachefile:
+                self.cacheInfo = json.load(cachefile)
+
         self.topFrame = ttk.Frame(master=self.master)
         self.topFrame.grid(row=0, column=0)
         self.bottomFrame = ttk.Frame(master=self.master)
@@ -41,14 +56,6 @@ class mainWindow(object):
         self.warningFrame.grid(row=2, column=0)
         self.lblGreeting = ttk.Label(master=self.topFrame, text="Welcome to the BattleTracker", font=papyrusFont)
         self.lblGreeting.grid(row=0, column=0)
-        '''
-        self.lblOpening = ttk.Label(master=self.master, text="", font=papyrusFont)
-        self.lblOpening.grid(row=1, column=0)
-        self.lblWarning = ttk.Label(master=self.master, text="Warning: Closing this window will close the entire program")
-        self.lblWarning.grid(row=3, column=0)
-        self.btnMap = ttk.Button(master, command=self.showMap, text="Re-open Map")
-        self.delayOpen()
-        '''
         self.btnNewFile = ttk.Button(master=self.bottomFrame, text="New Game", command=self.newFile)
         self.btnNewFile.grid(row=0, column=0, sticky='e')
         self.btnOpenExisting = ttk.Button(master=self.bottomFrame, text="Open Existing", command=self.openFile)
@@ -97,7 +104,7 @@ class mainWindow(object):
         lblSelectFileLoc = ttk.Label(master=fileFrame, text="Select file location", font=papyrusFont)
         lblSelectFileLoc.grid(row=0, column=0, sticky='w')
         self.entFileLoc = ttk.Entry(master=fileFrame, width=50)
-        self.entFileLoc.insert(0, self.master.cwd)
+        self.entFileLoc.insert(0, self.cacheInfo['lastDir'])
         self.entFileLoc.grid(row=1, column=0, sticky='w')
         btnLookUpFile = ttk.Button(master=fileFrame, text="...", width=2, command=self.lookUpCommand)
         btnLookUpFile.grid(row=1, column=1, sticky='w')
@@ -117,11 +124,14 @@ class mainWindow(object):
 
     def startNewBattle(self):
         fileLocation = self.entFileLoc.get()
-        gameName = self.entNewFilename.get()
-        if fileLocation == "" or gameName == "":
+        if os.path.isdir(fileLocation) == False:
+            messagebox.showerror("New Game", "File location does not exist or your access level requires elevation.")
+            return
+        self.master.gameName = self.entNewFilename.get()
+        if fileLocation == "" or self.master.gameName == "":
             messagebox.showwarning("New Game", "File location and name fields cannot be empty.")
             return
-        self.master.filename = fileLocation + "\\" + gameName + ".brpg"
+        self.master.filename = fileLocation + "\\" + self.master.gameName + ".brpg"
 
         selectedMap = self.cbxMapSizes.get()
         if selectedMap == "Tiny (8 X 12)":
@@ -136,13 +146,19 @@ class mainWindow(object):
             messagebox.showwarning("New Game", "Map size must be selected.")
             return
 
-        prefDict = {
-            "mapSize": mapSize
+        battleDict = {
+            "mapSize": mapSize,
+            "round": 0
         }
-        prefJSON = json.dumps(prefDict, indent=4)
+        battleJSON = json.dumps(battleDict, indent=4)
         with ZipFile(self.master.filename, 'w') as brpgFile:
-            brpgFile.writestr("preferences.json", prefJSON)
+            brpgFile.writestr("battleInfo.json", battleJSON)
             brpgFile.writestr("creatures.json", "{}")
+        saveDir = os.path.dirname(self.master.filename)
+        if saveDir != self.cacheInfo['lastDir']:
+            self.cacheInfo['lastDir'] = saveDir
+            with open(self.cacheLoc, 'w') as cachefile:
+                json.dump(self.cacheInfo, cachefile, indent=4)
         self.mapWin = BattleMap(self.master)
 
     def lookUpCommand(self):
@@ -151,8 +167,17 @@ class mainWindow(object):
         self.entFileLoc.insert(0, self.master.filedir)
 
     def openFile(self):
-        self.master.filename = filedialog.askopenfilename(initialdir='C:\\', title='Select File', filetypes=(('BRPG files', '*.brpg'),))
+        self.master.filename = filedialog.askopenfilename(initialdir=self.cacheInfo['lastDir'], title='Select File', filetypes=(('BRPG files', '*.brpg'),))
         if type(self.master.filename) is str and self.master.filename != "":
+            if os.path.exists(self.master.filename) == False:
+                messagebox.showerror("Start Game", "File location does not exist or your access level requires elevation.")
+            saveDir = os.path.dirname(self.master.filename)
+            if saveDir != self.cacheInfo['lastDir']:
+                self.cacheInfo['lastDir'] = saveDir
+                with open(self.cacheLoc, 'w') as cachefile:
+                    json.dump(self.cacheInfo, cachefile, indent=4)
+            gameFile = os.path.split(self.master.filename)[-1]
+            self.master.gameName = gameFile.split('.')[0]
             self.mapWin = BattleMap(self.master)
 
 battleWin = mainWindow(window)

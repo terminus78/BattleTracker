@@ -4,16 +4,19 @@ import os
 from zipfile import ZipFile
 
 import tkinter as tk
-from tkinter import ttk, font
+from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
+
+from dice import DiceRoller
 
 papyrusFont = ('Papyrus', '14')
 
 
 class StatCollector(object):
-    def __init__(self, master, mapSize):
+    def __init__(self, master, mapSize, roundNum):
         self.master = master
         self.mapSize = mapSize
+        self.round = roundNum
         self.rangeWin = tk.Toplevel(self.master)
         self.rangeWin.title("Range Calculator")
         style = ThemedStyle(self.rangeWin)
@@ -21,6 +24,8 @@ class StatCollector(object):
         bg = style.lookup('TLabel', 'background')
         fg = style.lookup('TLabel', 'foreground')
         self.rangeWin.configure(bg=style.lookup('TLabel', 'background'))
+        self.dice = DiceRoller()
+
         upperFrame = ttk.Frame(master=self.rangeWin)
         lowerFrame = ttk.Frame(master=self.rangeWin)
         underFrame = ttk.Frame(master=self.rangeWin)
@@ -56,10 +61,14 @@ class StatCollector(object):
         lblName.grid(row=0, column=0, sticky="w")
         self.entName.grid(row=0, column=1, sticky="e")
 
-        lblHP = ttk.Label(master=frame1_2, text="HP", font=papyrusFont)
+        lblHP = ttk.Label(master=frame1_2, text="Max HP", font=papyrusFont)
         self.entHP = ttk.Entry(master=frame1_2, width=8)
         lblHP.grid(row=0, column=0, sticky="w")
         self.entHP.grid(row=0, column=1, sticky="e")
+        lblTempHP = ttk.Label(master=frame1_2, text="Temp HP", font=papyrusFont)
+        self.entTempHP = ttk.Entry(master=frame1_2, width=8)
+        lblTempHP.grid(row=1, column=0, sticky="w")
+        self.entTempHP.grid(row=1, column=1, sticky="e")
 
         '''
         lblCoord = ttk.Label(master=frame2_1, text="Coordinate", font=papyrusFont)
@@ -93,7 +102,7 @@ class StatCollector(object):
         rbnBystander.grid(row=0, column=2, sticky="w")
         rbnDead.grid(row=0, column=3, sticky="w")
 
-        lblHeight = ttk.Label(master=frame2_2, text="Height (Blocks)", font=papyrusFont)
+        lblHeight = ttk.Label(master=frame2_2, text="Height (Feet)", font=papyrusFont)
         self.entHeight = ttk.Entry(master=frame2_2, width=8)
         lblHeight.grid(row=0, column=0, sticky="w")
         self.entHeight.grid(row=0, column=1, sticky="e")
@@ -117,6 +126,13 @@ class StatCollector(object):
         rbnHuge.grid(row=2, column=0, sticky="w")
         rbnGargantuan.grid(row=2, column=0, sticky="w")
 
+        lblInit = ttk.Label(master=frame3_2, text="Initiative", font=papyrusFont)
+        lblInit.grid(row=0, column=0, sticky='e')
+        self.entInit = ttk.Entry(master=frame3_2, width=8)
+        self.entInit.grid(row=0, column=1, sticky='w')
+        btnRollInit = ttk.Button(master=frame3_2, text="Roll", command=self.rolldice)
+        btnRollInit.grid(row=0, column=2, sticky='w')
+
         lblNotes = ttk.Label(master=lowerFrame, text="Notes", font=papyrusFont)
         self.txtNotes = tk.Text(master=lowerFrame, height=5, width=52)
         self.txtNotes.configure(font=("Papyrus", "12"))
@@ -127,32 +143,116 @@ class StatCollector(object):
         btnSubmit.grid(row=0, column=0)
 
     def submit(self):
+        specialChar = ['[','@','_','!','#','$','%','^','&','*','(',')','<','>','?','/','\\','|','}','{','~',':',']']
         nameGet = self.entName.get()
+        maxHPGet = self.entHP.get()
+        tempHPGet = self.entTempHP.get()
+        foeFriendGet = self.radFoeFriend.get()
+        heightGet = self.entHeight.get()
+        sizeGet = self.radSize.get()
+        initGet = self.entInit.get()
+        notesGet = self.txtNotes.get(1.0, tk.END)
+        if nameGet == "":
+            messagebox.showinfo("Character Input", "Must input a name.")
+            return
+        for i in range(len(specialChar)):
+            if specialChar[i] in nameGet:
+                messagebox.showwarning("Character Input", "Name cannot contain special characters.")
+                return
+        if foeFriendGet == "":
+            messagebox.showwarning("Character Input", "Must select a strategic status.")
+            return
+        if sizeGet == "":
+            messagebox.showwarning("Character Input", "Must select a size.")
+            return
+        if initGet == "":
+            messagebox.showwarning("Character Input", "Initiative cannot be undefined.")
+            return
+        else:
+            try:
+                initFlt = float(initGet)
+            except ValueError:
+                messagebox.showwarning("Character Input", "Initiative must be a number.")
+                return
+            except TypeError:
+                messagebox.showwarning("Character Input", "Initiative must be a number.")
+                return
+        '''
+        if notesGet == "Easter Egg 1234 ABC":
+            messagebox.showinfo("Character Input", "In the deepest dungeon of the darkest realm,\nYou will find the creature of brightest light and darkest story.\nIf only the heroes could brave true horror and near insurmountable doom,\nThey might find all the hope they would ever need.")
+            return
+        '''
+        try:
+            if maxHPGet != "":
+                maxHPInt = int(maxHPGet)
+                if maxHPInt <= 0:
+                    messagebox.showinfo("Character Input", "Max HP must be a positive whole number.")
+                    return
+            else:
+                messagebox.showinfo("Character Input", "Max HP cannot be undefined.")
+                return
+            if tempHPGet != "":
+                tempHPInt = int(maxHPGet)
+                if tempHPInt < 0:
+                    messagebox.showinfo("Character Input", "Temp HP must be a positive whole number or zero.")
+                    return
+            else:
+                tempHPInt = 0
+        except ValueError:
+            messagebox.showwarning("Character Input", "Max HP must be a positive whole number. If entered, Temp HP must be a positive whole number or zero.")
+            return
+        except TypeError:
+            messagebox.showwarning("Character Input", "Max HP must be a positive whole number. If entered, Temp HP must be a positive whole number or zero.")
+            return
+        try:
+            if heightGet == "":
+                messagebox.showwarning("Character Input", "Height cannot be undefined.")
+                return
+            heightFlt = float(heightGet)
+            if heightFlt < 0:
+                messagebox.showinfo("Character Input", "Height must be a positive number or zero.")
+                return
+        except ValueError:
+            messagebox.showwarning("Character Input", "Height must be a positive number or zero.")
+            return
+        except TypeError:
+            messagebox.showwarning("Character Input", "Height must be a positive number or zero.")
+            return
+
         self.stats = {
             nameGet:{
                 "name": nameGet,
-                "hP": self.entHP.get(),
-                "type": self.radFoeFriend.get(),
-                "height": self.entHeight.get(),
-                "size": self.radSize.get(),
+                "maxHP": maxHPInt,
+                "tempHP": tempHPInt,
+                "currentHP": maxHPInt,
+                "type": foeFriendGet,
+                "height": heightFlt,
+                "size": sizeGet,
                 "coordinate": ["", "", ""],
                 "condition": ["normal"],
-                "notes": self.txtNotes.get(1.0, tk.END)
+                "initiative": initFlt,
+                "notes": notesGet
             }
         }
         self.writeFile()
         self.rangeWin.destroy()
 
     def writeFile(self):
-        prefDict = {
-            "mapSize": self.mapSize
+        battleDict = {
+            "mapSize": self.mapSize,
+            "round": self.round
         }
-        prefJSON = json.dumps(prefDict, indent=4)
+        battleJSON = json.dumps(battleDict, indent=4)
         with ZipFile(self.master.filename, "r") as savefile:
             readBytes = savefile.read('creatures.json')
             readObj = json.loads(readBytes.decode('utf-8'))
             readObj.update(self.stats)
         with ZipFile(self.master.filename, "w") as savefile:
             readJSON = json.dumps(readObj, indent=4)
-            savefile.writestr('preferences.json', prefJSON)
+            savefile.writestr('battleInfo.json', battleJSON)
             savefile.writestr('creatures.json', readJSON)
+
+    def rolldice(self):
+        dieFace = self.dice.roll()[0]
+        self.entInit.delete(0, tk.END)
+        self.entInit.insert(0, str(dieFace))

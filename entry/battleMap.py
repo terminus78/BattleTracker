@@ -22,35 +22,40 @@ from conditionInfo import InfoClass
 
 class BattleMap(object):
     def __init__(self, master):
+        self.master = master
         self.regFont = ('Papyrus', '14')
         self.smallFont = ("Papyrus", "9")
         self.bigFont = ("Papyrus", "16")
+        gameTitle = self.master.gameName
+        if len(gameTitle) > 32:
+            gameTitle = gameTitle[0:31] + "..."
         # Window definition
-        self.master = master
         with ZipFile(self.master.filename, 'r') as savefile:
-            prefBytes = savefile.read('preferences.json')
-            prefObj = json.loads(prefBytes.decode('utf-8'))
-            self.mapSize = prefObj['mapSize']
+            battleBytes = savefile.read('battleInfo.json')
+            battleObj = json.loads(battleBytes.decode('utf-8'))
+            self.mapSize = battleObj['mapSize']
+            self.round = battleObj['round']
         self.mapWin = tk.Toplevel(self.master)
-        self.mapWin.title("Battle Map")
+        self.mapWin.title(f"Battle Map | {gameTitle}")
         style = ThemedStyle(self.mapWin)
         style.theme_use("equilux")
         bg = style.lookup('TLabel', 'background')
         fg = style.lookup('TLabel', 'foreground')
         self.mapWin.configure(bg=style.lookup('TLabel', 'background'))
-        self.topFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge')
+        self.topFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge',)# bg='dark green')
         self.topFrame.pack(side='top', fill='x')
         self.topFrame.columnconfigure(0, weight=1)
         self.topFrame.rowconfigure(0, minsize=100)
         self.quoteFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge')
         self.quoteFrame.pack(side='top', fill='x')
         self.quoteFrame.columnconfigure(0, minsize=20)
-        self.bottomFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge')
+        self.bottomFrame = ttk.Frame(master=self.mapWin, borderwidth=2, relief='ridge')#, bg='dark green')
         self.bottomFrame.pack(side='top', fill='both', expand=True)
-        self.bottomFrame.columnconfigure(0, minsize=50)
-        self.bottomFrame.columnconfigure(1, weight=1, minsize=100)
-        self.bottomFrame.columnconfigure(2, minsize=50)
-        self.bottomFrame.rowconfigure(0, weight=1, minsize=100)
+        self.bottomFrame.columnconfigure(0, minsize=100)
+        self.bottomFrame.columnconfigure(1, weight=1, minsize=200)
+        self.bottomFrame.columnconfigure(2, minsize=150)
+        self.bottomFrame.columnconfigure(3, minsize=50)
+        self.bottomFrame.rowconfigure(0, weight=1, minsize=200)
         self.em = EventManager(self.mapWin)
         self.calculator = Calculator(self.mapWin)
         self.quoter = Quote()
@@ -59,7 +64,7 @@ class BattleMap(object):
         self.info = InfoClass(self.mapWin)
 
         # Board Setup
-        lblMap = ttk.Label(master=self.topFrame, text="BattleMap", font=('Papyrus', '16'))
+        lblMap = ttk.Label(master=self.topFrame, text=gameTitle, font=('Papyrus', '16'))
         lblMap.grid(row=0, column=0)
         btnSave = ttk.Button(master=self.topFrame, command=self.saveGame, text="Save")
         btnSave.grid(row=0, column=1, sticky='se')
@@ -82,13 +87,15 @@ class BattleMap(object):
         leftGridLabelFrame = ttk.Frame(master=self.bottomFrame)
         leftGridLabelFrame.grid(row=1, column=1)
         '''
-        gridFrame = ttk.Frame(master=self.bottomFrame)
-        gridFrame.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
         self.sideBoard = ttk.Frame(master=self.bottomFrame)
-        self.sideBoard.grid(row=0, column=0, padx=5, pady=10, sticky="nsw")
         self.sideCount = 0
+        gridFrame = ttk.Frame(master=self.bottomFrame, borderwidth=2, relief='ridge')
+        self.roundBar = ttk.Frame(master=self.bottomFrame)
         self.toolBar = ttk.Frame(master=self.bottomFrame)
-        self.toolBar.grid(row=0, column=2, padx=5, pady=10, sticky="nse")
+        self.sideBoard.grid(row=0, column=0, padx=5, pady=10, sticky="nw")
+        gridFrame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+        self.roundBar.grid(row=0, column=2, padx=5, pady=10, sticky="nw")
+        self.toolBar.grid(row=0, column=3, padx=5, pady=10, sticky="nw")
 
         # Image paths
         moveIconPath = "entry\\bin\\icons8-circled-down-left-32.png"
@@ -116,15 +123,15 @@ class BattleMap(object):
         for colSpot in range(self.mapSize[1]):
             lblGridTop = ttk.Label(master=gridFrame, text=colSpot+1, font=self.smallFont)
             lblGridTop.grid(row=0, column=colSpot+1)
-            gridFrame.columnconfigure(colSpot+1, weight=1, minsize=10)
+            gridFrame.columnconfigure(colSpot+1, weight=1, minsize=20)
 
         for rowSpot in range(self.mapSize[0]):
             lblGridSide = ttk.Label(master=gridFrame, text=rowSpot+1, font=self.smallFont)
             lblGridSide.grid(row=rowSpot+1, column=0)
-            gridFrame.rowconfigure(rowSpot+1, weight=1, minsize=10)
+            gridFrame.rowconfigure(rowSpot+1, weight=1, minsize=20)
 
-        gridFrame.columnconfigure(0, weight=1, minsize=10)
-        gridFrame.rowconfigure(0, weight=1, minsize=10)
+        gridFrame.columnconfigure(0, weight=1, minsize=20)
+        gridFrame.rowconfigure(0, weight=1, minsize=20)
 
         # Space frames
         for i in range(self.mapSize[0]):
@@ -136,6 +143,14 @@ class BattleMap(object):
                 self.mapFrames[i].append(self.space)
         
         self.initializeTokens()
+
+        # Roundbar
+        lblRoundTitle = ttk.Label(master=self.roundBar, text="Round: ", font=self.bigFont)
+        lblRoundTitle.grid(row=0, column=0, sticky='e')
+        self.lblRound = ttk.Label(master=self.roundBar, text=self.round, font=self.bigFont, borderwidth=1, relief=tk.RAISED, width=3, anchor=tk.CENTER)
+        self.lblRound.grid(row=0, column=1, sticky='w')
+        self.initiativeFrame = ttk.Frame(master=self.roundBar)
+        self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='e')
 
         # Toolbar Buttons
         self.btnMove = ttk.Button(master=self.toolBar, command=self.moveToken, image=moveIcon)
@@ -170,6 +185,7 @@ class BattleMap(object):
             self.tokenList.append(being)
     
     def placeTokens(self):
+        initiativeHolder = {}
         for being in self.tokenList:
             tokenType = being["type"]
             if tokenType == "ally":
@@ -195,6 +211,8 @@ class BattleMap(object):
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
                 CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
                 spaceTaken = 1
+                #if being['initiative'] != -math.inf
+                #initiativeHolder[being['name']] = being['initiative']
                 if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
                     if being["size"] == "large":
                         spaceNeed = 4
@@ -266,13 +284,14 @@ class BattleMap(object):
         for being in self.tokenList:
             name = being["name"]
             newTokenDict[name] = being
-        prefDict = {
-            "mapSize": self.mapSize
+        battleDict = {
+            "mapSize": self.mapSize,
+            "round": self.round
         }
-        prefJSON = json.dumps(prefDict, indent=4)
+        battleJSON = json.dumps(battleDict, indent=4)
         with ZipFile(self.master.filename, "w") as savefile:
             creatJSON = json.dumps(newTokenDict, indent=4)
-            savefile.writestr('preferences.json', prefJSON)
+            savefile.writestr('battleInfo.json', battleJSON)
             savefile.writestr('creatures.json', creatJSON)
 
     def clearMap(self):
@@ -287,7 +306,7 @@ class BattleMap(object):
         self.em.moveWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.em.tokenList): self.refreshMap(tokens=stuff, origWin='em'))
 
     def inputCreatureWindow(self):
-        self.inWin = StatCollector(self.master, self.mapSize)
+        self.inWin = StatCollector(self.master, self.mapSize, self.round)
 
     def moveToken(self):
         self.em.moveToken([self.tokenList, self.mapSize])
@@ -302,15 +321,16 @@ class BattleMap(object):
 
     def fullReset(self):
         emptyDict = {}
-        makeSure = messagebox.askokcancel("Warning", "Confirm request to delete ALL tokens and FULL RESET MAP.")
+        makeSure = messagebox.askokcancel("Warning", "Confirm request to delete ALL tokens and FULL RESET MAP.\nIf confirmed, this action cannot be undone.")
         if makeSure:
-            prefDict = {
-                "mapSize": self.mapSize
+            battleDict = {
+                "mapSize": self.mapSize,
+                "round": 0
             }
-            prefJSON = json.dumps(prefDict, indent=4)
+            battleJSON = json.dumps(battleDict, indent=4)
             with ZipFile(self.master.filename, "w") as savefile:
                 creatJSON = json.dumps(emptyDict)
-                savefile.writestr('preferences.json', prefJSON)
+                savefile.writestr('battleInfo.json', battleJSON)
                 savefile.writestr('creatures.json', creatJSON)
             self.refreshMap(reset=True)
 

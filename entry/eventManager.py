@@ -201,7 +201,7 @@ class EventManager():
                     deltaLR = int(deltaLRStr)
                     deltaUD = int(deltaUDStr)
                 except ValueError:
-                    messagebox.showwarning("Warning", "Move fields must be integers!")
+                    messagebox.showwarning("Warning", "Move fields must be whole numbers!")
                     return
                 '''
                 try:
@@ -262,7 +262,7 @@ class EventManager():
                     newZ = int(self.entZCoord.get())
                     newCoord = [newRow, newCol, newZ]
                 except ValueError:
-                    messagebox.showwarning("Warning", "Set Coordinate fields must be integers!")
+                    messagebox.showwarning("Warning", "Set Coordinate fields must be whole numbers!")
                     return
                 if newCoord[0] > self.mapSize[0] - 1 or newCoord[0] < 0:
                     messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")

@@ -45,64 +45,85 @@ class Target():
 
         lblStaticName = ttk.Label(self.statFrame, text="Name: ", font=self.regFont)
         lblStaticName.grid(row=0, column=0, sticky='nw')
-        lblStaticHP = ttk.Label(self.statFrame, text="HP: ", font=self.regFont)
-        lblStaticHP.grid(row=1, column=0, sticky='nw')
+        lblStaticMaxHP = ttk.Label(self.statFrame, text="Max HP: ", font=self.regFont)
+        lblStaticMaxHP.grid(row=1, column=0, sticky='nw')
+        lblStaticTempHP = ttk.Label(self.statFrame, text="Max HP: ", font=self.regFont)
+        lblStaticTempHP.grid(row=2, column=0, sticky='nw')
+        lblStaticHP = ttk.Label(self.statFrame, text="Max HP: ", font=self.regFont)
+        lblStaticHP.grid(row=3, column=0, sticky='nw')
         lblStaticType = ttk.Label(self.statFrame, text="Type: ", font=self.regFont)
-        lblStaticType.grid(row=2, column=0, sticky='nw')
+        lblStaticType.grid(row=4, column=0, sticky='nw')
         lblStaticHeight = ttk.Label(self.statFrame, text="Height: ", font=self.regFont)
-        lblStaticHeight.grid(row=3, column=0, sticky='nw')
+        lblStaticHeight.grid(row=5, column=0, sticky='nw')
         lblStaticSize = ttk.Label(self.statFrame, text="Size: ", font=self.regFont)
-        lblStaticSize.grid(row=4, column=0, sticky='nw')
+        lblStaticSize.grid(row=6, column=0, sticky='nw')
         lblStaticCoord = ttk.Label(self.statFrame, text="Coordinate: ", font=self.regFont)
-        lblStaticCoord.grid(row=5, column=0, sticky='nw')
+        lblStaticCoord.grid(row=7, column=0, sticky='nw')
         lblStaticCondition = ttk.Label(self.statFrame, text="Condition: ", font=self.regFont)
-        lblStaticCondition.grid(row=6, column=0, sticky='nw')
+        lblStaticCondition.grid(row=8, column=0, sticky='nw')
         lblStaticNotes = ttk.Label(self.statFrame, text="Notes: ", font=self.regFont)
-        lblStaticNotes.grid(row=7, column=0, sticky='nw')
+        lblStaticNotes.grid(row=9, column=0, sticky='nw')
 
         self.lblActName = ttk.Label(self.statFrame, text=" ", font=self.regFont)
         self.lblActName.grid(row=0, column=1, sticky='nw')
+        self.lblActMaxHP = ttk.Label(self.statFrame, text=" ", font=self.regFont)
+        self.lblActMaxHP.grid(row=1, column=1, sticky='nw')
+        self.lblActTempHP = ttk.Label(self.statFrame, text=" ", font=self.regFont)
+        self.lblActTempHP.grid(row=2, column=1, sticky='nw')
         self.lblActHP = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActHP.grid(row=1, column=1, sticky='nw')
+        self.lblActHP.grid(row=3, column=1, sticky='nw')
         self.lblActType = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActType.grid(row=2, column=1, sticky='nw')
+        self.lblActType.grid(row=4, column=1, sticky='nw')
         self.lblActHeight = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActHeight.grid(row=3, column=1, sticky='nw')
+        self.lblActHeight.grid(row=5, column=1, sticky='nw')
         self.lblActSize = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActSize.grid(row=4, column=1, sticky='nw')
+        self.lblActSize.grid(row=6, column=1, sticky='nw')
         self.lblActCoord = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActCoord.grid(row=5, column=1, sticky='nw')
+        self.lblActCoord.grid(row=7, column=1, sticky='nw')
         self.lblActCondition = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActCondition.grid(row=6, column=1, sticky='nw')
+        self.lblActCondition.grid(row=8, column=1, sticky='nw')
         self.lblActNotes = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActNotes.grid(row=7, column=1, sticky='nw')
+        self.lblActNotes.grid(row=9, column=1, sticky='nw')
 
         lblChangeName = ttk.Label(master=self.actionFrame, text="Change Name", font=self.regFont)
         lblChangeName.grid(row=0, column=0, sticky='nw')
         self.entChangeName = ttk.Entry(master=self.actionFrame, width=27)
         self.entChangeName.grid(row=0, column=1, sticky='nw')
 
-        lblChangeHP = ttk.Label(master=self.actionFrame, text="Change HP", font=self.regFont)
-        lblChangeHP.grid(row=1, column=0, sticky='nw')
+        lblChangeMaxHP = ttk.Label(master=self.actionFrame, text="Change Max HP", font=self.regFont)
+        lblChangeMaxHP.grid(row=1, column=0, sticky='nw')
+        self.entNewMaxHP = ttk.Entry(master=self.actionFrame, width=27)
+        self.entNewMaxHP.grid(row=1, column=1, sticky='nw')
+        lblChangeTempHP = ttk.Label(master=self.actionFrame, text="Set Temp HP", font=self.regFont)
+        lblChangeTempHP.grid(row=2, column=0, sticky='nw')
+        self.entSetTempHP = ttk.Entry(master=self.actionFrame, width=27)
+        self.entSetTempHP.grid(row=2, column=1, sticky='nw')
+        self.setTempHP = tk.StringVar()
+        rbnSetTHP = ttk.Radiobutton(master=self.actionFrame, text="Set", variable=self.setTempHP, value='set')
+        rbnSetTHP.grid(row=2, column=2, sticky='nw')
+        rbnRemoveTHP = ttk.Radiobutton(master=self.actionFrame, text="Remove", variable=self.setTempHP, value='remove')
+        rbnRemoveTHP.grid(row=2, column=3, sticky='nw')
+        lblChangeHP = ttk.Label(master=self.actionFrame, text="Heal/Damage HP", font=self.regFont)
+        lblChangeHP.grid(row=3, column=0, sticky='nw')
         self.entHPDelta = ttk.Entry(master=self.actionFrame, width=27)
-        self.entHPDelta.grid(row=1, column=1, sticky='nw')
+        self.entHPDelta.grid(row=3, column=1, sticky='nw')
         self.healHurt = tk.StringVar()
         rbnHeal = ttk.Radiobutton(master=self.actionFrame, text="Heal", variable=self.healHurt, value='heal')
-        rbnHeal.grid(row=1, column=2, sticky='nw')
+        rbnHeal.grid(row=3, column=2, sticky='nw')
         rbnDamage = ttk.Radiobutton(master=self.actionFrame, text="Damage", variable=self.healHurt, value='damage')
-        rbnDamage.grid(row=1, column=3, sticky='nw')
+        rbnDamage.grid(row=3, column=3, sticky='nw')
 
         lblChangeType = ttk.Label(master=self.actionFrame, text="Change Type", font=self.regFont)
-        lblChangeType.grid(row=2, column=0, sticky='nw')
+        lblChangeType.grid(row=4, column=0, sticky='nw')
         self.type = tk.StringVar()
         self.rbnAlly = ttk.Radiobutton(master=self.actionFrame, text="Ally", variable= self.type, value="ally")
-        self.rbnAlly.grid(row=2, column=2, sticky='nw')
+        self.rbnAlly.grid(row=4, column=2, sticky='nw')
         self.rbnEnemy = ttk.Radiobutton(master=self.actionFrame, text="Enemy", variable= self.type, value="enemy")
-        self.rbnEnemy.grid(row=2, column=3, sticky='nw')
+        self.rbnEnemy.grid(row=4, column=3, sticky='nw')
         self.rbnBystander = ttk.Radiobutton(master=self.actionFrame, text="Bystander", variable= self.type, value="bystander")
-        self.rbnBystander.grid(row=3, column=2, sticky='nw')
+        self.rbnBystander.grid(row=5, column=2, sticky='nw')
         self.rbnDead = ttk.Radiobutton(master=self.actionFrame, text="Dead", variable= self.type, value="dead")
-        self.rbnDead.grid(row=3, column=3, sticky='nw')
+        self.rbnDead.grid(row=5, column=3, sticky='nw')
 
         '''
         lblMove = ttk.Label(master=self.actionFrame, text="Move Target", font=self.regFont)
@@ -118,7 +139,7 @@ class Target():
         '''
 
         lblChangeCondition = ttk.Label(master=self.actionFrame, text="Change Condition", font=self.regFont)
-        lblChangeCondition.grid(row=5, column=0, sticky='nw')
+        lblChangeCondition.grid(row=6, column=0, sticky='nw')
         self.condNormal = tk.IntVar()
         self.condBlind = tk.IntVar()
         self.condCharmed = tk.IntVar()
@@ -135,49 +156,49 @@ class Target():
         self.condStunned = tk.IntVar()
         self.condUnconscious = tk.IntVar()
         self.cbnNormal = ttk.Checkbutton(master=self.actionFrame, text="Normal", variable=self.condNormal, command=self.onOffButtons)
-        self.cbnNormal.grid(row=5, column=2, columnspan=2,sticky='nw')
+        self.cbnNormal.grid(row=6, column=2, columnspan=2,sticky='nw')
         self.cbnBlind = ttk.Checkbutton(master=self.actionFrame, text="Blinded", variable=self.condBlind)
-        self.cbnBlind.grid(row=6, column=2, sticky='nw')
+        self.cbnBlind.grid(row=7, column=2, sticky='nw')
         self.cbnCharmed = ttk.Checkbutton(master=self.actionFrame, text="Charmed", variable=self.condCharmed)
-        self.cbnCharmed.grid(row=6, column=3, sticky='nw')
+        self.cbnCharmed.grid(row=7, column=3, sticky='nw')
         self.cbnDeaf = ttk.Checkbutton(master=self.actionFrame, text="Deafened", variable=self.condDeaf)
-        self.cbnDeaf.grid(row=7, column=2, sticky='nw')
+        self.cbnDeaf.grid(row=8, column=2, sticky='nw')
         self.cbnFright = ttk.Checkbutton(master=self.actionFrame, text="Frightened", variable=self.condFright)
-        self.cbnFright.grid(row=7, column=3, sticky='nw')
+        self.cbnFright.grid(row=8, column=3, sticky='nw')
         self.cbnGrappled = ttk.Checkbutton(master=self.actionFrame, text="Grappled", variable=self.condGrappled)
-        self.cbnGrappled.grid(row=8, column=2, sticky='nw')
+        self.cbnGrappled.grid(row=9, column=2, sticky='nw')
         self.cbnIncapacitated = ttk.Checkbutton(master=self.actionFrame, text="Incapacitated", variable=self.condIncapacitated, command=self.connectedCond)
-        self.cbnIncapacitated.grid(row=8, column=3, sticky='nw')
+        self.cbnIncapacitated.grid(row=9, column=3, sticky='nw')
         self.cbnInvisible = ttk.Checkbutton(master=self.actionFrame, text="Invisible", variable=self.condInvisible)
-        self.cbnInvisible.grid(row=9, column=2, sticky='nw')
+        self.cbnInvisible.grid(row=10, column=2, sticky='nw')
         self.cbnParalyzed = ttk.Checkbutton(master=self.actionFrame, text="Paralyzed", variable=self.condParalyzed, command=self.connectedCond)
-        self.cbnParalyzed.grid(row=9, column=3, sticky='nw')
+        self.cbnParalyzed.grid(row=10, column=3, sticky='nw')
         self.cbnPetrified = ttk.Checkbutton(master=self.actionFrame, text="Petrified", variable=self.condPetrified, command=self.connectedCond)
-        self.cbnPetrified.grid(row=10, column=2, sticky='nw')
+        self.cbnPetrified.grid(row=11, column=2, sticky='nw')
         self.cbnPoisoned = ttk.Checkbutton(master=self.actionFrame, text="Poisoned", variable=self.condPoisoned)
-        self.cbnPoisoned.grid(row=12, column=2, sticky='nw')
+        self.cbnPoisoned.grid(row=11, column=3, sticky='nw')
         self.cbnProne = ttk.Checkbutton(master=self.actionFrame, text="Prone", variable=self.condProne)
-        self.cbnProne.grid(row=10, column=3, sticky='nw')
+        self.cbnProne.grid(row=12, column=2, sticky='nw')
         self.cbnRestrained = ttk.Checkbutton(master=self.actionFrame, text="Restrained", variable=self.condRestrained)
-        self.cbnRestrained.grid(row=11, column=2, sticky='nw')
+        self.cbnRestrained.grid(row=12, column=3, sticky='nw')
         self.cbnStunned = ttk.Checkbutton(master=self.actionFrame, text="Stunned", variable=self.condStunned, command=self.connectedCond)
-        self.cbnStunned.grid(row=11, column=3, sticky='nw')
+        self.cbnStunned.grid(row=13, column=2, sticky='nw')
         self.cbnUnconscious = ttk.Checkbutton(master=self.actionFrame, text="Unconscious", variable=self.condUnconscious, command=self.connectedCond)
-        self.cbnUnconscious.grid(row=12, column=3, sticky='nw')
+        self.cbnUnconscious.grid(row=13, column=3, sticky='nw')
         lblExhaustion = ttk.Label(master=self.actionFrame, text="Exhaustion", font=self.regFont)
-        lblExhaustion.grid(row=13, column=2, columnspan=2)
+        lblExhaustion.grid(row=14, column=2, columnspan=2)
         self.exhaustionLevel = tk.IntVar()
         self.sldrExhaustion = tk.Scale(master=self.actionFrame, from_=0, to=6, variable=self.exhaustionLevel, orient=tk.HORIZONTAL, tickinterval=1, bg='gray28', fg='gray70', font=self.smallFont, highlightbackground='gray28', highlightcolor='gray28')
-        self.sldrExhaustion.grid(row=14, column=2, columnspan=2)
+        self.sldrExhaustion.grid(row=15, column=2, columnspan=2)
 
         lblChangeNotes = ttk.Label(master=self.actionFrame, text="Change Notes", font=self.regFont)
-        lblChangeNotes.grid(row=15, column=0, sticky='nw')
+        lblChangeNotes.grid(row=16, column=0, sticky='nw')
         self.checkDelete = tk.IntVar()
         cbnDeleteNotes = ttk.Checkbutton(master=self.actionFrame, text="Delete Notes", variable=self.checkDelete)
-        cbnDeleteNotes.grid(row=15, column=1, sticky='ne')
+        cbnDeleteNotes.grid(row=16, column=1, sticky='ne')
         self.txtChangeNotes = tk.Text(master=self.actionFrame, height=5, width=52)
         self.txtChangeNotes.configure(font=self.smallFont)
-        self.txtChangeNotes.grid(row=16, column=0, columnspan=4)
+        self.txtChangeNotes.grid(row=17, column=0, columnspan=4)
 
         self.btnSubmit = ttk.Button(master=self.submitFrame, command=self.onSubmit, text="Submit", width=20)
         self.btnSubmit.grid(row=0, column=0, sticky='e')
@@ -190,7 +211,9 @@ class Target():
         index = self.names.index(selTarget)
         objTarget = self.tokenList[index]
         self.lblActName.config(text=objTarget['name'])
-        self.lblActHP.config(text=objTarget['hP'])
+        self.lblActMaxHP.config(text=objTarget['maxHP'])
+        self.lblActTempHP.config(text=objTarget['tempHP'])
+        self.lblActHP.config(text=objTarget['currentHP'])
         self.lblActType.config(text=objTarget['type'])
         self.lblActHeight.config(text=objTarget['height'])
         self.lblActSize.config(text=objTarget['size'])
@@ -259,20 +282,64 @@ class Target():
         newName = self.entChangeName.get()
         if newName == "":
             newName = objTarget['name']
+
+        newType = self.type.get()
+        if newType == "":
+            newType = objTarget['type']
+
+        testMaxHP = self.entNewMaxHP.get()
+        if testMaxHP == "":
+            newMaxHP = objTarget['maxHP']
+        else:
+            try:
+                newMaxHP = int(testMaxHP)
+                if newMaxHP <= 0:
+                    newMaxHP = 0
+                    newType = 'dead'
+            except ValueError:
+                messagebox.showwarning("Target Creature", "Max HP must be a whole number.")
+                return
+            except TypeError:
+                messagebox.showwarning("Target Creature", "Max HP must be a whole number.")
+                return
+        testTempHP = self.entSetTempHP.get()
+        hPSetting = self.setTempHP.get()
+        if testTempHP == "":
+            newTempHP = objTarget['tempHP']
+        elif hPSetting == 'remove':
+            newTempHP = 0
+        elif hPSetting == 'set':
+            try:
+                newTempHP = int(testTempHP)
+                if newTempHP < 0:
+                    newTempHP = 0
+            except ValueError:
+                messagebox.showwarning("Target Creature", "Temp HP must be a whole number.")
+                return
+            except TypeError:
+                messagebox.showwarning("Target Creature", "Temp HP must be a whole number.")
+                return
+        else:
+            messagebox.showwarning("Target Creature", "Must select \"Set\" or \"Remove\".")
+            return
         testHPDelta = self.entHPDelta.get()
         try:
             hPDelta = int(testHPDelta)
         except ValueError:
             hPDelta = 0
+        except TypeError:
+            hPDelta = 0
         if self.healHurt.get() == 'heal':
-            newHP = str(hPDelta + int(objTarget['hP']))
+            newCurrHP = hPDelta + objTarget['currentHP']
+            if newCurrHP > newMaxHP:
+                newCurrHP = newMaxHP
         elif self.healHurt.get() == 'damage':
-            newHP = str(int(self.objTarget['hP']) - hPDelta)
+            newCurrHP = objTarget['currentHP'] - hPDelta
+            if newCurrHP < newMaxHP * -1:
+                newType = 'dead'
         else:
-            newHP = objTarget['hP']
-        newType = self.type.get()
-        if newType == "":
-            newType = objTarget['type']
+            newCurrHP = objTarget['currentHP']
+
         '''
         testRow = self.entRow.get()
         testCol = self.entCol.get()
@@ -297,7 +364,7 @@ class Target():
             newRow, newCol, newZ = ("" for i in range(3))
         '''
         newCondition = []
-        if self.condNormal.get() == 1:
+        if self.condNormal.get() == 1 and newType != 'dead':
             newCondition.append("normal")
         elif self.condNormal.get() == 0 and self.condBlind.get() == 0 and self.condCharmed.get() == 0 and self.condDeaf.get() == 0 and self.condFright.get() == 0 and self.condGrappled.get() == 0 and self.condIncapacitated.get() == 0 and self.condInvisible.get() == 0 and self.condParalyzed.get() == 0 and self.condPetrified.get() == 0 and self.condPoisoned.get() == 0 and self.condProne.get() == 0 and self.condRestrained.get() == 0 and self.condStunned.get() == 0 and self.condUnconscious.get() == 0:
             newCondition = objTarget['condition']
@@ -333,6 +400,8 @@ class Target():
             lvlExh = self.exhaustionLevel.get()
             if lvlExh > 0:
                 newCondition.append("exhaustion level " + str(lvlExh))
+            if lvlExh == 6:
+                newType = 'dead'
 
         noNotes = self.checkDelete.get()
         newNotes = self.txtChangeNotes.get(1.0, tk.END)
@@ -340,9 +409,12 @@ class Target():
             newNotes = objTarget['notes']
         elif noNotes == 1:
             newNotes = ""
+
         newObjTarget = {
             "name": newName,
-            "hP": newHP,
+            "maxHP": newMaxHP,
+            "tempHP": newTempHP,
+            "currentHP": newCurrHP,
             "type": newType,
             "height": objTarget['height'],
             "size": objTarget['size'],
@@ -381,8 +453,3 @@ class Target():
         aslp = self.condUnconscious.get()
         if parlz == 1 or petr == 1 or stun == 1 or aslp == 1:
             self.condIncapacitated.set(1)
-    '''
-    def exhLevel6(self):
-        exhaustion = self.exhaustionLevel.get()
-        if exhaustion == 6:
-    '''
