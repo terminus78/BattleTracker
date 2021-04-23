@@ -246,7 +246,7 @@ class BattleMap(object):
 
             else:
                 self.unusedTokens(being, tokenImg)
-            self.postInitiatives()
+            self.refreshInitiatives()
     
     def unusedTokens(self, creature, tokenImg):
         nextRow = int(self.sideCount / 2)
@@ -266,16 +266,18 @@ class BattleMap(object):
         lblTurnImg.image = self.turnIcon
 
         for nextUp in initDictInOrder.items():
-            lblYourTurn = ttk.Label(master=self.initiativeFrame, text=f"{nextUp[0]}: ", font=self.smallFont)
-            lblYourTurn.grid(row=orderCount, column=1, sticky='w')
-            lblYourInit = ttk.Label(master=self.initiativeFrame, text=nextUp[1], font=self.smallFont)
-            lblYourInit.grid(row=orderCount, column=2, sticky='e')
-            orderCount += 1
+            if nextUp[1] != math.inf:
+                lblYourTurn = ttk.Label(master=self.initiativeFrame, text=f"{nextUp[0]}: ", font=self.smallFont)
+                lblYourTurn.grid(row=orderCount, column=1, sticky='w')
+                lblYourInit = ttk.Label(master=self.initiativeFrame, text=nextUp[1], font=self.smallFont)
+                lblYourInit.grid(row=orderCount, column=2, sticky='e')
+                orderCount += 1
 
     def refreshInitiatives(self):
         initFrameSlaves = self.initiativeFrame.grid_slaves()
-        for item in initFrameSlaves:
-            item.destroy()
+        if len(initFrameSlaves):
+            for item in initFrameSlaves:
+                item.destroy()
         self.postInitiatives()
 
     def refreshMap(self, reset=False):
