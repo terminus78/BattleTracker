@@ -8,8 +8,7 @@ class Target():
     def __init__(self, root):
         self.root = root
 
-    def targetWindow(self, tokens):
-        self.tokenList = tokens
+    def targetWindow(self):
         self.regFont = ("Papyrus", "14")
         self.smallFont = ("Papyrus", "11")
         self.bigFont = ("Papyrus", "16")
@@ -34,7 +33,7 @@ class Target():
         self.submitFrame = ttk.Frame(master=self.targetWin)
         self.submitFrame.grid(row=3, column=0, columnspan=2)
         self.names = []
-        for being in self.tokenList:
+        for being in self.root.tokenList:
             self.names.append(being["name"])
         lblTopInfo = ttk.Label(master=self.topFrame, text="Select target creature and desired action.", font=self.regFont)
         lblTopInfo.grid(row=0, column=0)
@@ -200,16 +199,16 @@ class Target():
         self.txtChangeNotes.configure(font=self.smallFont)
         self.txtChangeNotes.grid(row=17, column=0, columnspan=4)
 
-        self.btnSubmit = ttk.Button(master=self.submitFrame, command=self.onSubmit, text="Submit", width=20)
+        self.btnSubmit = ttk.Button(master=self.submitFrame, text="Submit", width=20)#, command=self.onSubmit)
         self.btnSubmit.grid(row=0, column=0, sticky='e')
-        self.btnDeleteTarget = ttk.Button(master=self.submitFrame, command=self.deleteToken, text="Delete", width=20)
+        self.btnDeleteTarget = ttk.Button(master=self.submitFrame, text="Delete", width=20)#, command=self.deleteToken)
         self.btnDeleteTarget.grid(row=0, column=1, sticky='w')
         self.lblCloseWindow = ttk.Label(master=self.submitFrame, text="Please close this window to finalize.", font=self.regFont)
 
     def selectTarget(self):
         selTarget = self.dropTargets.get()
         index = self.names.index(selTarget)
-        objTarget = self.tokenList[index]
+        objTarget = self.root.tokenList[index]
         self.lblActName.config(text=objTarget['name'])
         self.lblActMaxHP.config(text=objTarget['maxHP'])
         self.lblActTempHP.config(text=objTarget['tempHP'])
@@ -274,10 +273,10 @@ class Target():
         selTarget = self.dropTargets.get()
         if selTarget == "" or selTarget is None:
             messagebox.showinfo("Info", "Must select target creature.")
-            return
+            return False
 
         index = self.names.index(selTarget)
-        objTarget = self.tokenList[index]
+        objTarget = self.root.tokenList[index]
 
         newName = self.entChangeName.get()
         if newName == "":
@@ -298,10 +297,10 @@ class Target():
                     newType = 'dead'
             except ValueError:
                 messagebox.showwarning("Target Creature", "Max HP must be a whole number.")
-                return
+                return False
             except TypeError:
                 messagebox.showwarning("Target Creature", "Max HP must be a whole number.")
-                return
+                return False
         testTempHP = self.entSetTempHP.get()
         hPSetting = self.setTempHP.get()
         if testTempHP == "":
@@ -315,13 +314,13 @@ class Target():
                     newTempHP = 0
             except ValueError:
                 messagebox.showwarning("Target Creature", "Temp HP must be a whole number.")
-                return
+                return False
             except TypeError:
                 messagebox.showwarning("Target Creature", "Temp HP must be a whole number.")
-                return
+                return False
         else:
             messagebox.showwarning("Target Creature", "Must select \"Set\" or \"Remove\".")
-            return
+            return False
         testHPDelta = self.entHPDelta.get()
         try:
             hPDelta = int(testHPDelta)
@@ -420,17 +419,19 @@ class Target():
             "size": objTarget['size'],
             "coordinate": objTarget['coordinate'],
             "condition": newCondition,
+            "initiative": objTarget['initiative'],
             "notes": newNotes
         }
         if newObjTarget['name'] != objTarget['name']:
-            self.tokenList.pop(index)
-            self.tokenList.append(newObjTarget)
+            self.root.tokenList.pop(index)
+            self.root.tokenList.append(newObjTarget)
         else:
-            self.tokenList[index] = newObjTarget
+            self.root.tokenList[index] = newObjTarget
         
-        self.btnSubmit.state(['disabled'])
-        self.btnDeleteTarget.state(['disabled'])
-        self.lblCloseWindow.grid(row=1, column=0, columnspan=2)
+        return True
+        #self.btnSubmit.state(['disabled'])
+        #self.btnDeleteTarget.state(['disabled'])
+        #self.lblCloseWindow.grid(row=1, column=0, columnspan=2)
 
     def deleteToken(self):
         selTarget = self.dropTargets.get()
@@ -438,12 +439,16 @@ class Target():
             goAhead = messagebox.askokcancel("Warning", "You are about to delete this creature.\nAre you sure?")
             if goAhead:
                 index = self.names.index(selTarget)
-                self.tokenList.pop(index)
+                self.root.tokenList.pop(index)
                 self.btnSubmit.state(['disabled'])
                 self.btnDeleteTarget.state(['disabled'])
                 self.lblCloseWindow.grid(row=1, column=0, columnspan=2)
+                return True
+            else:
+                return False
         else:
             messagebox.showinfo("Info", "Must select a target creature.")
+            return False
         
     def connectedCond(self):
         incap = self.condIncapacitated.get()

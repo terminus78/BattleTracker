@@ -1,6 +1,7 @@
 import pathlib
 import json
 import os
+import math
 from zipfile import ZipFile
 
 import tkinter as tk
@@ -13,10 +14,11 @@ papyrusFont = ('Papyrus', '14')
 
 
 class StatCollector(object):
-    def __init__(self, master, mapSize, roundNum):
+    def __init__(self, master, mapSize, roundNum, turn):
         self.master = master
         self.mapSize = mapSize
         self.round = roundNum
+        self.turn = turn
         self.rangeWin = tk.Toplevel(self.master)
         self.rangeWin.title("Range Calculator")
         style = ThemedStyle(self.rangeWin)
@@ -139,8 +141,10 @@ class StatCollector(object):
         lblNotes.grid(row=0, column=0)
         self.txtNotes.grid(row=1, column=0, sticky="w")
 
-        btnSubmit = ttk.Button(master=underFrame, command=self.submit, text="Submit")
-        btnSubmit.grid(row=0, column=0)
+        self.btnSubmit = ttk.Button(master=underFrame, text="Submit")#command=self.submit,
+        self.btnSubmit.grid(row=0, column=0)
+        btnCancel = ttk.Button(master=underFrame, text="Cancel", command=self.rangeWin.destroy)
+        btnCancel.grid(row=0, column=1)
 
     def submit(self):
         specialChar = ['[','@','_','!','#','$','%','^','&','*','(',')','<','>','?','/','\\','|','}','{','~',':',']']
@@ -154,93 +158,98 @@ class StatCollector(object):
         notesGet = self.txtNotes.get(1.0, tk.END)
         if nameGet == "":
             messagebox.showinfo("Character Input", "Must input a name.")
-            return
+            return False
         for i in range(len(specialChar)):
             if specialChar[i] in nameGet:
                 messagebox.showwarning("Character Input", "Name cannot contain special characters.")
-                return
+                return False
         if foeFriendGet == "":
             messagebox.showwarning("Character Input", "Must select a strategic status.")
-            return
+            return False
         if sizeGet == "":
             messagebox.showwarning("Character Input", "Must select a size.")
-            return
+            return False
         if initGet == "":
-            messagebox.showwarning("Character Input", "Initiative cannot be undefined.")
-            return
+            initFlt = math.inf
         else:
             try:
                 initFlt = float(initGet)
             except ValueError:
                 messagebox.showwarning("Character Input", "Initiative must be a number.")
-                return
+                return False
             except TypeError:
                 messagebox.showwarning("Character Input", "Initiative must be a number.")
-                return
+                return False
         '''
         if notesGet == "Easter Egg 1234 ABC":
             messagebox.showinfo("Character Input", "In the deepest dungeon of the darkest realm,\nYou will find the creature of brightest light and darkest story.\nIf only the heroes could brave true horror and near insurmountable doom,\nThey might find all the hope they would ever need.")
-            return
+            return False
         '''
         try:
             if maxHPGet != "":
                 maxHPInt = int(maxHPGet)
                 if maxHPInt <= 0:
                     messagebox.showinfo("Character Input", "Max HP must be a positive whole number.")
-                    return
+                    return False
             else:
                 messagebox.showinfo("Character Input", "Max HP cannot be undefined.")
-                return
+                return False
             if tempHPGet != "":
                 tempHPInt = int(maxHPGet)
                 if tempHPInt < 0:
                     messagebox.showinfo("Character Input", "Temp HP must be a positive whole number or zero.")
-                    return
+                    return False
             else:
                 tempHPInt = 0
         except ValueError:
             messagebox.showwarning("Character Input", "Max HP must be a positive whole number. If entered, Temp HP must be a positive whole number or zero.")
-            return
+            return False
         except TypeError:
             messagebox.showwarning("Character Input", "Max HP must be a positive whole number. If entered, Temp HP must be a positive whole number or zero.")
-            return
+            return False
         try:
             if heightGet == "":
                 messagebox.showwarning("Character Input", "Height cannot be undefined.")
-                return
+                return False
             heightFlt = float(heightGet)
             if heightFlt < 0:
                 messagebox.showinfo("Character Input", "Height must be a positive number or zero.")
-                return
+                return False
         except ValueError:
             messagebox.showwarning("Character Input", "Height must be a positive number or zero.")
-            return
+            return False
         except TypeError:
             messagebox.showwarning("Character Input", "Height must be a positive number or zero.")
-            return
+            return False
 
         self.stats = {
-            nameGet:{
-                "name": nameGet,
-                "maxHP": maxHPInt,
-                "tempHP": tempHPInt,
-                "currentHP": maxHPInt,
-                "type": foeFriendGet,
-                "height": heightFlt,
-                "size": sizeGet,
-                "coordinate": ["", "", ""],
-                "condition": ["normal"],
-                "initiative": initFlt,
-                "notes": notesGet
-            }
+            "name": nameGet,
+            "maxHP": maxHPInt,
+            "tempHP": tempHPInt,
+            "currentHP": maxHPInt,
+            "type": foeFriendGet,
+            "height": heightFlt,
+            "size": sizeGet,
+            "coordinate": ["", "", ""],
+            "condition": ["normal"],
+            "initiative": initFlt,
+            "notes": notesGet
         }
-        self.writeFile()
-        self.rangeWin.destroy()
+        for being in self.master.tokenList:
+            if being['name'] == nameGet:
+                messagebox.showwarning("Character Input", "The name that was entered matches an existing creature.\nCreature must have a unique name.")
+                return False
+        self.master.tokenList.append(self.stats)
+        return True
+        #self.writeFile()
+        #self.rangeWin.destroy()
 
+    # Unused
     def writeFile(self):
         battleDict = {
             "mapSize": self.mapSize,
-            "round": self.round
+            "round": self.round,
+            "turn": self.turn
         }
         battleJSON = json.dumps(battleDict, indent=4)
         with ZipFile(self.master.filename, "r") as savefile:

@@ -148,7 +148,8 @@ class mainWindow(object):
 
         battleDict = {
             "mapSize": mapSize,
-            "round": 0
+            "round": 0,
+            "turn": 0
         }
         battleJSON = json.dumps(battleDict, indent=4)
         with ZipFile(self.master.filename, 'w') as brpgFile:

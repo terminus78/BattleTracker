@@ -5,11 +5,27 @@ To Do List:
 	# Connected condtitions
 	# Condtitions info button pic
 	# Grid relative distance calculation
-	- Trig calculation fix for large and up
-	- Field highlighting
-	#T Input scrubbing
 	# Temp HP
 	# Max HP
-	- Round/Initiative Tracker
+	# Round/Initiative Tracker
 	# Save file naming and handling
+	# Improve top level window info communication
+	#T Input scrubbing
+	- Trig calculation fix for large and up (big oof)
+	- Field highlighting (oof)
+	- Round/Initiative Progression
 	- Collisions
+	- Advanced stats
+	- Minion generator (*not so soft sobbing)
+	- Controller pane (holy Jesus my ass is bleeding)
+	- Movement (oof)
+	- Objects (face-palm)
+	- Creature Template Library (oh God the work!)
+	- Library Template Creator (*soft sobbing)
+	-- Advanced Version
+		- Terrain mapping
+		- Object movement
+		- Vehicles
+		- Non-standard creature sizing
+		? Spell compendium
+	? Version for Mac and Linux (all the stages of grief)

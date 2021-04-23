@@ -36,9 +36,8 @@ class EventManager():
         finally:
             self.tokenMenu.grab_release()
 
-    def moveToken(self, arg):
-        self.tokenList = arg[0]
-        self.mapSize = arg[1]
+    def moveToken(self, mapSize):
+        self.mapSize = mapSize
         self.moveWin = tk.Toplevel(master=self.root)
         self.moveWin.title("Move Token")
         style = ThemedStyle(self.moveWin)
@@ -58,7 +57,7 @@ class EventManager():
         lblSelected.grid(row=0, column=0, sticky='w')
         names = []
         coordinates = []
-        for being in self.tokenList:
+        for being in self.root.tokenList:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
         self.dropSelection = ttk.Combobox(self.selectionFrame, width=27, values=names)
@@ -108,9 +107,9 @@ class EventManager():
         self.rbnMoveDown = ttk.Radiobutton(master=self.moveToFrame, text="Down", variable=self.upOrDown, value='down')
         #self.rbnMoveDown.grid(row=4, column=3)
 
-        self.btnSet = ttk.Button(master=self.moveFinishFrame, text="Set Position", command=lambda arg=[False]: self.setNewCoord(arg))
+        self.btnSet = ttk.Button(master=self.moveFinishFrame, text="Set Position")#, command=lambda arg=[False]: self.setNewCoord(arg))
         self.btnSet.grid(row=0, column=0, sticky='w')
-        self.btnRemove = ttk.Button(master=self.moveFinishFrame, text="Remove Token", command=lambda arg=[True]: self.setNewCoord(arg))
+        self.btnRemove = ttk.Button(master=self.moveFinishFrame, text="Remove Token")#, command=lambda arg=[True]: self.setNewCoord(arg))
         self.btnRemove.grid(row=0, column=1, sticky='w')
         self.lblSetFinished = ttk.Label(master=self.moveFinishFrame, text=" ", font=self.font)
         self.lblSetFinished.grid(row=0, column=2, sticky='w')
@@ -159,18 +158,18 @@ class EventManager():
         z = coordinates[index][2]
         self.lblActCoord.config(text="{0}: {1}: {2}".format(row, col, z))
 
-    def setNewCoord(self, arg):
-        removingToken = arg[0]
+    def setNewCoord(self):
+        #removingToken = arg[0]
         selOption = self.dropSelection.get()
         if selOption == "":
             messagebox.showinfo("Info", "Must select a creature.")
-            return
+            return False
 
         nameList = []
-        for being in self.tokenList:
+        for being in self.root.tokenList:
             nameList.append(being['name'])
         index = nameList.index(selOption)
-        size = self.tokenList[index]['size']
+        size = self.root.tokenList[index]['size']
         oneSpace = False
         if size == 'tiny' or size == 'small' or size == 'medium':
             oneSpace = True
@@ -183,96 +182,87 @@ class EventManager():
         deltaUDStr = self.entZDelta.get()
 
         if goForwardBack != "" or goLeftRight != "" or goUpDown != "":
-            coordinate = self.tokenList[index]['coordinate']
+            coordinate = self.root.tokenList[index]['coordinate']
             if coordinate[0] != "" and coordinate[1] != "" and coordinate[2] != "":
                 anyMoveAllowed = True
 
-        if removingToken == False and anyMoveAllowed == False and (self.entRowCoord.get() == "" or self.entColCoord.get() == "" or self.entZCoord.get() == ""):
+        if anyMoveAllowed == False and (self.entRowCoord.get() == "" or self.entColCoord.get() == "" or self.entZCoord.get() == ""):
             messagebox.showwarning("Warning", "Coordinate Fields Can't Be Empty!")
-            return
+            return False
 
-        if removingToken == False:
-            if anyMoveAllowed:
-                for i in range(3):
-                    coordinate[i] = int(coordinate[i])
-                '''
-                try:
-                    deltaFB = int(deltaFBStr)
-                    deltaLR = int(deltaLRStr)
-                    deltaUD = int(deltaUDStr)
-                except ValueError:
-                    messagebox.showwarning("Warning", "Move fields must be whole numbers!")
-                    return
-                '''
-                try:
-                    deltaFB = int(deltaFBStr)
-                except ValueError:
-                    deltaFB = 0
-                try:
-                    deltaLR = int(deltaLRStr)
-                except ValueError:
-                    deltaLR = 0
-                try:
-                    deltaUD = int(deltaUDStr)
-                except ValueError:
-                    deltaUD = 0
+        #if removingToken == False:
+        if anyMoveAllowed:
+            for i in range(3):
+                coordinate[i] = int(coordinate[i])
+            try:
+                deltaFB = int(deltaFBStr)
+            except ValueError:
+                deltaFB = 0
+            try:
+                deltaLR = int(deltaLRStr)
+            except ValueError:
+                deltaLR = 0
+            try:
+                deltaUD = int(deltaUDStr)
+            except ValueError:
+                deltaUD = 0
 
-                if deltaFB < 0 or deltaLR < 0 or deltaUD < 0:
-                    messagebox.showwarning("Warning", "Move fields cannot be negative!")
-                    return
-                if goForwardBack == 'forward':
-                    coordinate[0] -= deltaFB
-                    if oneSpace:
-                        if coordinate[0] < 0:
-                            coordinate[0] = 0
-                    else:
-                        coordinate = correctPlacement(coordinate, size, self.mapSize)
-                if goForwardBack == 'back':
-                    coordinate[0] += deltaFB
-                    if oneSpace:
-                        if coordinate[0] < self.mapSize[0] - 1:
-                            coordinate[0] = self.mapSize[0] - 1
-                    else:
-                        coordinate = correctPlacement(coordinate, size, self.mapSize)
-                if goLeftRight == 'left':
-                    coordinate[1] -= deltaLR
-                    if oneSpace:
-                        if coordinate[1] < 0:
-                            coordinate[1] = 0
-                    else:
-                        coordinate = correctPlacement(coordinate, size, self.mapSize)
-                if goLeftRight == 'right':
-                    coordinate[1] += deltaLR
-                    if oneSpace:
-                        if coordinate[1] < self.mapSize[1] - 1:
-                            coordinate[1] = self.mapSize[1] - 1
-                    else:
-                        coordinate = correctPlacement(coordinate, size, self.mapSize)
-                if goUpDown == 'down':
-                    coordinate[2] -= deltaUD
-                if goUpDown == 'up':
-                    coordinate[2] += deltaUD
+            if deltaFB < 0 or deltaLR < 0 or deltaUD < 0:
+                messagebox.showwarning("Warning", "Move fields cannot be negative!")
+                return False
+            if goForwardBack == 'forward':
+                coordinate[0] -= deltaFB
+                if oneSpace:
+                    if coordinate[0] < 0:
+                        coordinate[0] = 0
+                else:
+                    coordinate = correctPlacement(coordinate, size, self.mapSize)
+            if goForwardBack == 'back':
+                coordinate[0] += deltaFB
+                if oneSpace:
+                    if coordinate[0] > self.mapSize[0] - 1:
+                        coordinate[0] = self.mapSize[0] - 1
+                else:
+                    coordinate = correctPlacement(coordinate, size, self.mapSize)
+            if goLeftRight == 'left':
+                coordinate[1] -= deltaLR
+                if oneSpace:
+                    if coordinate[1] < 0:
+                        coordinate[1] = 0
+                else:
+                    coordinate = correctPlacement(coordinate, size, self.mapSize)
+            if goLeftRight == 'right':
+                coordinate[1] += deltaLR
+                if oneSpace:
+                    if coordinate[1] > self.mapSize[1] - 1:
+                        coordinate[1] = self.mapSize[1] - 1
+                else:
+                    coordinate = correctPlacement(coordinate, size, self.mapSize)
+            if goUpDown == 'down':
+                coordinate[2] -= deltaUD
+            if goUpDown == 'up':
+                coordinate[2] += deltaUD
 
-                newCoord = coordinate
-                    
-            else:
-                try:
-                    newRow = int(self.entRowCoord.get()) - 1
-                    newCol = int(self.entColCoord.get()) - 1
-                    newZ = int(self.entZCoord.get())
-                    newCoord = [newRow, newCol, newZ]
-                except ValueError:
-                    messagebox.showwarning("Warning", "Set Coordinate fields must be whole numbers!")
-                    return
-                if newCoord[0] > self.mapSize[0] - 1 or newCoord[0] < 0:
-                    messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")
-                    return
-                if newCoord[1] > self.mapSize[1] - 1 or newCoord[1] < 0:
-                    messagebox.showerror("Error", "Column Coordinate Out of Range of Map!")
-                    return
+            newCoord = coordinate
+                
         else:
-            newCoord = ["", "", ""]
-        for being in self.tokenList:
+            try:
+                newRow = int(self.entRowCoord.get()) - 1
+                newCol = int(self.entColCoord.get()) - 1
+                newZ = int(self.entZCoord.get())
+                newCoord = [newRow, newCol, newZ]
+            except ValueError:
+                messagebox.showwarning("Warning", "Set Coordinate fields must be whole numbers!")
+                return False
+            if newCoord[0] > self.mapSize[0] - 1 or newCoord[0] < 0:
+                messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")
+                return False
+            if newCoord[1] > self.mapSize[1] - 1 or newCoord[1] < 0:
+                messagebox.showerror("Error", "Column Coordinate Out of Range of Map!")
+                return False
+        #else:
+            #newCoord = ["", "", ""]
+        for being in self.root.tokenList:
             '''
             if being["coordinate"][0] == str(newCoord[0]) and being["coordinate"][1] == str(newCoord[1]):
                     messagebox.showerror("Error", "Space already taken!")
@@ -280,4 +270,16 @@ class EventManager():
             '''
             if being["name"] == selOption:
                 being["coordinate"] = [str(newCoord[0]), str(newCoord[1]), str(newCoord[2])]
-        self.lblSetFinished.config(text="Position set! Please close window.")
+        #self.lblSetFinished.config(text="Position set! Please close window.")
+        return True
+    
+    def removeToken(self):
+        selOption = self.dropSelection.get()
+        if selOption == "":
+            messagebox.showinfo("Info", "Must select a creature.")
+            return False
+        newCoord = ["", "", ""]
+        for being in self.root.tokenList:
+            if being["name"] == selOption:
+                being["coordinate"] = [newCoord[0], newCoord[1], newCoord[2]]
+        return True

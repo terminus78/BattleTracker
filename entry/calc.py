@@ -10,8 +10,7 @@ class Calculator():
         self.font = ("Papyrus", "14")
         self.fontSmall = ("Papyrus", "12")
 
-    def trigWin(self, arg):
-        self.tokenList = arg
+    def trigWin(self):
         self.trig = tk.Toplevel(self.root)
         self.trig.title("Trig Calculator")
         style = ThemedStyle(self.trig)
@@ -31,7 +30,7 @@ class Calculator():
         self.infoFrame.grid(row=2, column=0, columnspan=2)
         names = []
         coordinates = []
-        for being in self.tokenList:
+        for being in self.root.tokenList:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
         lblFrom = ttk.Label(master=self.fromFrame, text="Origin", font=self.font)

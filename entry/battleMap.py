@@ -35,6 +35,7 @@ class BattleMap(object):
             battleObj = json.loads(battleBytes.decode('utf-8'))
             self.mapSize = battleObj['mapSize']
             self.round = battleObj['round']
+            self.turn = battleObj['turn']
         self.mapWin = tk.Toplevel(self.master)
         self.mapWin.title(f"Battle Map | {gameTitle}")
         style = ThemedStyle(self.mapWin)
@@ -106,6 +107,8 @@ class BattleMap(object):
         targetIcon = ImageTk.PhotoImage(image=PIL.Image.open(targetIconPath).resize((20,20)))
         condInfoIconPath = "entry\\bin\\2780604101548336129-128.png"
         condInfoIcon = ImageTk.PhotoImage(image=PIL.Image.open(condInfoIconPath).resize((20,20)))
+        turnIconPath = "entry\\bin\\swords.png"
+        self.turnIcon = ImageTk.PhotoImage(image=PIL.Image.open(turnIconPath).resize((20,20)))
 
         allyPath = "entry\\bin\\allyToken.png"
         self.allyImg = ImageTk.PhotoImage(image=PIL.Image.open(allyPath).resize((15,15)))
@@ -117,7 +120,7 @@ class BattleMap(object):
         self.deadImg = ImageTk.PhotoImage(image=PIL.Image.open(deadPath).resize((15,15)))
         
         self.mapFrames = []
-        self.tokenList = []
+        self.mapWin.tokenList = []
 
         # Grid labels
         for colSpot in range(self.mapSize[1]):
@@ -150,7 +153,8 @@ class BattleMap(object):
         self.lblRound = ttk.Label(master=self.roundBar, text=self.round, font=self.bigFont, borderwidth=1, relief=tk.RAISED, width=3, anchor=tk.CENTER)
         self.lblRound.grid(row=0, column=1, sticky='w')
         self.initiativeFrame = ttk.Frame(master=self.roundBar)
-        self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='e')
+        self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='ew')
+        self.initiativeFrame.columnconfigure([0,1], weight=1)
 
         # Toolbar Buttons
         self.btnMove = ttk.Button(master=self.toolBar, command=self.moveToken, image=moveIcon)
@@ -176,17 +180,17 @@ class BattleMap(object):
         self.placeTokens()
 
     def initializeTokens(self):
-        self.tokenList = []
+        self.mapWin.tokenList = []
         with ZipFile(self.master.filename, "r") as savefile:
             creatBytes = savefile.read('creatures.json')
             creatStr = creatBytes.decode('utf-8')
             creatures = json.loads(creatStr)
         for being in creatures.values():
-            self.tokenList.append(being)
+            self.mapWin.tokenList.append(being)
     
     def placeTokens(self):
-        initiativeHolder = {}
-        for being in self.tokenList:
+        self.initiativeHolder = {}
+        for being in self.mapWin.tokenList:
             tokenType = being["type"]
             if tokenType == "ally":
                 tokenImg = self.allyImg
@@ -202,7 +206,7 @@ class BattleMap(object):
             if being["coordinate"][0] != "" and being["coordinate"][1] != "":
                 rowPos = int(being["coordinate"][1])
                 colPos = int(being["coordinate"][0])
-                lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray37", borderwidth=0)
+                lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray28", borderwidth=0)
                 lblUnit.image = tokenImg
                 spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
                 rowCount = int(spaceCount / 3)
@@ -211,8 +215,8 @@ class BattleMap(object):
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
                 CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
                 spaceTaken = 1
-                #if being['initiative'] != -math.inf
-                #initiativeHolder[being['name']] = being['initiative']
+                if being['initiative'] != -math.inf:
+                    self.initiativeHolder[being['name']] = being['initiative']
                 if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
                     if being["size"] == "large":
                         spaceNeed = 4
@@ -231,7 +235,7 @@ class BattleMap(object):
                                 rowOffset += 1
                             rowPos = int(being["coordinate"][1]) + rowOffset
                             colPos = int(being["coordinate"][0]) + colOffset
-                            lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray37", borderwidth=0)
+                            lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray28", borderwidth=0)
                             lblUnit.image = tokenImg
                             spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
                             rowCount = int(spaceCount / 3)
@@ -242,20 +246,39 @@ class BattleMap(object):
 
             else:
                 self.unusedTokens(being, tokenImg)
+            self.postInitiatives()
     
     def unusedTokens(self, creature, tokenImg):
         nextRow = int(self.sideCount / 2)
         nextCol = self.sideCount % 2
-        lblSideUnit = tk.Label(master=self.sideBoard, image=tokenImg, bg="gray37", borderwidth=0)
+        lblSideUnit = tk.Label(master=self.sideBoard, image=tokenImg, bg="gray28", borderwidth=0)
         lblSideUnit.grid(row=nextRow, column=nextCol, padx=5, pady=5, sticky="ne")
         lblSideUnit.bind("<Button-3>", self.em.rightClickMenu)
         lblSideUnit.image = tokenImg
         CreateToolTip(lblSideUnit, text=creature["name"])
         self.sideCount += 1
+    
+    def postInitiatives(self):
+        initDictInOrder = {k:v for k, v in sorted(self.initiativeHolder.items(), key= lambda item: item[1], reverse=True)}
+        orderCount = 0
+        lblTurnImg = tk.Label(master=self.initiativeFrame, image=self.turnIcon, bg="gray28", borderwidth=0)
+        lblTurnImg.grid(row=self.turn, column=0, sticky='w')
+        lblTurnImg.image = self.turnIcon
 
-    def refreshMap(self, tokens=None, reset=False, origWin=None):
-        if tokens is not None:
-            self.tokenList = tokens
+        for nextUp in initDictInOrder.items():
+            lblYourTurn = ttk.Label(master=self.initiativeFrame, text=f"{nextUp[0]}: ", font=self.smallFont)
+            lblYourTurn.grid(row=orderCount, column=1, sticky='w')
+            lblYourInit = ttk.Label(master=self.initiativeFrame, text=nextUp[1], font=self.smallFont)
+            lblYourInit.grid(row=orderCount, column=2, sticky='e')
+            orderCount += 1
+
+    def refreshInitiatives(self):
+        initFrameSlaves = self.initiativeFrame.grid_slaves()
+        for item in initFrameSlaves:
+            item.destroy()
+        self.postInitiatives()
+
+    def refreshMap(self, reset=False):
         for row in self.mapFrames:
             for col in row:
                 removeTokens = col.grid_slaves()
@@ -268,25 +291,21 @@ class BattleMap(object):
                 sideToken.destroy()
         self.sideCount = 0
 
-        if origWin == 'em':
-            self.em.moveWin.destroy()
-        
-        if origWin == 'target':
-            self.target.targetWin.destroy()
-
         if reset:
             self.initializeTokens()
 
+        self.refreshInitiatives()
         self.placeTokens()
 
     def saveGame(self):
         newTokenDict = {}
-        for being in self.tokenList:
+        for being in self.mapWin.tokenList:
             name = being["name"]
             newTokenDict[name] = being
         battleDict = {
             "mapSize": self.mapSize,
-            "round": self.round
+            "round": self.round,
+            "turn": self.turn
         }
         battleJSON = json.dumps(battleDict, indent=4)
         with ZipFile(self.master.filename, "w") as savefile:
@@ -295,29 +314,60 @@ class BattleMap(object):
             savefile.writestr('creatures.json', creatJSON)
 
     def clearMap(self):
-        for being in self.tokenList:
+        for being in self.mapWin.tokenList:
             being["coordinate"] = ['', '', '']
         self.refreshMap()
 
-    def getTokenList(self):
-        return self.tokenList
-
-    def waitDestroyMoveWin(self):
-        self.em.moveWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.em.tokenList): self.refreshMap(tokens=stuff, origWin='em'))
-
     def inputCreatureWindow(self):
-        self.inWin = StatCollector(self.master, self.mapSize, self.round)
+        self.inWin = StatCollector(self.mapWin, self.mapSize, self.round, self.turn)
+        self.inWin.btnSubmit.configure(command=lambda arg=['inWin', 'submit']: self.changeTokenList(arg))
+
+    def changeTokenList(self, arg):
+        origin = arg[0]
+        selBtn = arg[1]
+        if origin == 'moveWin':
+            if selBtn == 'set':
+                setComplete = self.em.setNewCoord()
+                if setComplete:
+                    self.em.moveWin.destroy()
+                    self.refreshMap()
+            elif selBtn == 'remove':
+                remComplete = self.em.removeToken()
+                if remComplete:
+                    self.em.moveWin.destroy()
+                    self.refreshMap()
+        elif origin == 'targetWin':
+            if selBtn == 'submit':
+                submitComplete = self.target.onSubmit()
+                if submitComplete:
+                    self.target.targetWin.destroy()
+                    self.refreshMap()
+            elif selBtn == 'delete':
+                deleteComplete = self.target.deleteToken()
+                if deleteComplete:
+                    self.target.targetWin.destroy()
+                    self.refreshMap()
+        elif origin == 'inWin':
+            if selBtn == 'submit':
+                submitComplete = self.inWin.submit()
+                if submitComplete:
+                    self.inWin.rangeWin.destroy()
+                    self.refreshMap()
 
     def moveToken(self):
-        self.em.moveToken([self.tokenList, self.mapSize])
-        self.waitDestroyMoveWin()
+        self.em.moveToken(self.mapSize)
+        self.em.btnSet.configure(command=lambda arg=['moveWin', 'set']: self.changeTokenList(arg))
+        self.em.btnRemove.configure(command=lambda arg=['moveWin', 'remove']: self.changeTokenList(arg))
+        #self.waitDestroyMoveWin()
 
     def openTrig(self):
-        self.calculator.trigWin(self.tokenList)
+        self.calculator.trigWin()
 
     def targetItem(self):
-        self.target.targetWindow(self.tokenList)
-        self.target.targetWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.target.tokenList): self.refreshMap(tokens=stuff, origWin='target'))
+        self.target.targetWindow()
+        self.target.btnSubmit.configure(command=lambda arg=['targetWin', 'submit']: self.changeTokenList(arg))
+        self.target.btnDeleteTarget.configure(command=lambda arg=['targetWin', 'delete']: self.changeTokenList(arg))
+        #self.target.targetWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.target.tokenList): self.refreshMap(tokens=stuff, origWin='target'))
 
     def fullReset(self):
         emptyDict = {}
@@ -325,7 +375,8 @@ class BattleMap(object):
         if makeSure:
             battleDict = {
                 "mapSize": self.mapSize,
-                "round": 0
+                "round": 0,
+                "turn": 0
             }
             battleJSON = json.dumps(battleDict, indent=4)
             with ZipFile(self.master.filename, "w") as savefile:
