@@ -18,6 +18,7 @@ from statCollector import StatCollector
 from quotes import Quote
 from target import Target
 from conditionInfo import InfoClass
+from dice import DiceRoller
 
 
 class BattleMap(object):
@@ -63,6 +64,7 @@ class BattleMap(object):
         self.countQuotes = 0
         self.target = Target(self.mapWin)
         self.info = InfoClass(self.mapWin)
+        self.diceRoll = DiceRoller(self.mapWin)
 
         # Board Setup
         lblMap = ttk.Label(master=self.topFrame, text=gameTitle, font=('Papyrus', '16'))
@@ -109,6 +111,8 @@ class BattleMap(object):
         condInfoIcon = ImageTk.PhotoImage(image=PIL.Image.open(condInfoIconPath).resize((20,20)))
         turnIconPath = "entry\\bin\\swords.png"
         self.turnIcon = ImageTk.PhotoImage(image=PIL.Image.open(turnIconPath).resize((20,20)))
+        d20IconPath = "entry\\bin\\role-playing.png"
+        d20Icon = ImageTk.PhotoImage(image=PIL.Image.open(d20IconPath).resize((20,20)))
 
         allyPath = "entry\\bin\\allyToken.png"
         self.allyImg = ImageTk.PhotoImage(image=PIL.Image.open(allyPath).resize((15,15)))
@@ -155,6 +159,10 @@ class BattleMap(object):
         self.initiativeFrame = ttk.Frame(master=self.roundBar)
         self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='ew')
         self.initiativeFrame.columnconfigure([0,1], weight=1)
+        btnNextTurn = ttk.Button(master=self.roundBar, text="Turn Complete", command=self.nextTurn)
+        btnNextTurn.grid(row=2, column=0, columnspan=2)
+        btnNextRound = ttk.Button(master=self.roundBar, text="Round Complete", command=self.nextRound)
+        btnNextRound.grid(row=3, column=0, columnspan=2)
 
         # Toolbar Buttons
         self.btnMove = ttk.Button(master=self.toolBar, command=self.moveToken, image=moveIcon)
@@ -176,6 +184,11 @@ class BattleMap(object):
         self.btnCondInfo.grid(row=3, column=0, sticky='n')
         self.btnCondInfo.image = condInfoIcon
         CreateToolTip(self.btnCondInfo, text="Condition Info", leftDisp=True)
+
+        self.btnDiceRoller = ttk.Button(master=self.toolBar, command=self.openDiceRoller, image=d20Icon)
+        self.btnDiceRoller.grid(row=4, column=0, sticky='n')
+        self.btnDiceRoller.image = d20Icon
+        CreateToolTip(self.btnDiceRoller, text="Dice Roller", leftDisp=True)
 
         self.placeTokens()
 
@@ -280,6 +293,30 @@ class BattleMap(object):
                 item.destroy()
         self.postInitiatives()
 
+    def nextTurn(self):
+        onBoardInits = self.initiativeHolder
+        infExists = True
+        fuckedUp = 30
+        while infExists and fuckedUp > 0:
+            for key, value in onBoardInits.items():
+                if value == math.inf:
+                    del onBoardInits[key]
+                    break
+            if math.inf not in onBoardInits:
+                infExists = False
+            fuckedUp -= 1
+        self.turn += 1
+        if self.turn > len(self.initiativeHolder) - 1:
+            self.nextRound()
+        else:
+            self.refreshInitiatives()
+
+    def nextRound(self):
+        self.round += 1
+        self.lblRound.config(text=self.round)
+        self.turn = 0
+        self.refreshInitiatives()
+
     def refreshMap(self, reset=False):
         for row in self.mapFrames:
             for col in row:
@@ -370,6 +407,9 @@ class BattleMap(object):
         self.target.btnSubmit.configure(command=lambda arg=['targetWin', 'submit']: self.changeTokenList(arg))
         self.target.btnDeleteTarget.configure(command=lambda arg=['targetWin', 'delete']: self.changeTokenList(arg))
         #self.target.targetWin.protocol("WM_DELETE_WINDOW", lambda stuff=(self.target.tokenList): self.refreshMap(tokens=stuff, origWin='target'))
+
+    def openDiceRoller(self):
+        self.diceRoll.dicePane()
 
     def fullReset(self):
         emptyDict = {}

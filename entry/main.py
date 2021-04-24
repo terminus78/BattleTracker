@@ -161,6 +161,8 @@ class mainWindow(object):
             with open(self.cacheLoc, 'w') as cachefile:
                 json.dump(self.cacheInfo, cachefile, indent=4)
         self.mapWin = BattleMap(self.master)
+        self.gameStartWin.destroy()
+        self.master.iconify()
 
     def lookUpCommand(self):
         self.master.filedir = filedialog.askdirectory()
@@ -180,6 +182,7 @@ class mainWindow(object):
             gameFile = os.path.split(self.master.filename)[-1]
             self.master.gameName = gameFile.split('.')[0]
             self.mapWin = BattleMap(self.master)
+            self.master.iconify()
 
 battleWin = mainWindow(window)
 
