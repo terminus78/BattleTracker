@@ -224,7 +224,7 @@ class BattleMap(object):
                 spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
                 rowCount = int(spaceCount / 3)
                 colCount = spaceCount % 3
-                lblUnit.grid(row=rowCount, column=colCount, sticky='n')
+                lblUnit.grid(row=rowCount, column=colCount)
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
                 CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
                 spaceTaken = 1
@@ -253,7 +253,7 @@ class BattleMap(object):
                             spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
                             rowCount = int(spaceCount / 3)
                             colCount = spaceCount % 3
-                            lblUnit.grid(row=rowCount, column=colCount, sticky='n')
+                            lblUnit.grid(row=rowCount, column=colCount)
                             lblUnit.bind("<Button-3>", self.em.rightClickMenu)
                             CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
 

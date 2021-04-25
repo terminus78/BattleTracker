@@ -42,7 +42,7 @@ class DiceRoller():
         diceSelectionFrame = ttk.Frame(master=self.diceWin)
         diceSelectionFrame.grid(row=2, column=0)
         resultFrame = ttk.Frame(master=self.diceWin)
-        resultFrame.grid(row=3, column=0)
+        resultFrame.grid(row=3, column=0, pady=10)
 
         # Image paths
         d20Path = "entry\\bin\\dice-twenty-faces-twenty.png"
@@ -57,8 +57,8 @@ class DiceRoller():
         d6Pic = ImageTk.PhotoImage(image=PIL.Image.open(d6Path).resize((50,50)))
         d4Path = "entry\\bin\\d4.png"
         d4Pic = ImageTk.PhotoImage(image=PIL.Image.open(d4Path).resize((50,50)))
-        coinPath = "entry\\bin\\coin.png"
-        coinPic = ImageTk.PhotoImage(image=PIL.Image.open(coinPath).resize((50,50)))
+        #coinPath = "entry\\bin\\coin.png"
+        #coinPic = ImageTk.PhotoImage(image=PIL.Image.open(coinPath).resize((50,50)))
 
         lblD100Title = ttk.Label(master=diceSelectionFrame, text="D100", font=self.font)
         lblD100Title.image = d10Pic
@@ -81,9 +81,9 @@ class DiceRoller():
         lblD4Title = ttk.Label(master=diceSelectionFrame, text="D4", font=self.font)
         lblD4Title.image = d4Pic
         lblD4Title.grid(row=0, column=6)
-        lblCoinTitle = ttk.Label(master=diceSelectionFrame, text="Coin\nFlip", font=self.font)
-        lblCoinTitle.image = coinPic
-        lblCoinTitle.grid(row=0, column=7)
+        #lblCoinTitle = ttk.Label(master=diceSelectionFrame, text="Coin", font=self.font)
+        #lblCoinTitle.image = coinPic
+        #lblCoinTitle.grid(row=0, column=7)
 
         lblD100 = ttk.Label(master=diceSelectionFrame, image=d10Pic)
         lblD100.image = d10Pic
@@ -106,9 +106,9 @@ class DiceRoller():
         lblD4 = ttk.Label(master=diceSelectionFrame, image=d4Pic)
         lblD4.image = d4Pic
         lblD4.grid(row=1, column=6)
-        lblCoin = ttk.Label(master=diceSelectionFrame, image=coinPic)
-        lblCoin.image = coinPic
-        lblCoin.grid(row=1, column=7)
+        #lblCoin = ttk.Label(master=diceSelectionFrame, image=coinPic)
+        #lblCoin.image = coinPic
+        #lblCoin.grid(row=1, column=7)
 
         frameD100 = ttk.Frame(master=diceSelectionFrame)
         frameD100.grid(row=2, column=0)
@@ -124,8 +124,8 @@ class DiceRoller():
         frameD6.grid(row=2, column=5)
         frameD4 = ttk.Frame(master=diceSelectionFrame)
         frameD4.grid(row=2, column=6)
-        frameCoin = ttk.Frame(master=diceSelectionFrame)
-        frameCoin.grid(row=2, column=7)
+        #frameCoin = ttk.Frame(master=diceSelectionFrame)
+        #frameCoin.grid(row=2, column=7)
 
         # Modifiers
         lbl100Mod = ttk.Label(master=frameD100, text="Mod", font=self.fontSmall)
@@ -134,6 +134,7 @@ class DiceRoller():
         btn100Lower.grid(row=1, column=0)
         self.ent100Mod = ttk.Entry(master=frameD100, width=5)
         self.ent100Mod.grid(row=1, column=1)
+        self.ent100Mod.insert(0, '0')
         btn100Raise = ttk.Button(master=frameD100, text="+", command=lambda: self.modifyMod(die='100', dir='+'), width=2)
         btn100Raise.grid(row=1, column=2)
 
@@ -143,6 +144,7 @@ class DiceRoller():
         btn20Lower.grid(row=1, column=0)
         self.ent20Mod = ttk.Entry(master=frameD20, width=5)
         self.ent20Mod.grid(row=1, column=1)
+        self.ent20Mod.insert(0, '0')
         btn20Raise = ttk.Button(master=frameD20, text="+", command=lambda: self.modifyMod(die='20', dir='+'), width=2)
         btn20Raise.grid(row=1, column=2)
 
@@ -152,6 +154,7 @@ class DiceRoller():
         btn12Lower.grid(row=1, column=0)
         self.ent12Mod = ttk.Entry(master=frameD12, width=5)
         self.ent12Mod.grid(row=1, column=1)
+        self.ent12Mod.insert(0, '0')
         btn12Raise = ttk.Button(master=frameD12, text="+", command=lambda: self.modifyMod(die='12', dir='+'), width=2)
         btn12Raise.grid(row=1, column=2)
 
@@ -161,6 +164,7 @@ class DiceRoller():
         btn10Lower.grid(row=1, column=0)
         self.ent10Mod = ttk.Entry(master=frameD10, width=5)
         self.ent10Mod.grid(row=1, column=1)
+        self.ent10Mod.insert(0, '0')
         btn10Raise = ttk.Button(master=frameD10, text="+", command=lambda: self.modifyMod(die='10', dir='+'), width=2)
         btn10Raise.grid(row=1, column=2)
 
@@ -170,6 +174,7 @@ class DiceRoller():
         btn8Lower.grid(row=1, column=0)
         self.ent8Mod = ttk.Entry(master=frameD8, width=5)
         self.ent8Mod.grid(row=1, column=1)
+        self.ent8Mod.insert(0, '0')
         btn8Raise = ttk.Button(master=frameD8, text="+", command=lambda: self.modifyMod(die='8', dir='+'), width=2)
         btn8Raise.grid(row=1, column=2)
 
@@ -179,6 +184,7 @@ class DiceRoller():
         btn6Lower.grid(row=1, column=0)
         self.ent6Mod = ttk.Entry(master=frameD6, width=5)
         self.ent6Mod.grid(row=1, column=1)
+        self.ent6Mod.insert(0, '0')
         btn6Raise = ttk.Button(master=frameD6, text="+", command=lambda: self.modifyMod(die='6', dir='+'), width=2)
         btn6Raise.grid(row=1, column=2)
 
@@ -188,227 +194,683 @@ class DiceRoller():
         btn4Lower.grid(row=1, column=0)
         self.ent4Mod = ttk.Entry(master=frameD4, width=5)
         self.ent4Mod.grid(row=1, column=1)
+        self.ent4Mod.insert(0, '0')
         btn4Raise = ttk.Button(master=frameD4, text="+", command=lambda: self.modifyMod(die='4', dir='+'), width=2)
         btn4Raise.grid(row=1, column=2)
 
         # Number to roll
         lbl100Num = ttk.Label(master=frameD100, text="Num", font=self.fontSmall)
-        lbl100Num.grid(row=0, column=0, columnspan=3)
+        lbl100Num.grid(row=2, column=0, columnspan=3)
         btn100Lower = ttk.Button(master=frameD100, text="-", command=lambda: self.modifyNum(die='100', dir='-'), width=2)
-        btn100Lower.grid(row=1, column=0)
+        btn100Lower.grid(row=3, column=0)
         self.ent100Num = ttk.Entry(master=frameD100, width=5)
-        self.ent100Num.grid(row=1, column=1)
+        self.ent100Num.grid(row=3, column=1)
+        self.ent100Num.insert(0, '0')
         btn100Raise = ttk.Button(master=frameD100, text="+", command=lambda: self.modifyNum(die='100', dir='+'), width=2)
-        btn100Raise.grid(row=1, column=2)
+        btn100Raise.grid(row=3, column=2)
 
         lbl20Num = ttk.Label(master=frameD20, text="Num", font=self.fontSmall)
-        lbl20Num.grid(row=0, column=0, columnspan=3)
+        lbl20Num.grid(row=2, column=0, columnspan=3)
         btn20Lower = ttk.Button(master=frameD20, text="-", command=lambda: self.modifyNum(die='20', dir='-'), width=2)
-        btn20Lower.grid(row=1, column=0)
+        btn20Lower.grid(row=3, column=0)
         self.ent20Num = ttk.Entry(master=frameD20, width=5)
-        self.ent20Num.grid(row=1, column=1)
+        self.ent20Num.grid(row=3, column=1)
+        self.ent20Num.insert(0, '0')
         btn20Raise = ttk.Button(master=frameD20, text="+", command=lambda: self.modifyNum(die='20', dir='+'), width=2)
-        btn20Raise.grid(row=1, column=2)
+        btn20Raise.grid(row=3, column=2)
 
         lbl12Num = ttk.Label(master=frameD12, text="Num", font=self.fontSmall)
-        lbl12Num.grid(row=0, column=0, columnspan=3)
+        lbl12Num.grid(row=2, column=0, columnspan=3)
         btn12Lower = ttk.Button(master=frameD12, text="-", command=lambda: self.modifyNum(die='12', dir='-'), width=2)
-        btn12Lower.grid(row=1, column=0)
+        btn12Lower.grid(row=3, column=0)
         self.ent12Num = ttk.Entry(master=frameD12, width=5)
-        self.ent12Num.grid(row=1, column=1)
+        self.ent12Num.grid(row=3, column=1)
+        self.ent12Num.insert(0, '0')
         btn12Raise = ttk.Button(master=frameD12, text="+", command=lambda: self.modifyNum(die='12', dir='+'), width=2)
-        btn12Raise.grid(row=1, column=2)
+        btn12Raise.grid(row=3, column=2)
 
         lbl10Num = ttk.Label(master=frameD10, text="Num", font=self.fontSmall)
-        lbl10Num.grid(row=0, column=0, columnspan=3)
+        lbl10Num.grid(row=2, column=0, columnspan=3)
         btn10Lower = ttk.Button(master=frameD10, text="-", command=lambda: self.modifyNum(die='10', dir='-'), width=2)
-        btn10Lower.grid(row=1, column=0)
+        btn10Lower.grid(row=3, column=0)
         self.ent10Num = ttk.Entry(master=frameD10, width=5)
-        self.ent10Num.grid(row=1, column=1)
+        self.ent10Num.grid(row=3, column=1)
+        self.ent10Num.insert(0, '0')
         btn10Raise = ttk.Button(master=frameD10, text="+", command=lambda: self.modifyNum(die='10', dir='+'), width=2)
-        btn10Raise.grid(row=1, column=2)
+        btn10Raise.grid(row=3, column=2)
 
         lbl8Num = ttk.Label(master=frameD8, text="Num", font=self.fontSmall)
-        lbl8Num.grid(row=0, column=0, columnspan=3)
+        lbl8Num.grid(row=2, column=0, columnspan=3)
         btn8Lower = ttk.Button(master=frameD8, text="-", command=lambda: self.modifyNum(die='8', dir='-'), width=2)
-        btn8Lower.grid(row=1, column=0)
+        btn8Lower.grid(row=3, column=0)
         self.ent8Num = ttk.Entry(master=frameD8, width=5)
-        self.ent8Num.grid(row=1, column=1)
+        self.ent8Num.grid(row=3, column=1)
+        self.ent8Num.insert(0, '0')
         btn8Raise = ttk.Button(master=frameD8, text="+", command=lambda: self.modifyNum(die='8', dir='+'), width=2)
-        btn8Raise.grid(row=1, column=2)
+        btn8Raise.grid(row=3, column=2)
 
         lbl6Num = ttk.Label(master=frameD6, text="Num", font=self.fontSmall)
-        lbl6Num.grid(row=0, column=0, columnspan=3)
+        lbl6Num.grid(row=2, column=0, columnspan=3)
         btn6Lower = ttk.Button(master=frameD6, text="-", command=lambda: self.modifyNum(die='6', dir='-'), width=2)
-        btn6Lower.grid(row=1, column=0)
+        btn6Lower.grid(row=3, column=0)
         self.ent6Num = ttk.Entry(master=frameD6, width=5)
-        self.ent6Num.grid(row=1, column=1)
+        self.ent6Num.grid(row=3, column=1)
+        self.ent6Num.insert(0, '0')
         btn6Raise = ttk.Button(master=frameD6, text="+", command=lambda: self.modifyNum(die='6', dir='+'), width=2)
-        btn6Raise.grid(row=1, column=2)
+        btn6Raise.grid(row=3, column=2)
 
         lbl4Num = ttk.Label(master=frameD4, text="Num", font=self.fontSmall)
-        lbl4Num.grid(row=0, column=0, columnspan=3)
+        lbl4Num.grid(row=2, column=0, columnspan=3)
         btn4Lower = ttk.Button(master=frameD4, text="-", command=lambda: self.modifyNum(die='4', dir='-'), width=2)
-        btn4Lower.grid(row=1, column=0)
+        btn4Lower.grid(row=3, column=0)
         self.ent4Num = ttk.Entry(master=frameD4, width=5)
-        self.ent4Num.grid(row=1, column=1)
+        self.ent4Num.grid(row=3, column=1)
+        self.ent4Num.insert(0, '0')
         btn4Raise = ttk.Button(master=frameD4, text="+", command=lambda: self.modifyNum(die='4', dir='+'), width=2)
-        btn4Raise.grid(row=1, column=2)
+        btn4Raise.grid(row=3, column=2)
 
         # Roll buttons
         btn100Roll = ttk.Button(master=frameD100, text="Roll", command=lambda: self.rollWinBtn('100'))
-        btn100Roll.grid(row=2, column=0)
+        btn100Roll.grid(row=4, column=0, columnspan=3, pady=10)
         btn20Roll = ttk.Button(master=frameD20, text="Roll", command=lambda: self.rollWinBtn('20'))
-        btn20Roll.grid(row=2, column=0)
+        btn20Roll.grid(row=4, column=0, columnspan=3, pady=10)
         btn12Roll = ttk.Button(master=frameD12, text="Roll", command=lambda: self.rollWinBtn('12'))
-        btn12Roll.grid(row=2, column=0)
+        btn12Roll.grid(row=4, column=0, columnspan=3, pady=10)
         btn10Roll = ttk.Button(master=frameD10, text="Roll", command=lambda: self.rollWinBtn('10'))
-        btn10Roll.grid(row=2, column=0)
+        btn10Roll.grid(row=4, column=0, columnspan=3, pady=10)
         btn8Roll = ttk.Button(master=frameD8, text="Roll", command=lambda: self.rollWinBtn('8'))
-        btn8Roll.grid(row=2, column=0)
+        btn8Roll.grid(row=4, column=0, columnspan=3, pady=10)
         btn6Roll = ttk.Button(master=frameD6, text="Roll", command=lambda: self.rollWinBtn('6'))
-        btn6Roll.grid(row=2, column=0)
+        btn6Roll.grid(row=4, column=0, columnspan=3, pady=10)
         btn4Roll = ttk.Button(master=frameD4, text="Roll", command=lambda: self.rollWinBtn('4'))
-        btn4Roll.grid(row=2, column=0)
-        btnCoinRoll = ttk.Button(master=frameCoin, text="Roll", command=lambda: self.rollWinBtn('coin'))
-        btnCoinRoll.grid(row=2, column=0)
+        btn4Roll.grid(row=4, column=0, columnspan=3, pady=10)
+        #btnCoinRoll = ttk.Button(master=frameCoin, text="Roll", command=lambda: self.rollWinBtn('coin'))
+        #btnCoinRoll.grid(row=4, column=0, columnspan=3, pady=10)
 
         # Results
-        frame100Result = ttk.Frame(master=resultFrame)
-        frame100Result.grid(row=0, column=0)
-        frame20Result = ttk.Frame(master=resultFrame)
-        frame20Result.grid(row=0, column=1)
-        frame12Result = ttk.Frame(master=resultFrame)
-        frame12Result.grid(row=0, column=2)
-        frame10Result = ttk.Frame(master=resultFrame)
-        frame10Result.grid(row=0, column=3)
-        frame8Result = ttk.Frame(master=resultFrame)
-        frame8Result.grid(row=0, column=4)
-        frame6Result = ttk.Frame(master=resultFrame)
-        frame6Result.grid(row=0, column=5)
-        frame4Result = ttk.Frame(master=resultFrame)
-        frame4Result.grid(row=0, column=6)
-        frameCoinResult = ttk.Frame(master=resultFrame)
-        frameCoinResult.grid(row=0, column=7)
+        frameRes1 = ttk.Frame(master=frameD100)
+        frameRes1.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes1.columnconfigure([0,1], weight=1)
+        frameRes2 = ttk.Frame(master=frameD20)
+        frameRes2.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes2.columnconfigure([0,1], weight=1)
+        frameRes3 = ttk.Frame(master=frameD12)
+        frameRes3.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes3.columnconfigure([0,1], weight=1)
+        frameRes4 = ttk.Frame(master=frameD10)
+        frameRes4.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes4.columnconfigure([0,1], weight=1)
+        frameRes5 = ttk.Frame(master=frameD8)
+        frameRes5.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes5.columnconfigure([0,1], weight=1)
+        frameRes6 = ttk.Frame(master=frameD6)
+        frameRes6.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes6.columnconfigure([0,1], weight=1)
+        frameRes7 = ttk.Frame(master=frameD4)
+        frameRes7.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes7.columnconfigure([0,1], weight=1)
+        #frameRes8 = ttk.Frame(master=frameCoin)
+        #frameRes8.grid(row=5, column=0, columnspan=3, pady=10)
+        #frameRes8.columnconfigure([0,1], weight=1)
 
-        lbl100Marker = ttk.Label(master=frame100Result, text="Roll:", font=self.font)
+        lbl100Marker = ttk.Label(master=frameRes1, text="Roll: ", font=self.font)
         lbl100Marker.grid(row=0, column=0, sticky='w')
-        self.lbl100Result = ttk.Label(master=frame100Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl100Result = ttk.Label(master=frameRes1, text="0", font=self.font, width=3, anchor='center')
         self.lbl100Result.grid(row=0, column=1, sticky='e')
-        lbl100OMark = ttk.Label(master=frame100Result, text="Mod:", font=self.font)
+        lbl100OMark = ttk.Label(master=frameRes1, text="Mod: ", font=self.font)
         lbl100OMark.grid(row=1, column=0, sticky='w')
-        self.lbl100Offset = ttk.Label(master=frame100Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl100Offset = ttk.Label(master=frameRes1, text="0", font=self.font, width=3, anchor='center')
         self.lbl100Offset.grid(row=1, column=1, sticky='e')
-        lbl100TMark = ttk.Label(master=frame100Result, text="Total", font=self.font)
+        lbl100TMark = ttk.Label(master=frameRes1, text="Total: ", font=self.font)
         lbl100TMark.grid(row=2, column=0, sticky='w')
-        self.lbl100Total = ttk.Label(master=frame100Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl100Total = ttk.Label(master=frameRes1, text="0", font=self.font, width=3, anchor='center')
         self.lbl100Total.grid(row=2, column=1, sticky='e')
 
-        lbl20Marker = ttk.Label(master=frame20Result, text="Roll:", font=self.font)
+        lbl20Marker = ttk.Label(master=frameRes2, text="Roll: ", font=self.font)
         lbl20Marker.grid(row=0, column=0, sticky='w')
-        self.lbl20Result = ttk.Label(master=frame20Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl20Result = ttk.Label(master=frameRes2, text="0", font=self.font, width=3, anchor='center')
         self.lbl20Result.grid(row=0, column=1, sticky='e')
-        lbl20OMark = ttk.Label(master=frame20Result, text="Mod:", font=self.font)
+        lbl20OMark = ttk.Label(master=frameRes2, text="Mod: ", font=self.font)
         lbl20OMark.grid(row=1, column=0, sticky='w')
-        self.lbl20Offset = ttk.Label(master=frame20Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl20Offset = ttk.Label(master=frameRes2, text="0", font=self.font, width=3, anchor='center')
         self.lbl20Offset.grid(row=1, column=1, sticky='e')
-        lbl20TMark = ttk.Label(master=frame20Result, text="Total", font=self.font)
+        lbl20TMark = ttk.Label(master=frameRes2, text="Total: ", font=self.font)
         lbl20TMark.grid(row=2, column=0, sticky='w')
-        self.lbl20Total = ttk.Label(master=frame20Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl20Total = ttk.Label(master=frameRes2, text="0", font=self.font, width=3, anchor='center')
         self.lbl20Total.grid(row=2, column=1, sticky='e')
 
-        lbl12Marker = ttk.Label(master=frame12Result, text="Roll:", font=self.font)
+        lbl12Marker = ttk.Label(master=frameRes3, text="Roll: ", font=self.font)
         lbl12Marker.grid(row=0, column=0, sticky='w')
-        self.lbl12Result = ttk.Label(master=frame12Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl12Result = ttk.Label(master=frameRes3, text="0", font=self.font, width=3, anchor='center')
         self.lbl12Result.grid(row=0, column=1, sticky='e')
-        lbl12OMark = ttk.Label(master=frame12Result, text="Mod:", font=self.font)
+        lbl12OMark = ttk.Label(master=frameRes3, text="Mod: ", font=self.font)
         lbl12OMark.grid(row=1, column=0, sticky='w')
-        self.lbl12Offset = ttk.Label(master=frame12Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl12Offset = ttk.Label(master=frameRes3, text="0", font=self.font, width=3, anchor='center')
         self.lbl12Offset.grid(row=1, column=1, sticky='e')
-        lbl12TMark = ttk.Label(master=frame12Result, text="Total", font=self.font)
+        lbl12TMark = ttk.Label(master=frameRes3, text="Total: ", font=self.font)
         lbl12TMark.grid(row=2, column=0, sticky='w')
-        self.lbl12Total = ttk.Label(master=frame12Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl12Total = ttk.Label(master=frameRes3, text="0", font=self.font, width=3, anchor='center')
         self.lbl12Total.grid(row=2, column=1, sticky='e')
 
-        lbl10Marker = ttk.Label(master=frame10Result, text="Roll:", font=self.font)
+        lbl10Marker = ttk.Label(master=frameRes4, text="Roll: ", font=self.font)
         lbl10Marker.grid(row=0, column=0, sticky='w')
-        self.lbl10Result = ttk.Label(master=frame10Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl10Result = ttk.Label(master=frameRes4, text="0", font=self.font, width=3, anchor='center')
         self.lbl10Result.grid(row=0, column=1, sticky='e')
-        lbl10OMark = ttk.Label(master=frame10Result, text="Mod:", font=self.font)
+        lbl10OMark = ttk.Label(master=frameRes4, text="Mod: ", font=self.font)
         lbl10OMark.grid(row=1, column=0, sticky='w')
-        self.lbl10Offset = ttk.Label(master=frame10Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl10Offset = ttk.Label(master=frameRes4, text="0", font=self.font, width=3, anchor='center')
         self.lbl10Offset.grid(row=1, column=1, sticky='e')
-        lbl10TMark = ttk.Label(master=frame10Result, text="Total", font=self.font)
+        lbl10TMark = ttk.Label(master=frameRes4, text="Total: ", font=self.font)
         lbl10TMark.grid(row=2, column=0, sticky='w')
-        self.lbl10Total = ttk.Label(master=frame10Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl10Total = ttk.Label(master=frameRes4, text="0", font=self.font, width=3, anchor='center')
         self.lbl10Total.grid(row=2, column=1, sticky='e')
 
-        lbl8Marker = ttk.Label(master=frame8Result, text="Roll:", font=self.font)
+        lbl8Marker = ttk.Label(master=frameRes5, text="Roll: ", font=self.font)
         lbl8Marker.grid(row=0, column=0, sticky='w')
-        self.lbl8Result = ttk.Label(master=frame8Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl8Result = ttk.Label(master=frameRes5, text="0", font=self.font, width=3, anchor='center')
         self.lbl8Result.grid(row=0, column=1, sticky='e')
-        lbl8OMark = ttk.Label(master=frame8Result, text="Mod:", font=self.font)
+        lbl8OMark = ttk.Label(master=frameRes5, text="Mod: ", font=self.font)
         lbl8OMark.grid(row=1, column=0, sticky='w')
-        self.lbl8Offset = ttk.Label(master=frame8Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl8Offset = ttk.Label(master=frameRes5, text="0", font=self.font, width=3, anchor='center')
         self.lbl8Offset.grid(row=1, column=1, sticky='e')
-        lbl8TMark = ttk.Label(master=frame8Result, text="Total", font=self.font)
+        lbl8TMark = ttk.Label(master=frameRes5, text="Total: ", font=self.font)
         lbl8TMark.grid(row=2, column=0, sticky='w')
-        self.lbl8Total = ttk.Label(master=frame8Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl8Total = ttk.Label(master=frameRes5, text="0", font=self.font, width=3, anchor='center')
         self.lbl8Total.grid(row=2, column=1, sticky='e')
 
-        lbl6Marker = ttk.Label(master=frame6Result, text="Roll:", font=self.font)
+        lbl6Marker = ttk.Label(master=frameRes6, text="Roll: ", font=self.font)
         lbl6Marker.grid(row=0, column=0, sticky='w')
-        self.lbl6Result = ttk.Label(master=frame6Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl6Result = ttk.Label(master=frameRes6, text="0", font=self.font, width=3, anchor='center')
         self.lbl6Result.grid(row=0, column=1, sticky='e')
-        lbl6OMark = ttk.Label(master=frame6Result, text="Mod:", font=self.font)
+        lbl6OMark = ttk.Label(master=frameRes6, text="Mod: ", font=self.font)
         lbl6OMark.grid(row=1, column=0, sticky='w')
-        self.lbl6Offset = ttk.Label(master=frame6Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl6Offset = ttk.Label(master=frameRes6, text="0", font=self.font, width=3, anchor='center')
         self.lbl6Offset.grid(row=1, column=1, sticky='e')
-        lbl6TMark = ttk.Label(master=frame6Result, text="Total", font=self.font)
+        lbl6TMark = ttk.Label(master=frameRes6, text="Total: ", font=self.font)
         lbl6TMark.grid(row=2, column=0, sticky='w')
-        self.lbl6Total = ttk.Label(master=frame6Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl6Total = ttk.Label(master=frameRes6, text="0", font=self.font, width=3, anchor='center')
         self.lbl6Total.grid(row=2, column=1, sticky='e')
 
-        lbl4Marker = ttk.Label(master=frame4Result, text="Roll:", font=self.font)
+        lbl4Marker = ttk.Label(master=frameRes7, text="Roll: ", font=self.font)
         lbl4Marker.grid(row=0, column=0, sticky='w')
-        self.lbl4Result = ttk.Label(master=frame4Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl4Result = ttk.Label(master=frameRes7, text="0", font=self.font, width=3, anchor='center')
         self.lbl4Result.grid(row=0, column=1, sticky='e')
-        lbl4OMark = ttk.Label(master=frame4Result, text="Mod:", font=self.font)
+        lbl4OMark = ttk.Label(master=frameRes7, text="Mod: ", font=self.font)
         lbl4OMark.grid(row=1, column=0, sticky='w')
-        self.lbl4Offset = ttk.Label(master=frame4Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl4Offset = ttk.Label(master=frameRes7, text="0", font=self.font, width=3, anchor='center')
         self.lbl4Offset.grid(row=1, column=1, sticky='e')
-        lbl4TMark = ttk.Label(master=frame4Result, text="Total", font=self.font)
+        lbl4TMark = ttk.Label(master=frameRes7, text="Total: ", font=self.font)
         lbl4TMark.grid(row=2, column=0, sticky='w')
-        self.lbl4Total = ttk.Label(master=frame4Result, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lbl4Total = ttk.Label(master=frameRes7, text="0", font=self.font, width=3, anchor='center')
         self.lbl4Total.grid(row=2, column=1, sticky='e')
 
-        lblCoinMarker = ttk.Label(master=frameCoinResult, text="Roll:", font=self.font)
+        '''
+        lblCoinMarker = ttk.Label(master=frameRes8, text="Roll: ", font=self.font)
         lblCoinMarker.grid(row=0, column=0, sticky='w')
-        self.lblCoinResult = ttk.Label(master=frameCoinResult, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lblCoinResult = ttk.Label(master=frameRes8, text="0", font=self.font, width=3, anchor='center')
         self.lblCoinResult.grid(row=0, column=1, sticky='e')
-        lblCoinOMark = ttk.Label(master=frameCoinResult, text="Mod:", font=self.font)
+        lblCoinOMark = ttk.Label(master=frameRes8, text="Mod: ", font=self.font)
         lblCoinOMark.grid(row=1, column=0, sticky='w')
-        self.lblCoinOffset = ttk.Label(master=frameCoinResult, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lblCoinOffset = ttk.Label(master=frameRes8, text="0", font=self.font, width=3, anchor='center')
         self.lblCoinOffset.grid(row=1, column=1, sticky='e')
-        lblCoinTMark = ttk.Label(master=frameCoinResult, text="Total", font=self.font)
+        lblCoinTMark = ttk.Label(master=frameRes8, text="Total: ", font=self.font)
         lblCoinTMark.grid(row=2, column=0, sticky='w')
-        self.lblCoinTotal = ttk.Label(master=frameCoinResult, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
+        self.lblCoinTotal = ttk.Label(master=frameRes8, text="0", font=self.font, width=3, anchor='center')
         self.lblCoinTotal.grid(row=2, column=1, sticky='e')
+        '''
 
         lblNetMarker = ttk.Label(master=resultFrame, text="Net Total", font=self.font)
-        lblNetMarker.grid(row=1, column=0, columnspan=8)
-        self.lblNetTotal = ttk.Label(master=resultFrame, text="0", font=self.font, borderwidth=1, relief=tk.RAISED, width=3, anchor='e')
-        self.lblNetTotal.grid(row=2, column=0, columnspan=8)
+        lblNetMarker.grid(row=1, column=0, columnspan=7)
+        self.lblNetTotal = ttk.Label(master=resultFrame, text="0", font=self.font, width=3, anchor='center')
+        self.lblNetTotal.grid(row=2, column=0, columnspan=7)
         btnCalcNet = ttk.Button(master=resultFrame, text="Calculate Total", command=self.calcNet)
+        btnCalcNet.grid(row=3, column=0, columnspan=7, pady=5)
+        btnClearOut = ttk.Button(master=resultFrame, text="Clear Board", command=self.clearOut)
+        btnClearOut.grid(row=4, column=0, columnspan=7, pady=5)
         
     def modifyMod(self, die, dir):
-        pass
+        if die == '100':
+            try:
+                modVal = int(self.ent100Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent100Mod.delete(0, tk.END)
+                self.ent100Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent100Mod.delete(0, tk.END)
+                self.ent100Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent100Mod.delete(0, tk.END)
+                self.ent100Mod.insert(0, modVal)
+        elif die == '20':
+            try:
+                modVal = int(self.ent20Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent20Mod.delete(0, tk.END)
+                self.ent20Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent20Mod.delete(0, tk.END)
+                self.ent20Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent20Mod.delete(0, tk.END)
+                self.ent20Mod.insert(0, modVal)
+        elif die == '12':
+            try:
+                modVal = int(self.ent12Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent12Mod.delete(0, tk.END)
+                self.ent12Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent12Mod.delete(0, tk.END)
+                self.ent12Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent12Mod.delete(0, tk.END)
+                self.ent12Mod.insert(0, modVal)
+        elif die == '10':
+            try:
+                modVal = int(self.ent10Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent10Mod.delete(0, tk.END)
+                self.ent10Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent10Mod.delete(0, tk.END)
+                self.ent10Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent10Mod.delete(0, tk.END)
+                self.ent10Mod.insert(0, modVal)
+        elif die == '8':
+            try:
+                modVal = int(self.ent8Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent8Mod.delete(0, tk.END)
+                self.ent8Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent8Mod.delete(0, tk.END)
+                self.ent8Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent8Mod.delete(0, tk.END)
+                self.ent8Mod.insert(0, modVal)
+        elif die == '6':
+            try:
+                modVal = int(self.ent6Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent6Mod.delete(0, tk.END)
+                self.ent6Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent6Mod.delete(0, tk.END)
+                self.ent6Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent6Mod.delete(0, tk.END)
+                self.ent6Mod.insert(0, modVal)
+        elif die == '4':
+            try:
+                modVal = int(self.ent4Mod.get())
+            except ValueError:
+                modVal = 0
+                self.ent4Mod.delete(0, tk.END)
+                self.ent4Mod.insert(0, modVal)
+                return
+            if dir == '+':
+                modVal += 1
+                self.ent4Mod.delete(0, tk.END)
+                self.ent4Mod.insert(0, modVal)
+            else:
+                modVal -= 1
+                self.ent4Mod.delete(0, tk.END)
+                self.ent4Mod.insert(0, modVal)
+        else:
+            messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
+            return
 
     def modifyNum(self, die, dir):
-        pass
+        if die == '100':
+            try:
+                numVal = int(self.ent100Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent100Num.delete(0, tk.END)
+                self.ent100Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent100Num.delete(0, tk.END)
+                self.ent100Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent100Num.delete(0, tk.END)
+                self.ent100Num.insert(0, numVal)
+        elif die == '20':
+            try:
+                numVal = int(self.ent20Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent20Num.delete(0, tk.END)
+                self.ent20Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent20Num.delete(0, tk.END)
+                self.ent20Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent20Num.delete(0, tk.END)
+                self.ent20Num.insert(0, numVal)
+        elif die == '12':
+            try:
+                numVal = int(self.ent12Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent12Num.delete(0, tk.END)
+                self.ent12Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent12Num.delete(0, tk.END)
+                self.ent12Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent12Num.delete(0, tk.END)
+                self.ent12Num.insert(0, numVal)
+        elif die == '10':
+            try:
+                numVal = int(self.ent10Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent10Num.delete(0, tk.END)
+                self.ent10Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent10Num.delete(0, tk.END)
+                self.ent10Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent10Num.delete(0, tk.END)
+                self.ent10Num.insert(0, numVal)
+        elif die == '8':
+            try:
+                numVal = int(self.ent8Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent8Num.delete(0, tk.END)
+                self.ent8Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent8Num.delete(0, tk.END)
+                self.ent8Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent8Num.delete(0, tk.END)
+                self.ent8Num.insert(0, numVal)
+        elif die == '6':
+            try:
+                numVal = int(self.ent6Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent6Num.delete(0, tk.END)
+                self.ent6Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent6Num.delete(0, tk.END)
+                self.ent6Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent6Num.delete(0, tk.END)
+                self.ent6Num.insert(0, numVal)
+        elif die == '4':
+            try:
+                numVal = int(self.ent4Num.get())
+            except ValueError:
+                numVal = 0
+                self.ent4Num.delete(0, tk.END)
+                self.ent4Num.insert(0, numVal)
+                return
+            if dir == '+':
+                numVal += 1
+                self.ent4Num.delete(0, tk.END)
+                self.ent4Num.insert(0, numVal)
+            else:
+                numVal -= 1
+                if numVal < 0:
+                    numVal = 0
+                self.ent4Num.delete(0, tk.END)
+                self.ent4Num.insert(0, numVal)
+        else:
+            messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
+            return
 
     def rollWinBtn(self, die):
-        pass
+        if die == '100':
+            try:
+                mod100 = int(self.ent100Mod.get())
+                num100 = int(self.ent100Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result100List = self.roll(dieSize=100, numDice=num100)
+            dice100Sum = 0
+            for res in result100List:
+                dice100Sum += res
+            mod100Str = str(mod100)
+            if mod100 > 0:
+                mod100Str = "+" + mod100Str
+            self.lbl100Result.config(text=dice100Sum)
+            self.lbl100Offset.config(text=mod100Str)
+            dice100Total = dice100Sum + mod100
+            self.lbl100Total.config(text=dice100Total)
+        elif die == '20':
+            try:
+                mod20 = int(self.ent20Mod.get())
+                num20 = int(self.ent20Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result20List = self.roll(dieSize=20, numDice=num20)
+            dice20Sum = 0
+            for res in result20List:
+                dice20Sum += res
+            mod20Str = str(mod20)
+            if mod20 > 0:
+                mod20Str = "+" + mod20Str
+            self.lbl20Result.config(text=dice20Sum)
+            self.lbl20Offset.config(text=mod20Str)
+            dice20Total = dice20Sum + mod20
+            self.lbl20Total.config(text=dice20Total)
+        elif die == '12':
+            try:
+                mod12 = int(self.ent12Mod.get())
+                num12 = int(self.ent12Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result12List = self.roll(dieSize=12, numDice=num12)
+            dice12Sum = 0
+            for res in result12List:
+                dice12Sum += res
+            mod12Str = str(mod12)
+            if mod12 > 0:
+                mod12Str = "+" + mod12Str
+            self.lbl12Result.config(text=dice12Sum)
+            self.lbl12Offset.config(text=mod12Str)
+            dice12Total = dice12Sum + mod12
+            self.lbl12Total.config(text=dice12Total)
+        elif die == '10':
+            try:
+                mod10 = int(self.ent10Mod.get())
+                num10 = int(self.ent10Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result10List = self.roll(dieSize=10, numDice=num10)
+            dice10Sum = 0
+            for res in result10List:
+                dice10Sum += res
+            mod10Str = str(mod10)
+            if mod10 > 0:
+                mod10Str = "+" + mod10Str
+            self.lbl10Result.config(text=dice10Sum)
+            self.lbl10Offset.config(text=mod10Str)
+            dice10Total = dice10Sum + mod10
+            self.lbl10Total.config(text=dice10Total)
+        elif die == '8':
+            try:
+                mod8 = int(self.ent8Mod.get())
+                num8 = int(self.ent8Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result8List = self.roll(dieSize=8, numDice=num8)
+            dice8Sum = 0
+            for res in result8List:
+                dice8Sum += res
+            mod8Str = str(mod8)
+            if mod8 > 0:
+                mod8Str = "+" + mod8Str
+            self.lbl8Result.config(text=dice8Sum)
+            self.lbl8Offset.config(text=mod8Str)
+            dice8Total = dice8Sum + mod8
+            self.lbl8Total.config(text=dice8Total)
+        elif die == '6':
+            try:
+                mod6 = int(self.ent6Mod.get())
+                num6 = int(self.ent6Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result6List = self.roll(dieSize=6, numDice=num6)
+            dice6Sum = 0
+            for res in result6List:
+                dice6Sum += res
+            mod6Str = str(mod6)
+            if mod6 > 0:
+                mod6Str = "+" + mod6Str
+            self.lbl6Result.config(text=dice6Sum)
+            self.lbl6Offset.config(text=mod6Str)
+            dice6Total = dice6Sum + mod6
+            self.lbl6Total.config(text=dice6Total)
+        elif die == '4':
+            try:
+                mod4 = int(self.ent4Mod.get())
+                num4 = int(self.ent4Num.get())
+            except ValueError:
+                messagebox.showwarning("Dice Roller", "Mod and Num values must be whole numbers.")
+                return
+            result4List = self.roll(dieSize=4, numDice=num4)
+            dice4Sum = 0
+            for res in result4List:
+                dice4Sum += res
+            mod4Str = str(mod4)
+            if mod4 > 0:
+                mod4Str = "+" + mod4Str
+            self.lbl4Result.config(text=dice4Sum)
+            self.lbl4Offset.config(text=mod4Str)
+            dice4Total = dice4Sum + mod4
+            self.lbl4Total.config(text=dice4Total)
+        else:
+            messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
+            return
 
     def calcNet(self):
-        pass
+        try:
+            total100 = int(self.lbl100Total.cget("text"))
+            total20 = int(self.lbl20Total.cget("text"))
+            total12 = int(self.lbl12Total.cget("text"))
+            total10 = int(self.lbl10Total.cget("text"))
+            total8 = int(self.lbl8Total.cget("text"))
+            total6 = int(self.lbl6Total.cget("text"))
+            total4 = int(self.lbl4Total.cget("text"))
+        except ValueError:
+            messagebox.showwarning("Dice Roller", "Dice totals must be whole numbers.")
+            return
+        netTotal = total100 + total20 + total12 + total10 + total8 + total6 + total4
+        self.lblNetTotal.config(text=netTotal)
+
+    def clearOut(self):
+        self.ent100Mod.delete(0, tk.END)
+        self.ent100Mod.insert(0, "0")
+        self.ent100Num.delete(0, tk.END)
+        self.ent100Num.insert(0, "0")
+        self.ent20Mod.delete(0, tk.END)
+        self.ent20Mod.insert(0, "0")
+        self.ent20Num.delete(0, tk.END)
+        self.ent20Num.insert(0, "0")
+        self.ent12Mod.delete(0, tk.END)
+        self.ent12Mod.insert(0, "0")
+        self.ent12Num.delete(0, tk.END)
+        self.ent12Num.insert(0, "0")
+        self.ent10Mod.delete(0, tk.END)
+        self.ent10Mod.insert(0, "0")
+        self.ent10Num.delete(0, tk.END)
+        self.ent10Num.insert(0, "0")
+        self.ent8Mod.delete(0, tk.END)
+        self.ent8Mod.insert(0, "0")
+        self.ent8Num.delete(0, tk.END)
+        self.ent8Num.insert(0, "0")
+        self.ent6Mod.delete(0, tk.END)
+        self.ent6Mod.insert(0, "0")
+        self.ent6Num.delete(0, tk.END)
+        self.ent6Num.insert(0, "0")
+        self.ent4Mod.delete(0, tk.END)
+        self.ent4Mod.insert(0, "0")
+        self.ent4Num.delete(0, tk.END)
+        self.ent4Num.insert(0, "0")
+
+        self.lbl100Total.config(text="0")
+        self.lbl100Offset.config(text="0")
+        self.lbl100Result.config(text="0")
+        self.lbl20Total.config(text="0")
+        self.lbl20Offset.config(text="0")
+        self.lbl20Result.config(text="0")
+        self.lbl12Total.config(text="0")
+        self.lbl12Offset.config(text="0")
+        self.lbl12Result.config(text="0")
+        self.lbl10Total.config(text="0")
+        self.lbl10Offset.config(text="0")
+        self.lbl10Result.config(text="0")
+        self.lbl8Total.config(text="0")
+        self.lbl8Offset.config(text="0")
+        self.lbl8Result.config(text="0")
+        self.lbl6Total.config(text="0")
+        self.lbl6Offset.config(text="0")
+        self.lbl6Result.config(text="0")
+        self.lbl4Total.config(text="0")
+        self.lbl4Offset.config(text="0")
+        self.lbl4Result.config(text="0")
+        self.lblNetTotal.config(text="0")
