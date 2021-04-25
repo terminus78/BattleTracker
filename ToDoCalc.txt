@@ -11,6 +11,22 @@ To Do List:
 	# Save file naming and handling
 	# Improve top level window info communication
 	#T Input scrubbing
+	- TV Pixel resolution differences
+	- Initiative issues
+		- Round reset
+		- Way to set in-game
+		- Remove from initiative when dead
+	- Trig window error with having been open too long
+	- Investigate calculation while loop inf run
+	- Fix button widths for initiative window
+	- Show each roll value in dice roller
+	- Multiple images for all token types and options
+	- Ring highlights for effects like concentration and conditions
+	- Trig calculation to any space
+	- Undo/Redo for actions
+	- Buff/Debuff conditions
+	- Resistant or vulnerable dice mods
+	- Multiple roll of same dice considered in net total
 	- Trig calculation fix for large and up (big oof)
 	- Field highlighting (oof)
 	- Round/Initiative Progression

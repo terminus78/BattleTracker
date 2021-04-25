@@ -154,7 +154,7 @@ class BattleMap(object):
         # Roundbar
         lblRoundTitle = ttk.Label(master=self.roundBar, text="Round: ", font=self.bigFont)
         lblRoundTitle.grid(row=0, column=0, sticky='e')
-        self.lblRound = ttk.Label(master=self.roundBar, text=self.round, font=self.bigFont, borderwidth=1, relief=tk.RAISED, width=3, anchor=tk.CENTER)
+        self.lblRound = ttk.Label(master=self.roundBar, text="S", font=self.bigFont, borderwidth=1, relief=tk.RAISED, width=3, anchor=tk.CENTER)
         self.lblRound.grid(row=0, column=1, sticky='w')
         self.initiativeFrame = ttk.Frame(master=self.roundBar)
         self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='ew')
@@ -163,6 +163,8 @@ class BattleMap(object):
         btnNextTurn.grid(row=2, column=0, columnspan=2)
         btnNextRound = ttk.Button(master=self.roundBar, text="Round Complete", command=self.nextRound)
         btnNextRound.grid(row=3, column=0, columnspan=2)
+        btnResetRounds = ttk.Button(master=self.roundBar, text="Reset Rounds", command=self.resetRound)
+        btnResetRounds.grid(row=4, column=0, columnspan=2)
 
         # Toolbar Buttons
         self.btnMove = ttk.Button(master=self.toolBar, command=self.moveToken, image=moveIcon)
@@ -314,6 +316,12 @@ class BattleMap(object):
     def nextRound(self):
         self.round += 1
         self.lblRound.config(text=self.round)
+        self.turn = 0
+        self.refreshInitiatives()
+
+    def resetRound(self):
+        self.round = 0
+        self.lblRound.config(text="S")
         self.turn = 0
         self.refreshInitiatives()
 

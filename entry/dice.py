@@ -59,52 +59,64 @@ class DiceRoller():
         d4Pic = ImageTk.PhotoImage(image=PIL.Image.open(d4Path).resize((50,50)))
         #coinPath = "entry\\bin\\coin.png"
         #coinPic = ImageTk.PhotoImage(image=PIL.Image.open(coinPath).resize((50,50)))
+        redD20Path = "entry\\bin\\red-dice-twenty-faces-twenty.png"
+        redD20Pic = ImageTk.PhotoImage(image=PIL.Image.open(redD20Path).resize((50,50)))
+        redD12Path = "entry\\bin\\red-d12.png"
+        redD12Pic = ImageTk.PhotoImage(image=PIL.Image.open(redD12Path).resize((50,50)))
+        redD10Path = "entry\\bin\\red-d10.png"
+        redD10Pic = ImageTk.PhotoImage(image=PIL.Image.open(redD10Path).resize((50,50)))
+        redD8Path = "entry\\bin\\red-dice-eight-faces-eight.png"
+        redD8Pic = ImageTk.PhotoImage(image=PIL.Image.open(redD8Path).resize((50,50)))
+        redD6Path = "entry\\bin\\red-perspective-dice-six-faces-six.png"
+        redD6Pic = ImageTk.PhotoImage(image=PIL.Image.open(redD6Path).resize((50,50)))
+        redD4Path = "entry\\bin\\red-d4.png"
+        redD4Pic = ImageTk.PhotoImage(image=PIL.Image.open(redD4Path).resize((50,50)))
 
         lblD100Title = ttk.Label(master=diceSelectionFrame, text="D100", font=self.font)
-        lblD100Title.image = d10Pic
+        lblD100Title.image = redD10Pic
         lblD100Title.grid(row=0, column=0)
         lblD20Title = ttk.Label(master=diceSelectionFrame, text="D20", font=self.font)
-        lblD20Title.image = d20Pic
+        lblD20Title.image = redD20Pic
         lblD20Title.grid(row=0, column=1)
         lblD12Title = ttk.Label(master=diceSelectionFrame, text="D12", font=self.font)
-        lblD12Title.image = d12Pic
+        lblD12Title.image = redD12Pic
         lblD12Title.grid(row=0, column=2)
         lblD10Title = ttk.Label(master=diceSelectionFrame, text="D10", font=self.font)
-        lblD10Title.image = d10Pic
+        lblD10Title.image = redD10Pic
         lblD10Title.grid(row=0, column=3)
         lblD8Title = ttk.Label(master=diceSelectionFrame, text="D8", font=self.font)
-        lblD8Title.image = d8Pic
+        lblD8Title.image = redD8Pic
         lblD8Title.grid(row=0, column=4)
         lblD6Title = ttk.Label(master=diceSelectionFrame, text="D6", font=self.font)
-        lblD6Title.image = d6Pic
+        lblD6Title.image = redD6Pic
         lblD6Title.grid(row=0, column=5)
         lblD4Title = ttk.Label(master=diceSelectionFrame, text="D4", font=self.font)
-        lblD4Title.image = d4Pic
+        lblD4Title.image = redD4Pic
         lblD4Title.grid(row=0, column=6)
         #lblCoinTitle = ttk.Label(master=diceSelectionFrame, text="Coin", font=self.font)
         #lblCoinTitle.image = coinPic
         #lblCoinTitle.grid(row=0, column=7)
 
-        lblD100 = ttk.Label(master=diceSelectionFrame, image=d10Pic)
-        lblD100.image = d10Pic
+        lblD100 = ttk.Label(master=diceSelectionFrame, image=redD10Pic)
+        lblD100.image = redD10Pic
         lblD100.grid(row=1, column=0)
-        lblD20 = ttk.Label(master=diceSelectionFrame, image=d20Pic)
-        lblD20.image = d20Pic
+        lblD20 = ttk.Label(master=diceSelectionFrame, image=redD20Pic)
+        lblD20.image = redD20Pic
         lblD20.grid(row=1, column=1)
-        lblD12 = ttk.Label(master=diceSelectionFrame, image=d12Pic)
-        lblD12.image = d12Pic
+        lblD12 = ttk.Label(master=diceSelectionFrame, image=redD12Pic)
+        lblD12.image = redD12Pic
         lblD12.grid(row=1, column=2)
-        lblD10 = ttk.Label(master=diceSelectionFrame, image=d10Pic)
-        lblD10.image = d10Pic
+        lblD10 = ttk.Label(master=diceSelectionFrame, image=redD10Pic)
+        lblD10.image = redD10Pic
         lblD10.grid(row=1, column=3)
-        lblD8 = ttk.Label(master=diceSelectionFrame, image=d8Pic)
-        lblD8.image = d8Pic
+        lblD8 = ttk.Label(master=diceSelectionFrame, image=redD8Pic)
+        lblD8.image = redD8Pic
         lblD8.grid(row=1, column=4)
-        lblD6 = ttk.Label(master=diceSelectionFrame, image=d6Pic)
-        lblD6.image = d6Pic
+        lblD6 = ttk.Label(master=diceSelectionFrame, image=redD6Pic)
+        lblD6.image = redD6Pic
         lblD6.grid(row=1, column=5)
-        lblD4 = ttk.Label(master=diceSelectionFrame, image=d4Pic)
-        lblD4.image = d4Pic
+        lblD4 = ttk.Label(master=diceSelectionFrame, image=redD4Pic)
+        lblD4.image = redD4Pic
         lblD4.grid(row=1, column=6)
         #lblCoin = ttk.Label(master=diceSelectionFrame, image=coinPic)
         #lblCoin.image = coinPic
