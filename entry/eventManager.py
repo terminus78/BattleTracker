@@ -69,14 +69,14 @@ class EventManager():
         self.btnCurrCoord.grid(row=1, column=0, sticky='w')
         self.lblActCoord = ttk.Label(master=self.selectionFrame, text=" ", font=self.font)
         self.lblActCoord.grid(row=1, column=1, sticky='w', columnspan=2)
-        lblInitTitle = ttk.Label(master=self.selectionFrame, text="Change Initiative", font=self.font)
-        lblInitTitle.grid(row=2, column=0, sticky='w')
-        initFrame = ttk.Frame(master=self.selectionFrame)
-        initFrame.grid(row=2, column=1, sticky='e')
-        self.entInit = ttk.Entry(master=initFrame, width=5)
-        self.entInit.grid(row=0, column=0, sticky='w')
-        btnRoll = ttk.Button(master=initFrame, text="Roll", width=5, command=self.rollInit)
-        btnRoll.grid(row=0, column=1, sticky='w')
+        #lblInitTitle = ttk.Label(master=self.selectionFrame, text="Change Initiative", font=self.font)
+        #lblInitTitle.grid(row=2, column=0, sticky='w')
+        #initFrame = ttk.Frame(master=self.selectionFrame)
+        #initFrame.grid(row=2, column=1, sticky='e')
+        #self.entInit = ttk.Entry(master=initFrame, width=5)
+        #self.entInit.grid(row=0, column=0, sticky='w')
+        #btnRoll = ttk.Button(master=initFrame, text="Roll", width=5, command=self.rollInit)
+        #btnRoll.grid(row=0, column=1, sticky='w')
         lblSetNewCoord = ttk.Label(master=self.moveToFrame, text="Set New Coordinate", font=self.font)
         lblSetNewCoord.grid(row=0, column=0, sticky='w')
         coordFrame = ttk.Frame(master=self.moveToFrame)
@@ -274,6 +274,48 @@ class EventManager():
                 return False
         #else:
             #newCoord = ["", "", ""]
+
+        '''
+        newInit = self.entInit.get()
+        if newInit == "":
+            newInit = self.root.tokenList[index]['initiative']
+        else:
+            try:
+                newInit = float(newInit)
+                checkNotFinished = True
+                loopCounter = 0
+                while checkNotFinished:
+                    for being in self.root.tokenList:
+                        loopCounter += 1
+                        if being['initiative'] == newInit:
+                            notResolved = True
+                            multiplyer = 0.1
+                            subOffset = 5
+                            innerFail = 0
+                            while notResolved:
+                                multiplyer *= 0.1
+                                subOffset *= 0.1
+                                rollNewGuy = self.dice.roll(dieSize=100)[0]
+                                newInit = newInit + (rollNewGuy * multiplyer - subOffset)
+                                if newInit != being['initiative']:
+                                    notResolved = False
+                                if innerFail == 100:
+                                    messagebox.showerror("System Error", "Restart Program\nError 0x004")
+                                    notResolved = False
+                                    checkNotFinished = False
+                                innerFail += 1
+                            break
+                        elif loopCounter >= len(self.root.tokenList):
+                            checkNotFinished = False
+                        elif loopCounter > 100:
+                            messagebox.showerror("System Error", "Restart Program\nError 0x005")
+                            checkNotFinished = False
+            except ValueError:
+                newInit = self.root.tokenList[index]['initiative']
+            except TypeError:
+                newInit = self.root.tokenList[index]['initiative']
+        '''
+
         for being in self.root.tokenList:
             '''
             if being["coordinate"][0] == str(newCoord[0]) and being["coordinate"][1] == str(newCoord[1]):
@@ -282,6 +324,7 @@ class EventManager():
             '''
             if being["name"] == selOption:
                 being["coordinate"] = [str(newCoord[0]), str(newCoord[1]), str(newCoord[2])]
+                #being["initiative"] = newInit
         #self.lblSetFinished.config(text="Position set! Please close window.")
         return True
     
@@ -296,6 +339,7 @@ class EventManager():
                 being["coordinate"] = [newCoord[0], newCoord[1], newCoord[2]]
         return True
 
+    # Unused
     def rollInit(self):
         rolledValue = self.dice.roll()[0]
         self.entInit.delete(0, tk.END)

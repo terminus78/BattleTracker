@@ -299,30 +299,38 @@ class DiceRoller():
         #btnCoinRoll = ttk.Button(master=frameCoin, text="Roll", command=lambda: self.rollWinBtn('coin'))
         #btnCoinRoll.grid(row=4, column=0, columnspan=3, pady=10)
 
+        self.d100sRolled = ttk.Label(master=frameD100, text="", font=self.fontSmall)
+        self.d20sRolled = ttk.Label(master=frameD20, text="", font=self.fontSmall)
+        self.d12sRolled = ttk.Label(master=frameD12, text="", font=self.fontSmall)
+        self.d10sRolled = ttk.Label(master=frameD10, text="", font=self.fontSmall)
+        self.d8sRolled = ttk.Label(master=frameD8, text="", font=self.fontSmall)
+        self.d6sRolled = ttk.Label(master=frameD6, text="", font=self.fontSmall)
+        self.d4sRolled = ttk.Label(master=frameD4, text="", font=self.fontSmall)
+
         # Results
         frameRes1 = ttk.Frame(master=frameD100)
-        frameRes1.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes1.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes1.columnconfigure([0,1], weight=1)
         frameRes2 = ttk.Frame(master=frameD20)
-        frameRes2.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes2.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes2.columnconfigure([0,1], weight=1)
         frameRes3 = ttk.Frame(master=frameD12)
-        frameRes3.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes3.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes3.columnconfigure([0,1], weight=1)
         frameRes4 = ttk.Frame(master=frameD10)
-        frameRes4.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes4.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes4.columnconfigure([0,1], weight=1)
         frameRes5 = ttk.Frame(master=frameD8)
-        frameRes5.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes5.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes5.columnconfigure([0,1], weight=1)
         frameRes6 = ttk.Frame(master=frameD6)
-        frameRes6.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes6.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes6.columnconfigure([0,1], weight=1)
         frameRes7 = ttk.Frame(master=frameD4)
-        frameRes7.grid(row=5, column=0, columnspan=3, pady=10)
+        frameRes7.grid(row=6, column=0, columnspan=3, pady=10)
         frameRes7.columnconfigure([0,1], weight=1)
         #frameRes8 = ttk.Frame(master=frameCoin)
-        #frameRes8.grid(row=5, column=0, columnspan=3, pady=10)
+        #frameRes8.grid(row=6, column=0, columnspan=3, pady=10)
         #frameRes8.columnconfigure([0,1], weight=1)
 
         lbl100Marker = ttk.Label(master=frameRes1, text="Roll: ", font=self.font)
@@ -698,8 +706,19 @@ class DiceRoller():
                 return
             result100List = self.roll(dieSize=100, numDice=num100)
             dice100Sum = 0
+            rollValues = str(result100List[0])
+            numOfLoops = 0
             for res in result100List:
                 dice100Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num100 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num100 > 0:
+                self.d100sRolled.config(text=rollValues)
+                self.d100sRolled.grid(row=5, column=0)
+            else:
+                self.d100sRolled.grid_forget()
             mod100Str = str(mod100)
             if mod100 > 0:
                 mod100Str = "+" + mod100Str
@@ -716,8 +735,19 @@ class DiceRoller():
                 return
             result20List = self.roll(dieSize=20, numDice=num20)
             dice20Sum = 0
+            rollValues = str(result20List[0])
+            numOfLoops = 0
             for res in result20List:
                 dice20Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num20 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num20 > 0:
+                self.d20sRolled.config(text=rollValues)
+                self.d20sRolled.grid(row=5, column=0)
+            else:
+                self.d20sRolled.grid_forget()
             mod20Str = str(mod20)
             if mod20 > 0:
                 mod20Str = "+" + mod20Str
@@ -734,8 +764,19 @@ class DiceRoller():
                 return
             result12List = self.roll(dieSize=12, numDice=num12)
             dice12Sum = 0
+            rollValues = str(result12List[0])
+            numOfLoops = 0
             for res in result12List:
                 dice12Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num12 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num12 > 0:
+                self.d12sRolled.config(text=rollValues)
+                self.d12sRolled.grid(row=5, column=0)
+            else:
+                self.d12sRolled.grid_forget()
             mod12Str = str(mod12)
             if mod12 > 0:
                 mod12Str = "+" + mod12Str
@@ -752,8 +793,19 @@ class DiceRoller():
                 return
             result10List = self.roll(dieSize=10, numDice=num10)
             dice10Sum = 0
+            rollValues = str(result10List[0])
+            numOfLoops = 0
             for res in result10List:
                 dice10Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num10 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num10 > 0:
+                self.d10sRolled.config(text=rollValues)
+                self.d10sRolled.grid(row=5, column=0)
+            else:
+                self.d10sRolled.grid_forget()
             mod10Str = str(mod10)
             if mod10 > 0:
                 mod10Str = "+" + mod10Str
@@ -770,8 +822,19 @@ class DiceRoller():
                 return
             result8List = self.roll(dieSize=8, numDice=num8)
             dice8Sum = 0
+            rollValues = str(result8List[0])
+            numOfLoops = 0
             for res in result8List:
                 dice8Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num8 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num8 > 0:
+                self.d8sRolled.config(text=rollValues)
+                self.d8sRolled.grid(row=5, column=0)
+            else:
+                self.d8sRolled.grid_forget()
             mod8Str = str(mod8)
             if mod8 > 0:
                 mod8Str = "+" + mod8Str
@@ -788,8 +851,19 @@ class DiceRoller():
                 return
             result6List = self.roll(dieSize=6, numDice=num6)
             dice6Sum = 0
+            rollValues = str(result6List[0])
+            numOfLoops = 0
             for res in result6List:
                 dice6Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num6 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num6 > 0:
+                self.d6sRolled.config(text=rollValues)
+                self.d6sRolled.grid(row=5, column=0)
+            else:
+                self.d6sRolled.grid_forget()
             mod6Str = str(mod6)
             if mod6 > 0:
                 mod6Str = "+" + mod6Str
@@ -806,8 +880,19 @@ class DiceRoller():
                 return
             result4List = self.roll(dieSize=4, numDice=num4)
             dice4Sum = 0
+            rollValues = str(result4List[0])
+            numOfLoops = 0
             for res in result4List:
                 dice4Sum += res
+                if numOfLoops > 0:
+                    rollValues = rollValues + f" {res},"
+                elif numOfLoops == num4 - 1:
+                    rollValues = rollValues + f" {res}"
+            if num4 > 0:
+                self.d4sRolled.config(text=rollValues)
+                self.d4sRolled.grid(row=5, column=0)
+            else:
+                self.d4sRolled.grid_forget()
             mod4Str = str(mod4)
             if mod4 > 0:
                 mod4Str = "+" + mod4Str

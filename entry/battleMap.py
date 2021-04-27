@@ -163,11 +163,11 @@ class BattleMap(object):
         self.initiativeFrame = ttk.Frame(master=self.roundBar)
         self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='ew')
         self.initiativeFrame.columnconfigure([0,1], weight=1)
-        btnNextTurn = ttk.Button(master=self.roundBar, text="Turn Complete", command=self.nextTurn)
+        btnNextTurn = ttk.Button(master=self.roundBar, text="Turn Complete", command=self.nextTurn, width=18)
         btnNextTurn.grid(row=2, column=0, columnspan=2)
-        btnNextRound = ttk.Button(master=self.roundBar, text="Round Complete", command=self.nextRound)
+        btnNextRound = ttk.Button(master=self.roundBar, text="Round Complete", command=self.nextRound, width=18)
         btnNextRound.grid(row=3, column=0, columnspan=2)
-        btnResetRounds = ttk.Button(master=self.roundBar, text="Reset Rounds", command=self.resetRound)
+        btnResetRounds = ttk.Button(master=self.roundBar, text="Reset Rounds", command=self.resetRound, width=18)
         btnResetRounds.grid(row=4, column=0, columnspan=2)
 
         # Toolbar Buttons
@@ -227,15 +227,16 @@ class BattleMap(object):
                 colPos = int(being["coordinate"][0])
                 lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray28", borderwidth=0)
                 lblUnit.image = tokenImg
-                spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
-                rowCount = int(spaceCount / 3)
-                colCount = spaceCount % 3
-                lblUnit.grid(row=rowCount, column=colCount)
+                #spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
+                #rowCount = int(spaceCount / 3)
+                #colCount = spaceCount % 3
+                #lblUnit.grid(row=rowCount, column=colCount, sticky='nsew')
+                lblUnit.pack(fill='both', expand=True)
                 lblUnit.bind("<Button-3>", self.em.rightClickMenu)
-                CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
+                CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), leftDisp=True)
                 spaceTaken = 1
                 if being['initiative'] != -math.inf:
-                    self.initiativeHolder[being['name']] = being['initiative']
+                    self.initiativeHolder[being['name']] = (being['initiative'], being['type'])
                 if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
                     if being["size"] == "large":
                         spaceNeed = 4
@@ -256,12 +257,13 @@ class BattleMap(object):
                             colPos = int(being["coordinate"][0]) + colOffset
                             lblUnit = tk.Label(master=self.mapFrames[colPos][rowPos], image=tokenImg, bg="gray28", borderwidth=0)
                             lblUnit.image = tokenImg
-                            spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
-                            rowCount = int(spaceCount / 3)
-                            colCount = spaceCount % 3
-                            lblUnit.grid(row=rowCount, column=colCount)
+                            #spaceCount = len(self.mapFrames[colPos][rowPos].grid_slaves())
+                            #rowCount = int(spaceCount / 3)
+                            #colCount = spaceCount % 3
+                            #lblUnit.grid(row=rowCount, column=colCount)
+                            lblUnit.pack(fill='both', expand=True)
                             lblUnit.bind("<Button-3>", self.em.rightClickMenu)
-                            CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]))
+                            CreateToolTip(lblUnit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), leftDisp=True)
 
             else:
                 self.unusedTokens(being, tokenImg)
@@ -278,17 +280,17 @@ class BattleMap(object):
         self.sideCount += 1
     
     def postInitiatives(self):
-        initDictInOrder = {k:v for k, v in sorted(self.initiativeHolder.items(), key= lambda item: item[1], reverse=True)}
+        initDictInOrder = {k:v for k, v in sorted(self.initiativeHolder.items(), key= lambda item: item[1][0], reverse=True)}
         orderCount = 0
         lblTurnImg = tk.Label(master=self.initiativeFrame, image=self.turnIcon, bg="gray28", borderwidth=0)
         lblTurnImg.grid(row=self.turn, column=0, sticky='w')
         lblTurnImg.image = self.turnIcon
 
         for nextUp in initDictInOrder.items():
-            if nextUp[1] != math.inf:
+            if nextUp[1][0] != math.inf and nextUp[1][1] != 'dead':
                 lblYourTurn = ttk.Label(master=self.initiativeFrame, text=f"{nextUp[0]}: ", font=self.smallFont)
                 lblYourTurn.grid(row=orderCount, column=1, sticky='w')
-                lblYourInit = ttk.Label(master=self.initiativeFrame, text=nextUp[1], font=self.smallFont)
+                lblYourInit = ttk.Label(master=self.initiativeFrame, text=nextUp[1][0], font=self.smallFont)
                 lblYourInit.grid(row=orderCount, column=2, sticky='e')
                 orderCount += 1
 
@@ -332,7 +334,7 @@ class BattleMap(object):
     def refreshMap(self, reset=False):
         for row in self.mapFrames:
             for col in row:
-                removeTokens = col.grid_slaves()
+                removeTokens = col.pack_slaves()#grid_slaves()
                 if len(removeTokens) > 0:
                     for token in removeTokens:
                         token.destroy()

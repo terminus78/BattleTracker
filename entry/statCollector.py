@@ -20,7 +20,7 @@ class StatCollector(object):
         self.round = roundNum
         self.turn = turn
         self.rangeWin = tk.Toplevel(self.master)
-        self.rangeWin.title("Range Calculator")
+        self.rangeWin.title("Input Creature")
         style = ThemedStyle(self.rangeWin)
         style.theme_use("equilux")
         bg = style.lookup('TLabel', 'background')
@@ -174,6 +174,35 @@ class StatCollector(object):
         else:
             try:
                 initFlt = float(initGet)
+                checkNotFinished = True
+                loopCounter = 0
+                while checkNotFinished:
+                    for being in self.master.tokenList:
+                        loopCounter += 1
+                        if being['initiative'] == initFlt:
+                            notResolved = True
+                            multiplyer = 0.1
+                            subOffset = 5
+                            innerFail = 0
+                            while notResolved:
+                                multiplyer *= 0.1
+                                subOffset *= 0.1
+                                rollNewGuy = self.dice.roll(dieSize=100)[0]
+                                initFlt = initFlt + (rollNewGuy * multiplyer - subOffset)
+                                if initFlt != being['initiative']:
+                                    notResolved = False
+                                if innerFail == 100:
+                                    messagebox.showerror("System Error", "Restart Program\nError 0x002")
+                                    notResolved = False
+                                    checkNotFinished = False
+                                innerFail += 1
+                            break
+                        elif loopCounter >= len(self.master.tokenList):
+                            checkNotFinished = False
+                        elif loopCounter > 100:
+                            messagebox.showerror("System Error", "Restart Program\nError 0x003")
+                            checkNotFinished = False
+
             except ValueError:
                 messagebox.showwarning("Character Input", "Initiative must be a number.")
                 return False

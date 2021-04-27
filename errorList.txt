@@ -1,0 +1,5 @@
+0x001: Calculation while loop over iteration count
+0x002: StatCollector initiative resolution inner loop over count
+0x003: StatCollector initiative resolution outer loop over count
+0x004: Target initiative resolution inner loop over count
+0x005: Target initiative resolution outer loop over count

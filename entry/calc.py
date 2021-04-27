@@ -291,7 +291,7 @@ class Calculator():
                 distFound = True
             if countRounds == 50:
                 distFound = True
-                messagebox.showerror("Calculation Failure", "Restart program.\nError 0x001")
+                messagebox.showerror("System Error", "Restart program.\nError 0x001")
             countRounds += 1
         self.lblRelCalcResult.config(text=f"{distanceTraveled}ft")
 

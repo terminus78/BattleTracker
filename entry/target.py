@@ -3,10 +3,13 @@ import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
+from dice import DiceRoller
+
 
 class Target():
     def __init__(self, root):
         self.root = root
+        self.dice = DiceRoller()
 
     def targetWindow(self):
         self.regFont = ("Papyrus", "14")
@@ -132,6 +135,8 @@ class Target():
         lblChangeInit.grid(row=6, column=0, sticky='nw')
         self.entInitiative = ttk.Entry(master=self.actionFrame, width=27)
         self.entInitiative.grid(row=6, column=1, sticky='nw')
+        btnRollInit = ttk.Button(master=self.actionFrame, text="Roll", command=self.rollInit, width=20)
+        btnRollInit.grid(row=6, column=2, columnspan=2, sticky='nw')
 
         lblChangeCondition = ttk.Label(master=self.actionFrame, text="Change Condition", font=self.regFont)
         lblChangeCondition.grid(row=7, column=0, sticky='nw')
@@ -345,6 +350,34 @@ class Target():
         else:
             try:
                 newInit = float(newInit)
+                checkNotFinished = True
+                loopCounter = 0
+                while checkNotFinished:
+                    for being in self.root.tokenList:
+                        loopCounter += 1
+                        if being['initiative'] == newInit:
+                            notResolved = True
+                            multiplyer = 0.1
+                            subOffset = 5
+                            innerFail = 0
+                            while notResolved:
+                                multiplyer *= 0.1
+                                subOffset *= 0.1
+                                rollNewGuy = self.dice.roll(dieSize=100)[0]
+                                newInit = round(newInit + (rollNewGuy * multiplyer - subOffset), 8)
+                                if newInit != being['initiative']:
+                                    notResolved = False
+                                if innerFail == 100:
+                                    messagebox.showerror("System Error", "Restart Program\nError 0x004")
+                                    notResolved = False
+                                    checkNotFinished = False
+                                innerFail += 1
+                            break
+                        elif loopCounter >= len(self.root.tokenList):
+                            checkNotFinished = False
+                        elif loopCounter > 100:
+                            messagebox.showerror("System Error", "Restart Program\nError 0x005")
+                            checkNotFinished = False
             except ValueError:
                 newInit = objTarget['initiative']
             except TypeError:
@@ -446,3 +479,8 @@ class Target():
         aslp = self.condUnconscious.get()
         if parlz == 1 or petr == 1 or stun == 1 or aslp == 1:
             self.condIncapacitated.set(1)
+
+    def rollInit(self):
+        diceRoll = self.dice.roll()[0]
+        self.entInitiative.delete(0, tk.END)
+        self.entInitiative.insert(0, diceRoll)

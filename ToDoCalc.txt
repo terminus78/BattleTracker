@@ -11,37 +11,39 @@ To Do List:
 	# Save file naming and handling
 	# Improve top level window info communication
 	#T Input scrubbing
-	- TV Pixel resolution differences
-	- Initiative issues
+	# Center tokens
+	# Initiative issues
 		# Round reset
-		- Way to set in-game
-		- Remove from initiative when dead
+		# Way to set in-game
+		# Remove from initiative when dead
+		# Automatic conflict resolution
 	- Trig window error with having been open too long
 	- Investigate calculation while loop inf run
-	- Fix button widths for initiative window
+	# Fix button widths for initiative window
 	- Show each roll value in dice roller
+	- Multiple roll of same dice considered in net total
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
 	- Trig calculation to any space
 	- Undo/Redo for actions
 	- Buff/Debuff conditions
 	- Resistant or vulnerable dice mods
-	- Multiple roll of same dice considered in net total
-	- Trig calculation fix for large and up (big oof)
-	- Field highlighting (oof)
+	- Trig calculation fix for large and up
+	- Field highlighting
 	- Round/Initiative Progression
 	- Collisions
 	- Advanced stats
-	- Minion generator (*not so soft sobbing)
-	- Controller pane (holy Jesus my ass is bleeding)
-	- Movement (oof)
-	- Objects (face-palm)
-	- Creature Template Library (oh God the work!)
-	- Library Template Creator (*soft sobbing)
+	- Minion generator
+	- Controller pane
+	- Movement
+	- Objects
+	- Creature Template Library
+	- Library Template Creator
+	- TV Pixel resolution differences
 	-- Advanced Version
 		- Terrain mapping
 		- Object movement
 		- Vehicles
 		- Non-standard creature sizing
 		? Spell compendium
-	? Version for Mac and Linux (all the stages of grief)
+	? Version for Mac and Linux
