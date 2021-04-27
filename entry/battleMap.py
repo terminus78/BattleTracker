@@ -154,7 +154,11 @@ class BattleMap(object):
         # Roundbar
         lblRoundTitle = ttk.Label(master=self.roundBar, text="Round: ", font=self.bigFont)
         lblRoundTitle.grid(row=0, column=0, sticky='e')
-        self.lblRound = ttk.Label(master=self.roundBar, text="S", font=self.bigFont, borderwidth=1, relief=tk.RAISED, width=3, anchor=tk.CENTER)
+        if self.round == 0:
+            tmpRound = "S"
+        else:
+            tmpRound = self.round
+        self.lblRound = ttk.Label(master=self.roundBar, text=tmpRound, font=self.bigFont, borderwidth=1, relief=tk.RAISED, width=3, anchor=tk.CENTER)
         self.lblRound.grid(row=0, column=1, sticky='w')
         self.initiativeFrame = ttk.Frame(master=self.roundBar)
         self.initiativeFrame.grid(row=1, column=0, columnspan=2, sticky='ew')

@@ -58,10 +58,12 @@ class Target():
         lblStaticSize.grid(row=6, column=0, sticky='nw')
         lblStaticCoord = ttk.Label(self.statFrame, text="Coordinate: ", font=self.regFont)
         lblStaticCoord.grid(row=7, column=0, sticky='nw')
+        lblStaticInit = ttk.Label(self.statFrame, text="Initiative: ", font=self.regFont)
+        lblStaticInit.grid(row=8, column=0, sticky='nw')
         lblStaticCondition = ttk.Label(self.statFrame, text="Condition: ", font=self.regFont)
-        lblStaticCondition.grid(row=8, column=0, sticky='nw')
+        lblStaticCondition.grid(row=9, column=0, sticky='nw')
         lblStaticNotes = ttk.Label(self.statFrame, text="Notes: ", font=self.regFont)
-        lblStaticNotes.grid(row=9, column=0, sticky='nw')
+        lblStaticNotes.grid(row=10, column=0, sticky='nw')
 
         self.lblActName = ttk.Label(self.statFrame, text=" ", font=self.regFont)
         self.lblActName.grid(row=0, column=1, sticky='nw')
@@ -79,10 +81,12 @@ class Target():
         self.lblActSize.grid(row=6, column=1, sticky='nw')
         self.lblActCoord = ttk.Label(self.statFrame, text=" ", font=self.regFont)
         self.lblActCoord.grid(row=7, column=1, sticky='nw')
+        self.lblActInit = ttk.Label(self.statFrame, text=" ", font=self.regFont)
+        self.lblActInit.grid(row=8, column=1, sticky='nw')
         self.lblActCondition = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActCondition.grid(row=8, column=1, sticky='nw')
+        self.lblActCondition.grid(row=9, column=1, sticky='nw')
         self.lblActNotes = ttk.Label(self.statFrame, text=" ", font=self.regFont)
-        self.lblActNotes.grid(row=9, column=1, sticky='nw')
+        self.lblActNotes.grid(row=10, column=1, sticky='nw')
 
         lblChangeName = ttk.Label(master=self.actionFrame, text="Change Name", font=self.regFont)
         lblChangeName.grid(row=0, column=0, sticky='nw')
@@ -124,21 +128,13 @@ class Target():
         self.rbnDead = ttk.Radiobutton(master=self.actionFrame, text="Dead", variable= self.type, value="dead")
         self.rbnDead.grid(row=5, column=3, sticky='nw')
 
-        '''
-        lblMove = ttk.Label(master=self.actionFrame, text="Move Target", font=self.regFont)
-        lblMove.grid(row=4, column=0, sticky='nw')
-        moveFrame = ttk.Frame(master=self.actionFrame)
-        moveFrame.grid(row=4, column=1, sticky='ne')
-        self.entRow = ttk.Entry(master=moveFrame, width=5)
-        self.entRow.grid(row=0, column=0, sticky='ne')
-        self.entCol = ttk.Entry(master=moveFrame, width=5)
-        self.entCol.grid(row=0, column=1, sticky='ne')
-        self.entZ = ttk.Entry(master=moveFrame, width=5)
-        self.entZ.grid(row=0, column=2, sticky='ne')
-        '''
+        lblChangeInit = ttk.Label(master=self.actionFrame, text="Change Initiative", font=self.regFont)
+        lblChangeInit.grid(row=6, column=0, sticky='nw')
+        self.entInitiative = ttk.Entry(master=self.actionFrame, width=27)
+        self.entInitiative.grid(row=6, column=1, sticky='nw')
 
         lblChangeCondition = ttk.Label(master=self.actionFrame, text="Change Condition", font=self.regFont)
-        lblChangeCondition.grid(row=6, column=0, sticky='nw')
+        lblChangeCondition.grid(row=7, column=0, sticky='nw')
         self.condNormal = tk.IntVar()
         self.condBlind = tk.IntVar()
         self.condCharmed = tk.IntVar()
@@ -155,49 +151,49 @@ class Target():
         self.condStunned = tk.IntVar()
         self.condUnconscious = tk.IntVar()
         self.cbnNormal = ttk.Checkbutton(master=self.actionFrame, text="Normal", variable=self.condNormal, command=self.onOffButtons)
-        self.cbnNormal.grid(row=6, column=2, columnspan=2,sticky='nw')
+        self.cbnNormal.grid(row=7, column=2, columnspan=2,sticky='nw')
         self.cbnBlind = ttk.Checkbutton(master=self.actionFrame, text="Blinded", variable=self.condBlind)
-        self.cbnBlind.grid(row=7, column=2, sticky='nw')
+        self.cbnBlind.grid(row=8, column=2, sticky='nw')
         self.cbnCharmed = ttk.Checkbutton(master=self.actionFrame, text="Charmed", variable=self.condCharmed)
-        self.cbnCharmed.grid(row=7, column=3, sticky='nw')
+        self.cbnCharmed.grid(row=8, column=3, sticky='nw')
         self.cbnDeaf = ttk.Checkbutton(master=self.actionFrame, text="Deafened", variable=self.condDeaf)
-        self.cbnDeaf.grid(row=8, column=2, sticky='nw')
+        self.cbnDeaf.grid(row=9, column=2, sticky='nw')
         self.cbnFright = ttk.Checkbutton(master=self.actionFrame, text="Frightened", variable=self.condFright)
-        self.cbnFright.grid(row=8, column=3, sticky='nw')
+        self.cbnFright.grid(row=9, column=3, sticky='nw')
         self.cbnGrappled = ttk.Checkbutton(master=self.actionFrame, text="Grappled", variable=self.condGrappled)
-        self.cbnGrappled.grid(row=9, column=2, sticky='nw')
+        self.cbnGrappled.grid(row=10, column=2, sticky='nw')
         self.cbnIncapacitated = ttk.Checkbutton(master=self.actionFrame, text="Incapacitated", variable=self.condIncapacitated, command=self.connectedCond)
-        self.cbnIncapacitated.grid(row=9, column=3, sticky='nw')
+        self.cbnIncapacitated.grid(row=10, column=3, sticky='nw')
         self.cbnInvisible = ttk.Checkbutton(master=self.actionFrame, text="Invisible", variable=self.condInvisible)
-        self.cbnInvisible.grid(row=10, column=2, sticky='nw')
+        self.cbnInvisible.grid(row=11, column=2, sticky='nw')
         self.cbnParalyzed = ttk.Checkbutton(master=self.actionFrame, text="Paralyzed", variable=self.condParalyzed, command=self.connectedCond)
-        self.cbnParalyzed.grid(row=10, column=3, sticky='nw')
+        self.cbnParalyzed.grid(row=11, column=3, sticky='nw')
         self.cbnPetrified = ttk.Checkbutton(master=self.actionFrame, text="Petrified", variable=self.condPetrified, command=self.connectedCond)
-        self.cbnPetrified.grid(row=11, column=2, sticky='nw')
+        self.cbnPetrified.grid(row=12, column=2, sticky='nw')
         self.cbnPoisoned = ttk.Checkbutton(master=self.actionFrame, text="Poisoned", variable=self.condPoisoned)
-        self.cbnPoisoned.grid(row=11, column=3, sticky='nw')
+        self.cbnPoisoned.grid(row=12, column=3, sticky='nw')
         self.cbnProne = ttk.Checkbutton(master=self.actionFrame, text="Prone", variable=self.condProne)
-        self.cbnProne.grid(row=12, column=2, sticky='nw')
+        self.cbnProne.grid(row=13, column=2, sticky='nw')
         self.cbnRestrained = ttk.Checkbutton(master=self.actionFrame, text="Restrained", variable=self.condRestrained)
-        self.cbnRestrained.grid(row=12, column=3, sticky='nw')
+        self.cbnRestrained.grid(row=13, column=3, sticky='nw')
         self.cbnStunned = ttk.Checkbutton(master=self.actionFrame, text="Stunned", variable=self.condStunned, command=self.connectedCond)
-        self.cbnStunned.grid(row=13, column=2, sticky='nw')
+        self.cbnStunned.grid(row=14, column=2, sticky='nw')
         self.cbnUnconscious = ttk.Checkbutton(master=self.actionFrame, text="Unconscious", variable=self.condUnconscious, command=self.connectedCond)
-        self.cbnUnconscious.grid(row=13, column=3, sticky='nw')
+        self.cbnUnconscious.grid(row=14, column=3, sticky='nw')
         lblExhaustion = ttk.Label(master=self.actionFrame, text="Exhaustion", font=self.regFont)
-        lblExhaustion.grid(row=14, column=2, columnspan=2)
+        lblExhaustion.grid(row=15, column=2, columnspan=2)
         self.exhaustionLevel = tk.IntVar()
         self.sldrExhaustion = tk.Scale(master=self.actionFrame, from_=0, to=6, variable=self.exhaustionLevel, orient=tk.HORIZONTAL, tickinterval=1, bg='gray28', fg='gray70', font=self.smallFont, highlightbackground='gray28', highlightcolor='gray28')
-        self.sldrExhaustion.grid(row=15, column=2, columnspan=2)
+        self.sldrExhaustion.grid(row=16, column=2, columnspan=2)
 
         lblChangeNotes = ttk.Label(master=self.actionFrame, text="Change Notes", font=self.regFont)
-        lblChangeNotes.grid(row=16, column=0, sticky='nw')
+        lblChangeNotes.grid(row=17, column=0, sticky='nw')
         self.checkDelete = tk.IntVar()
         cbnDeleteNotes = ttk.Checkbutton(master=self.actionFrame, text="Delete Notes", variable=self.checkDelete)
-        cbnDeleteNotes.grid(row=16, column=1, sticky='ne')
+        cbnDeleteNotes.grid(row=17, column=1, sticky='ne')
         self.txtChangeNotes = tk.Text(master=self.actionFrame, height=5, width=52)
         self.txtChangeNotes.configure(font=self.smallFont)
-        self.txtChangeNotes.grid(row=17, column=0, columnspan=4)
+        self.txtChangeNotes.grid(row=18, column=0, columnspan=4)
 
         self.btnSubmit = ttk.Button(master=self.submitFrame, text="Submit", width=20)#, command=self.onSubmit)
         self.btnSubmit.grid(row=0, column=0, sticky='e')
@@ -231,6 +227,10 @@ class Target():
                 allConditions += cond
             else:
                 allConditions = allConditions + ", " + cond
+        initCheck = objTarget['initiative']
+        if initCheck == math.inf:
+            initCheck = "Out of Initiative"
+        self.lblActInit.config(text=initCheck)
         self.lblActCondition.config(text=allConditions)
         self.lblActNotes.config(text=objTarget['notes'])
 
@@ -339,29 +339,17 @@ class Target():
         else:
             newCurrHP = objTarget['currentHP']
 
-        '''
-        testRow = self.entRow.get()
-        testCol = self.entCol.get()
-        testZ = self.entZ.get()
-        offMap = False
-        try:
-            newRow = int(testRow) - 1
-            newCol = int(testCol) - 1
-            newZ = int(testZ)
-            if newRow < 0:
-                newRow = 0
-            if newCol < 0:
-                newCol = 0
-        except ValueError:
-            if objTarget['coordinate'][0] == "" or objTarget['coordinate'][1] == "" or objTarget['coordinate'][2] == "":
-                offMap = True
-            else:
-                newRow = int(objTarget['coordinate'][0])
-                newCol = int(objTarget['coordinate'][1])
-                newZ = int(objTarget['coordinate'][2])
-        if offMap:
-            newRow, newCol, newZ = ("" for i in range(3))
-        '''
+        newInit = self.entInitiative.get()
+        if newInit == "":
+            newInit = objTarget['initiative']
+        else:
+            try:
+                newInit = float(newInit)
+            except ValueError:
+                newInit = objTarget['initiative']
+            except TypeError:
+                newInit = objTarget['initiative']
+        
         newCondition = []
         if self.condNormal.get() == 1 and newType != 'dead':
             newCondition.append("normal")
@@ -419,7 +407,7 @@ class Target():
             "size": objTarget['size'],
             "coordinate": objTarget['coordinate'],
             "condition": newCondition,
-            "initiative": objTarget['initiative'],
+            "initiative": newInit,
             "notes": newNotes
         }
         if newObjTarget['name'] != objTarget['name']:

@@ -4,11 +4,13 @@ from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
 from bigHelper2D import correctPlacement
+from dice import DiceRoller
 
 class EventManager():
     def __init__(self, root):
         self.root = root
         self.font = ('Papyrus', '14')
+        self.dice = DiceRoller()
         
     def rightClickMenu(self, event):
         self.event = event
@@ -66,15 +68,25 @@ class EventManager():
         self.btnCurrCoord = ttk.Button(master=self.selectionFrame, text="Show Current Coordinate", command=lambda arg=[names, coordinates]: self.showCoord(arg))
         self.btnCurrCoord.grid(row=1, column=0, sticky='w')
         self.lblActCoord = ttk.Label(master=self.selectionFrame, text=" ", font=self.font)
-        self.lblActCoord.grid(row=1, column=1, sticky='w')
+        self.lblActCoord.grid(row=1, column=1, sticky='w', columnspan=2)
+        lblInitTitle = ttk.Label(master=self.selectionFrame, text="Change Initiative", font=self.font)
+        lblInitTitle.grid(row=2, column=0, sticky='w')
+        initFrame = ttk.Frame(master=self.selectionFrame)
+        initFrame.grid(row=2, column=1, sticky='e')
+        self.entInit = ttk.Entry(master=initFrame, width=5)
+        self.entInit.grid(row=0, column=0, sticky='w')
+        btnRoll = ttk.Button(master=initFrame, text="Roll", width=5, command=self.rollInit)
+        btnRoll.grid(row=0, column=1, sticky='w')
         lblSetNewCoord = ttk.Label(master=self.moveToFrame, text="Set New Coordinate", font=self.font)
         lblSetNewCoord.grid(row=0, column=0, sticky='w')
-        self.entRowCoord = ttk.Entry(master=self.moveToFrame, width=5)
-        self.entColCoord = ttk.Entry(master=self.moveToFrame, width=5)
-        self.entZCoord = ttk.Entry(master=self.moveToFrame, width=5)
-        self.entRowCoord.grid(row=0, column=1, sticky='w')
-        self.entColCoord.grid(row=0, column=2, sticky='w')
-        self.entZCoord.grid(row=0, column=3, sticky='w')
+        coordFrame = ttk.Frame(master=self.moveToFrame)
+        coordFrame.grid(row=0, column=1, columnspan=3, sticky='w')
+        self.entRowCoord = ttk.Entry(master=coordFrame, width=5)
+        self.entColCoord = ttk.Entry(master=coordFrame, width=5)
+        self.entZCoord = ttk.Entry(master=coordFrame, width=5)
+        self.entRowCoord.grid(row=0, column=0, sticky='w')
+        self.entColCoord.grid(row=0, column=1, sticky='w')
+        self.entZCoord.grid(row=0, column=2, sticky='w')
 
         self.lblOrThis = ttk.Label(master=self.moveToFrame, text="or move a number of spaces", font=self.font)
         #self.lblOrThis.grid(row=1, column=0, columnspan=4)
@@ -140,7 +152,7 @@ class EventManager():
         else:
             row = coordinates[index][0]
             col = coordinates[index][1]
-            if len(self.moveToFrame.grid_slaves()) > 4:
+            if len(self.moveToFrame.grid_slaves()) > 2:
                 self.lblOrThis.grid_forget()
                 self.lblFwdBack.grid_forget()
                 self.entRowDelta.grid_forget()
@@ -283,3 +295,8 @@ class EventManager():
             if being["name"] == selOption:
                 being["coordinate"] = [newCoord[0], newCoord[1], newCoord[2]]
         return True
+
+    def rollInit(self):
+        rolledValue = self.dice.roll()[0]
+        self.entInit.delete(0, tk.END)
+        self.entInit.insert(0, rolledValue)

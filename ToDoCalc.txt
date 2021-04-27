@@ -13,7 +13,7 @@ To Do List:
 	#T Input scrubbing
 	- TV Pixel resolution differences
 	- Initiative issues
-		- Round reset
+		# Round reset
 		- Way to set in-game
 		- Remove from initiative when dead
 	- Trig window error with having been open too long
