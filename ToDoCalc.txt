@@ -17,10 +17,11 @@ To Do List:
 		# Way to set in-game
 		# Remove from initiative when dead
 		# Automatic conflict resolution
+	- Convert camelCase to snake_case(AHHHHHHHHH!!!!!!!)
 	- Trig window error with having been open too long
 	- Investigate calculation while loop inf run
 	# Fix button widths for initiative window
-	- Show each roll value in dice roller
+	# Show each roll value in dice roller
 	- Multiple roll of same dice considered in net total
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions

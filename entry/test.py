@@ -3,7 +3,7 @@ import json
 
 '''
 with ZipFile("H:\\Projects\\Programs\\Calculator\\First Battle.brpg", "w") as savefile:
-    testObj = {
+    test_obj = {
         "TestDog": {
             "name": "TestDog",
             "hP": "5",
@@ -181,11 +181,11 @@ with ZipFile("H:\\Projects\\Programs\\Calculator\\First Battle.brpg", "w") as sa
             "notes": "When godzilla decides to help...\n"
         }
     }
-    testJSON = json.dumps(testObj, indent=4)
-    prefDict = {
+    testJSON = json.dumps(test_obj, indent=4)
+    pref_dict = {
         "mapSize": [32, 46]
     }
-    prefJSON = json.dumps(prefDict, indent=4)
+    prefJSON = json.dumps(pref_dict, indent=4)
     savefile.writestr('preferences.json', prefJSON)
     savefile.writestr('creatures.json', testJSON)
 

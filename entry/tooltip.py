@@ -9,19 +9,19 @@ class ToolTip(object):
         self.id = None
         self.x = self.y = 0
 
-    def showtip(self, text, leftDisp):
+    def showtip(self, text, left_disp):
         "Display text in tooltip window"
         self.text = text
-        xOffset = 17
-        yOffset = 7
+        x_offset = 17
+        y_offset = 7
         if self.tipwindow or not self.text:
             return
-        if leftDisp:
-            xOffset = -75
-            yOffset = 20
+        if left_disp:
+            x_offset = -75
+            y_offset = 20
         x, y, cx, cy = self.widget.bbox("insert")
-        x = x + self.widget.winfo_rootx() + xOffset
-        y = y + cy + self.widget.winfo_rooty() + yOffset
+        x = x + self.widget.winfo_rootx() + x_offset
+        y = y + cy + self.widget.winfo_rooty() + y_offset
         self.tipwindow = tw = Toplevel(self.widget)
         tw.wm_overrideredirect(1)
         tw.wm_geometry("+%d+%d" % (x, y))
@@ -30,14 +30,14 @@ class ToolTip(object):
                       font=("Papyrus", "8", "normal"))
         label.pack(ipadx=1)
         self.tipwindow.attributes("-alpha", 0.0)
-        self.fadeIn()
+        self.fade_in()
 
-    def fadeIn(self):
+    def fade_in(self):
         alpha = self.tipwindow.attributes("-alpha")
         if alpha < 1.0:
             alpha += 0.1
             self.tipwindow.attributes("-alpha", alpha)
-            self.tipwindow.after(100, self.fadeIn)
+            self.tipwindow.after(100, self.fade_in)
 
     def hidetip(self):
         tw = self.tipwindow
@@ -45,11 +45,11 @@ class ToolTip(object):
         if tw:
             tw.destroy()
 
-def CreateToolTip(widget, text, leftDisp=False):
-    toolTip = ToolTip(widget)
+def CreateToolTip(widget, text, left_disp=False):
+    tool_tip = ToolTip(widget)
     def enter(event):
-        toolTip.showtip(text, leftDisp)
+        tool_tip.showtip(text, left_disp)
     def leave(event):
-        toolTip.hidetip()
+        tool_tip.hidetip()
     widget.bind('<Enter>', enter)
     widget.bind('<Leave>', leave)

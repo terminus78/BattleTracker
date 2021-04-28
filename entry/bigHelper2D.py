@@ -1,78 +1,78 @@
-def correctPlacement(coordinate, size, mapSize):
-    cornerList = findCorners(coordinate, size)
-    refSpace = moveOntoMap(cornerList, mapSize)
-    return refSpace
+def correct_placement(coordinate, size, map_size):
+    corner_list = find_corners(coordinate, size)
+    ref_space = move_onto_map(corner_list, map_size)
+    return ref_space
 
-def findCorners(coordinate, size):
+def find_corners(coordinate, size):
     if size == 'large':
         offset = 1
     elif size == 'huge':
         offset = 2
     else:
         offset = 3
-    topLeft = coordinate
-    topRight = [
+    top_left = coordinate
+    top_right = [
         coordinate[0] + offset,
         coordinate[1],
         coordinate[2]
         ]   
-    bottomLeft = [
+    bottom_left = [
         coordinate[0],
         coordinate[1] + offset,
         coordinate[2]
         ]
-    bottomRight = [
+    bottom_right = [
         coordinate[0] + offset,
         coordinate[1] + offset,
         coordinate[2]
         ]
-    return [topLeft, topRight, bottomLeft, bottomRight]
+    return [top_left, top_right, bottom_left, bottom_right]
 
-def moveOntoMap(cornerList, mapSize):
-    refSpace = cornerList[0]
-    topRight = cornerList[1]
-    bottomLeft = cornerList[2]
-    bottomRight = cornerList[3]
-    while checkIfInMap(cornerList, mapSize) == False:
-        for corner in cornerList:
+def move_onto_map(corner_list, map_size):
+    ref_space = corner_list[0]
+    top_right = corner_list[1]
+    bottom_left = corner_list[2]
+    bottom_right = corner_list[3]
+    while check_if_in_map(corner_list, map_size) == False:
+        for corner in corner_list:
             if corner[0] < 0:
                 delta = 0 - corner[0]
-                refSpace[0] += delta
-                topRight[0] += delta
-                bottomLeft[0] += delta
-                bottomRight[0] += delta
+                ref_space[0] += delta
+                top_right[0] += delta
+                bottom_left[0] += delta
+                bottom_right[0] += delta
                 break
-            elif corner[0] > mapSize[0] - 1:
-                delta = corner[0] - mapSize[0] + 1
-                refSpace[0] -= delta
-                topRight[0] -= delta
-                bottomLeft[0] -= delta
-                bottomRight[0] -= delta
+            elif corner[0] > map_size[0] - 1:
+                delta = corner[0] - map_size[0] + 1
+                ref_space[0] -= delta
+                top_right[0] -= delta
+                bottom_left[0] -= delta
+                bottom_right[0] -= delta
                 break
             if corner[1] < 0:
                 delta = 0 - corner[1]
-                refSpace[1] += delta
-                topRight[1] += delta
-                bottomLeft[1] += delta
-                bottomRight[1] += delta
+                ref_space[1] += delta
+                top_right[1] += delta
+                bottom_left[1] += delta
+                bottom_right[1] += delta
                 break
-            elif corner[1] > mapSize[1] - 1:
-                delta = corner[1] - mapSize[1] + 1
-                refSpace[1] -= delta
-                topRight[1] -= delta
-                bottomLeft[1] -= delta
-                bottomRight[1] -= delta
+            elif corner[1] > map_size[1] - 1:
+                delta = corner[1] - map_size[1] + 1
+                ref_space[1] -= delta
+                top_right[1] -= delta
+                bottom_left[1] -= delta
+                bottom_right[1] -= delta
                 break
-        cornerList = [refSpace, topRight, bottomLeft, bottomRight]
-    return refSpace
+        corner_list = [ref_space, top_right, bottom_left, bottom_right]
+    return ref_space
 
-def checkIfInMap(cornerList, mapSize):
-    onMap = True
-    for corner in cornerList:
-        if corner[0] < 0 or corner[0] > mapSize[0] - 1:
-            onMap = False
-            return onMap
-        if corner[1] < 0 or corner[1] > mapSize[1] - 1:
-            onMap = False
-            return onMap
-    return onMap
+def check_if_in_map(corner_list, map_size):
+    on_map = True
+    for corner in corner_list:
+        if corner[0] < 0 or corner[0] > map_size[0] - 1:
+            on_map = False
+            return on_map
+        if corner[1] < 0 or corner[1] > map_size[1] - 1:
+            on_map = False
+            return on_map
+    return on_map

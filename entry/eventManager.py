@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
-from bigHelper2D import correctPlacement
+from bigHelper2D import correct_placement
 from dice import DiceRoller
 
 class EventManager():
@@ -12,335 +12,335 @@ class EventManager():
         self.font = ('Papyrus', '14')
         self.dice = DiceRoller()
         
-    def rightClickMenu(self, event):
+    def right_click_menu(self, event):
         self.event = event
-        self.tokenMenu = tk.Menu(self.root, tearoff=0)
-        #self.trigMenu = tk.Menu(self.tokenMenu, tearoff=0)
-        #self.aoeMenu = tk.Menu(self.tokenMenu, tearoff=0)
-        #self.tokenMenu.add_command(label="Target Creature")
-        #self.tokenMenu.add_command(label="Damage")
-        #self.tokenMenu.add_command(label="Heal")
-        self.tokenMenu.add_command(label="Conditions Info")
-        self.tokenMenu.add_separator()
-        #self.tokenMenu.add_cascade(label="Trig Functions", menu=self.trigMenu)
-        #self.trigMenu.add_command(label="Distance", command=findDistance)
-        #self.trigMenu.add_command(label="Find All in Range")
-        #self.trigMenu.add_command(label="Spread Width")
-        self.tokenMenu.add_cascade(label="AOE", menu=self.aoeMenu)
-        self.aoeMenu.add_command(label="Circle")
-        self.aoeMenu.add_command(label="Square")
-        self.aoeMenu.add_command(label="Cone")
-        self.aoeMenu.add_command(label="Line")
-        self.aoeMenu.add_command(label="Ring Wall")
-        self.aoeMenu.add_command(label="Line Wall")
+        self.token_menu = tk.Menu(self.root, tearoff=0)
+        #self.trig_menu = tk.Menu(self.token_menu, tearoff=0)
+        #self.aoe_menu = tk.Menu(self.token_menu, tearoff=0)
+        #self.token_menu.add_command(label="Target Creature")
+        #self.token_menu.add_command(label="Damage")
+        #self.token_menu.add_command(label="Heal")
+        self.token_menu.add_command(label="Conditions Info")
+        self.token_menu.add_separator()
+        #self.token_menu.add_cascade(label="Trig Functions", menu=self.trig_menu)
+        #self.trig_menu.add_command(label="Distance", command=findDistance)
+        #self.trig_menu.add_command(label="Find All in Range")
+        #self.trig_menu.add_command(label="Spread Width")
+        #self.token_menu.add_cascade(label="AOE", menu=self.aoe_menu)
+        #self.aoe_menu.add_command(label="Circle")
+        #self.aoe_menu.add_command(label="Square")
+        #self.aoe_menu.add_command(label="Cone")
+        #self.aoe_menu.add_command(label="Line")
+        #self.aoe_menu.add_command(label="Ring Wall")
+        #self.aoe_menu.add_command(label="Line Wall")
         try:
-            self.tokenMenu.tk_popup(self.event.x_root, self.event.y_root)
+            self.token_menu.tk_popup(self.event.x_root, self.event.y_root)
         finally:
-            self.tokenMenu.grab_release()
+            self.token_menu.grab_release()
 
-    def moveToken(self, mapSize):
-        self.mapSize = mapSize
-        self.moveWin = tk.Toplevel(master=self.root)
-        self.moveWin.title("Move Token")
-        style = ThemedStyle(self.moveWin)
+    def move_token(self, map_size):
+        self.map_size = map_size
+        self.move_win = tk.Toplevel(master=self.root)
+        self.move_win.title("Move Token")
+        style = ThemedStyle(self.move_win)
         style.theme_use("equilux")
         bg = style.lookup('TLabel', 'background')
         fg = style.lookup('TLabel', 'foreground')
-        self.moveWin.configure(bg=style.lookup('TLabel', 'background'))
-        self.moveWin.rowconfigure(0, minsize=100)
-        self.moveWin.columnconfigure([0,1], minsize=100)
-        self.selectionFrame = ttk.Frame(master=self.moveWin)
-        self.selectionFrame.grid(row=0, column=0, rowspan=2, sticky='nw')
-        self.moveToFrame = ttk.Frame(master=self.moveWin)
-        self.moveToFrame.grid(row=0, column=1, sticky='nw')
-        self.moveFinishFrame = ttk.Frame(master=self.moveWin)
-        self.moveFinishFrame.grid(row=1, column=1)
-        lblSelected = ttk.Label(master=self.selectionFrame, text="Selected Token", font=self.font)
-        lblSelected.grid(row=0, column=0, sticky='w')
+        self.move_win.configure(bg=style.lookup('TLabel', 'background'))
+        self.move_win.rowconfigure(0, minsize=100)
+        self.move_win.columnconfigure([0,1], minsize=100)
+        self.selection_frame = ttk.Frame(master=self.move_win)
+        self.selection_frame.grid(row=0, column=0, rowspan=2, sticky='nw')
+        self.move_to_frame = ttk.Frame(master=self.move_win)
+        self.move_to_frame.grid(row=0, column=1, sticky='nw')
+        self.move_finish_frame = ttk.Frame(master=self.move_win)
+        self.move_finish_frame.grid(row=1, column=1)
+        lbl_selected = ttk.Label(master=self.selection_frame, text="Selected Token", font=self.font)
+        lbl_selected.grid(row=0, column=0, sticky='w')
         names = []
         coordinates = []
-        for being in self.root.tokenList:
+        for being in self.root.token_list:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
-        self.dropSelection = ttk.Combobox(self.selectionFrame, width=27, values=names)
-        self.dropSelection.grid(row=0, column=1, sticky='w')
-        self.dropSelection.current()
-        self.btnCurrCoord = ttk.Button(master=self.selectionFrame, text="Show Current Coordinate", command=lambda arg=[names, coordinates]: self.showCoord(arg))
-        self.btnCurrCoord.grid(row=1, column=0, sticky='w')
-        self.lblActCoord = ttk.Label(master=self.selectionFrame, text=" ", font=self.font)
-        self.lblActCoord.grid(row=1, column=1, sticky='w', columnspan=2)
-        #lblInitTitle = ttk.Label(master=self.selectionFrame, text="Change Initiative", font=self.font)
-        #lblInitTitle.grid(row=2, column=0, sticky='w')
-        #initFrame = ttk.Frame(master=self.selectionFrame)
-        #initFrame.grid(row=2, column=1, sticky='e')
-        #self.entInit = ttk.Entry(master=initFrame, width=5)
-        #self.entInit.grid(row=0, column=0, sticky='w')
-        #btnRoll = ttk.Button(master=initFrame, text="Roll", width=5, command=self.rollInit)
-        #btnRoll.grid(row=0, column=1, sticky='w')
-        lblSetNewCoord = ttk.Label(master=self.moveToFrame, text="Set New Coordinate", font=self.font)
-        lblSetNewCoord.grid(row=0, column=0, sticky='w')
-        coordFrame = ttk.Frame(master=self.moveToFrame)
-        coordFrame.grid(row=0, column=1, columnspan=3, sticky='w')
-        self.entRowCoord = ttk.Entry(master=coordFrame, width=5)
-        self.entColCoord = ttk.Entry(master=coordFrame, width=5)
-        self.entZCoord = ttk.Entry(master=coordFrame, width=5)
-        self.entRowCoord.grid(row=0, column=0, sticky='w')
-        self.entColCoord.grid(row=0, column=1, sticky='w')
-        self.entZCoord.grid(row=0, column=2, sticky='w')
+        self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=names)
+        self.drop_selection.grid(row=0, column=1, sticky='w')
+        self.drop_selection.current()
+        self.btn_current_coord = ttk.Button(master=self.selection_frame, text="Show Current Coordinate", command=lambda arg=[names, coordinates]: self.show_coord(arg))
+        self.btn_current_coord.grid(row=1, column=0, sticky='w')
+        self.lbl_act_coord = ttk.Label(master=self.selection_frame, text=" ", font=self.font)
+        self.lbl_act_coord.grid(row=1, column=1, sticky='w', columnspan=2)
+        #lbl_init_title = ttk.Label(master=self.selection_frame, text="Change Initiative", font=self.font)
+        #lbl_init_title.grid(row=2, column=0, sticky='w')
+        #init_frame = ttk.Frame(master=self.selection_frame)
+        #init_frame.grid(row=2, column=1, sticky='e')
+        #self.ent_init = ttk.Entry(master=init_frame, width=5)
+        #self.ent_init.grid(row=0, column=0, sticky='w')
+        #btn_roll = ttk.Button(master=init_frame, text="Roll", width=5, command=self.roll_init)
+        #btn_roll.grid(row=0, column=1, sticky='w')
+        lbl_set_new_coord = ttk.Label(master=self.move_to_frame, text="Set New Coordinate", font=self.font)
+        lbl_set_new_coord.grid(row=0, column=0, sticky='w')
+        coord_frame = ttk.Frame(master=self.move_to_frame)
+        coord_frame.grid(row=0, column=1, columnspan=3, sticky='w')
+        self.ent_row_coord = ttk.Entry(master=coord_frame, width=5)
+        self.ent_col_coord = ttk.Entry(master=coord_frame, width=5)
+        self.ent_z_coord = ttk.Entry(master=coord_frame, width=5)
+        self.ent_row_coord.grid(row=0, column=0, sticky='w')
+        self.ent_col_coord.grid(row=0, column=1, sticky='w')
+        self.ent_z_coord.grid(row=0, column=2, sticky='w')
 
-        self.lblOrThis = ttk.Label(master=self.moveToFrame, text="or move a number of spaces", font=self.font)
-        #self.lblOrThis.grid(row=1, column=0, columnspan=4)
+        self.lbl_or_this = ttk.Label(master=self.move_to_frame, text="or move a number of spaces", font=self.font)
+        #self.lbl_or_this.grid(row=1, column=0, columnspan=4)
 
-        self.lblFwdBack = ttk.Label(master=self.moveToFrame, text="Forward/Back", font=self.font)
-        #self.lblFwdBack.grid(row=2, column=0, sticky='w')
-        self.entRowDelta = ttk.Entry(master=self.moveToFrame, width=5)
-        #self.entRowDelta.grid(row=2, column=1, sticky='w')
-        self.fwdOrBack = tk.StringVar()
-        self.rbnMoveFwd = ttk.Radiobutton(master=self.moveToFrame, text="Forward", variable=self.fwdOrBack, value='forward')
-        #self.rbnMoveFwd.grid(row=2, column=2)
-        self.rbnMoveBack = ttk.Radiobutton(master=self.moveToFrame, text="Back", variable=self.fwdOrBack, value='back')
-        #self.rbnMoveBack.grid(row=2, column=3)
-        self.lblLeftRight = ttk.Label(master=self.moveToFrame, text="Left/Right", font=self.font)
-        #self.lblLeftRight.grid(row=3, column=0, sticky='w')
-        self.entColDelta = ttk.Entry(master=self.moveToFrame, width=5)
-        #self.entColDelta.grid(row=3, column=1, sticky='w')
-        self.leftOrRight = tk.StringVar()
-        self.rbnMoveLeft = ttk.Radiobutton(master=self.moveToFrame, text="Left", variable=self.leftOrRight, value='left')
-        #self.rbnMoveLeft.grid(row=3, column=2)
-        self.rbnMoveRight = ttk.Radiobutton(master=self.moveToFrame, text="Right", variable=self.leftOrRight, value='right')
-        #self.rbnMoveRight.grid(row=3, column=3)
-        self.lblUpDown = ttk.Label(master=self.moveToFrame, text="Up/Down", font=self.font)
-        #self.lblUpDown.grid(row=4, column=0, sticky='w')
-        self.entZDelta = ttk.Entry(master=self.moveToFrame, width=5)
-        #self.entZDelta.grid(row=4, column=1, sticky='w')
-        self.upOrDown = tk.StringVar()
-        self.rbnMoveUp = ttk.Radiobutton(master=self.moveToFrame, text="Up", variable=self.upOrDown, value='up')
-        #self.rbnMoveUp.grid(row=4, column=2)
-        self.rbnMoveDown = ttk.Radiobutton(master=self.moveToFrame, text="Down", variable=self.upOrDown, value='down')
-        #self.rbnMoveDown.grid(row=4, column=3)
+        self.lbl_fwd_back = ttk.Label(master=self.move_to_frame, text="Forward/Back", font=self.font)
+        #self.lbl_fwd_back.grid(row=2, column=0, sticky='w')
+        self.ent_row_delta = ttk.Entry(master=self.move_to_frame, width=5)
+        #self.ent_row_delta.grid(row=2, column=1, sticky='w')
+        self.fwd_or_back = tk.StringVar()
+        self.rbn_move_fwd = ttk.Radiobutton(master=self.move_to_frame, text="Forward", variable=self.fwd_or_back, value='forward')
+        #self.rbn_move_fwd.grid(row=2, column=2)
+        self.rbn_move_back = ttk.Radiobutton(master=self.move_to_frame, text="Back", variable=self.fwd_or_back, value='back')
+        #self.rbn_move_back.grid(row=2, column=3)
+        self.lbl_left_right = ttk.Label(master=self.move_to_frame, text="Left/Right", font=self.font)
+        #self.lbl_left_right.grid(row=3, column=0, sticky='w')
+        self.ent_col_delta = ttk.Entry(master=self.move_to_frame, width=5)
+        #self.ent_col_delta.grid(row=3, column=1, sticky='w')
+        self.left_or_right = tk.StringVar()
+        self.rbn_move_left = ttk.Radiobutton(master=self.move_to_frame, text="Left", variable=self.left_or_right, value='left')
+        #self.rbn_move_left.grid(row=3, column=2)
+        self.rbn_move_right = ttk.Radiobutton(master=self.move_to_frame, text="Right", variable=self.left_or_right, value='right')
+        #self.rbn_move_right.grid(row=3, column=3)
+        self.lbl_up_down = ttk.Label(master=self.move_to_frame, text="Up/Down", font=self.font)
+        #self.lbl_up_down.grid(row=4, column=0, sticky='w')
+        self.ent_z_delta = ttk.Entry(master=self.move_to_frame, width=5)
+        #self.ent_z_delta.grid(row=4, column=1, sticky='w')
+        self.up_or_down = tk.StringVar()
+        self.rbn_move_up = ttk.Radiobutton(master=self.move_to_frame, text="Up", variable=self.up_or_down, value='up')
+        #self.rbn_move_up.grid(row=4, column=2)
+        self.rbn_move_down = ttk.Radiobutton(master=self.move_to_frame, text="Down", variable=self.up_or_down, value='down')
+        #self.rbn_move_down.grid(row=4, column=3)
 
-        self.btnSet = ttk.Button(master=self.moveFinishFrame, text="Set Position")#, command=lambda arg=[False]: self.setNewCoord(arg))
-        self.btnSet.grid(row=0, column=0, sticky='w')
-        self.btnRemove = ttk.Button(master=self.moveFinishFrame, text="Remove Token")#, command=lambda arg=[True]: self.setNewCoord(arg))
-        self.btnRemove.grid(row=0, column=1, sticky='w')
-        self.lblSetFinished = ttk.Label(master=self.moveFinishFrame, text=" ", font=self.font)
-        self.lblSetFinished.grid(row=0, column=2, sticky='w')
+        self.btn_set = ttk.Button(master=self.move_finish_frame, text="Set Position")#, command=lambda arg=[False]: self.set_new_coord(arg))
+        self.btn_set.grid(row=0, column=0, sticky='w')
+        self.btn_remove = ttk.Button(master=self.move_finish_frame, text="Remove Token")#, command=lambda arg=[True]: self.set_new_coord(arg))
+        self.btn_remove.grid(row=0, column=1, sticky='w')
+        self.lbl_set_finished = ttk.Label(master=self.move_finish_frame, text=" ", font=self.font)
+        self.lbl_set_finished.grid(row=0, column=2, sticky='w')
 
-    def showCoord(self, arg):
-        selOption = self.dropSelection.get()
+    def show_coord(self, arg):
+        selected_option = self.drop_selection.get()
         names = arg[0]
         coordinates = arg[1]
-        index = names.index(selOption)
+        index = names.index(selected_option)
         if coordinates[index][0] != "" and coordinates[index][1] != "" and coordinates[index][2] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
 
-            self.lblOrThis.grid(row=1, column=0, columnspan=4)
-            self.lblFwdBack.grid(row=2, column=0, sticky='w')
-            self.entRowDelta.grid(row=2, column=1, sticky='w')
-            self.rbnMoveFwd.grid(row=2, column=2, sticky='w')
-            self.rbnMoveBack.grid(row=2, column=3, sticky='w')
-            self.lblLeftRight.grid(row=3, column=0, sticky='w')
-            self.entColDelta.grid(row=3, column=1, sticky='w')
-            self.rbnMoveLeft.grid(row=3, column=2, sticky='w')
-            self.rbnMoveRight.grid(row=3, column=3, sticky='w')
-            self.lblUpDown.grid(row=4, column=0, sticky='w')
-            self.entZDelta.grid(row=4, column=1, sticky='w')
-            self.rbnMoveUp.grid(row=4, column=2, sticky='w')
-            self.rbnMoveDown.grid(row=4, column=3, sticky='w')
+            self.lbl_or_this.grid(row=1, column=0, columnspan=4)
+            self.lbl_fwd_back.grid(row=2, column=0, sticky='w')
+            self.ent_row_delta.grid(row=2, column=1, sticky='w')
+            self.rbn_move_fwd.grid(row=2, column=2, sticky='w')
+            self.rbn_move_back.grid(row=2, column=3, sticky='w')
+            self.lbl_left_right.grid(row=3, column=0, sticky='w')
+            self.ent_col_delta.grid(row=3, column=1, sticky='w')
+            self.rbn_move_left.grid(row=3, column=2, sticky='w')
+            self.rbn_move_right.grid(row=3, column=3, sticky='w')
+            self.lbl_up_down.grid(row=4, column=0, sticky='w')
+            self.ent_z_delta.grid(row=4, column=1, sticky='w')
+            self.rbn_move_up.grid(row=4, column=2, sticky='w')
+            self.rbn_move_down.grid(row=4, column=3, sticky='w')
 
         else:
             row = coordinates[index][0]
             col = coordinates[index][1]
-            if len(self.moveToFrame.grid_slaves()) > 2:
-                self.lblOrThis.grid_forget()
-                self.lblFwdBack.grid_forget()
-                self.entRowDelta.grid_forget()
-                self.rbnMoveFwd.grid_forget()
-                self.rbnMoveBack.grid_forget()
-                self.lblLeftRight.grid_forget()
-                self.entColDelta.grid_forget()
-                self.rbnMoveLeft.grid_forget()
-                self.rbnMoveRight.grid_forget()
-                self.lblUpDown.grid_forget()
-                self.entZDelta.grid_forget()
-                self.rbnMoveUp.grid_forget()
-                self.rbnMoveDown.grid_forget()
+            if len(self.move_to_frame.grid_slaves()) > 2:
+                self.lbl_or_this.grid_forget()
+                self.lbl_fwd_back.grid_forget()
+                self.ent_row_delta.grid_forget()
+                self.rbn_move_fwd.grid_forget()
+                self.rbn_move_back.grid_forget()
+                self.lbl_left_right.grid_forget()
+                self.ent_col_delta.grid_forget()
+                self.rbn_move_left.grid_forget()
+                self.rbn_move_right.grid_forget()
+                self.lbl_up_down.grid_forget()
+                self.ent_z_delta.grid_forget()
+                self.rbn_move_up.grid_forget()
+                self.rbn_move_down.grid_forget()
 
         z = coordinates[index][2]
-        self.lblActCoord.config(text="{0}: {1}: {2}".format(row, col, z))
+        self.lbl_act_coord.config(text="{0}: {1}: {2}".format(row, col, z))
 
-    def setNewCoord(self):
-        #removingToken = arg[0]
-        selOption = self.dropSelection.get()
-        if selOption == "":
+    def set_new_coord(self):
+        #removing_token = arg[0]
+        selected_option = self.drop_selection.get()
+        if selected_option == "":
             messagebox.showinfo("Info", "Must select a creature.")
             return False
 
-        nameList = []
-        for being in self.root.tokenList:
-            nameList.append(being['name'])
-        index = nameList.index(selOption)
-        size = self.root.tokenList[index]['size']
-        oneSpace = False
+        name_list = []
+        for being in self.root.token_list:
+            name_list.append(being['name'])
+        index = name_list.index(selected_option)
+        size = self.root.token_list[index]['size']
+        one_space = False
         if size == 'tiny' or size == 'small' or size == 'medium':
-            oneSpace = True
-        anyMoveAllowed = False
-        goForwardBack = self.fwdOrBack.get()
-        goLeftRight = self.leftOrRight.get()
-        goUpDown = self.upOrDown.get()
-        deltaFBStr = self.entRowDelta.get()
-        deltaLRStr = self.entColDelta.get()
-        deltaUDStr = self.entZDelta.get()
+            one_space = True
+        any_move_allowed = False
+        go_forward_back = self.fwd_or_back.get()
+        go_left_right = self.left_or_right.get()
+        go_up_down = self.up_or_down.get()
+        delta_fwd_bck_str = self.ent_row_delta.get()
+        delta_left_right_str = self.ent_col_delta.get()
+        delta_up_down_str = self.ent_z_delta.get()
 
-        if goForwardBack != "" or goLeftRight != "" or goUpDown != "":
-            coordinate = self.root.tokenList[index]['coordinate']
+        if go_forward_back != "" or go_left_right != "" or go_up_down != "":
+            coordinate = self.root.token_list[index]['coordinate']
             if coordinate[0] != "" and coordinate[1] != "" and coordinate[2] != "":
-                anyMoveAllowed = True
+                any_move_allowed = True
 
-        if anyMoveAllowed == False and (self.entRowCoord.get() == "" or self.entColCoord.get() == "" or self.entZCoord.get() == ""):
+        if any_move_allowed == False and (self.ent_row_coord.get() == "" or self.ent_col_coord.get() == "" or self.ent_z_coord.get() == ""):
             messagebox.showwarning("Warning", "Coordinate Fields Can't Be Empty!")
             return False
 
-        #if removingToken == False:
-        if anyMoveAllowed:
+        #if removing_token == False:
+        if any_move_allowed:
             for i in range(3):
                 coordinate[i] = int(coordinate[i])
             try:
-                deltaFB = int(deltaFBStr)
+                delta_FB = int(delta_fwd_bck_str)
             except ValueError:
-                deltaFB = 0
+                delta_FB = 0
             try:
-                deltaLR = int(deltaLRStr)
+                delta_LR = int(delta_left_right_str)
             except ValueError:
-                deltaLR = 0
+                delta_LR = 0
             try:
-                deltaUD = int(deltaUDStr)
+                delta_UD = int(delta_up_down_str)
             except ValueError:
-                deltaUD = 0
+                delta_UD = 0
 
-            if deltaFB < 0 or deltaLR < 0 or deltaUD < 0:
+            if delta_FB < 0 or delta_LR < 0 or delta_UD < 0:
                 messagebox.showwarning("Warning", "Move fields cannot be negative!")
                 return False
-            if goForwardBack == 'forward':
-                coordinate[0] -= deltaFB
-                if oneSpace:
+            if go_forward_back == 'forward':
+                coordinate[0] -= delta_FB
+                if one_space:
                     if coordinate[0] < 0:
                         coordinate[0] = 0
                 else:
-                    coordinate = correctPlacement(coordinate, size, self.mapSize)
-            if goForwardBack == 'back':
-                coordinate[0] += deltaFB
-                if oneSpace:
-                    if coordinate[0] > self.mapSize[0] - 1:
-                        coordinate[0] = self.mapSize[0] - 1
+                    coordinate = correct_placement(coordinate, size, self.map_size)
+            if go_forward_back == 'back':
+                coordinate[0] += delta_FB
+                if one_space:
+                    if coordinate[0] > self.map_size[0] - 1:
+                        coordinate[0] = self.map_size[0] - 1
                 else:
-                    coordinate = correctPlacement(coordinate, size, self.mapSize)
-            if goLeftRight == 'left':
-                coordinate[1] -= deltaLR
-                if oneSpace:
+                    coordinate = correct_placement(coordinate, size, self.map_size)
+            if go_left_right == 'left':
+                coordinate[1] -= delta_LR
+                if one_space:
                     if coordinate[1] < 0:
                         coordinate[1] = 0
                 else:
-                    coordinate = correctPlacement(coordinate, size, self.mapSize)
-            if goLeftRight == 'right':
-                coordinate[1] += deltaLR
-                if oneSpace:
-                    if coordinate[1] > self.mapSize[1] - 1:
-                        coordinate[1] = self.mapSize[1] - 1
+                    coordinate = correct_placement(coordinate, size, self.map_size)
+            if go_left_right == 'right':
+                coordinate[1] += delta_LR
+                if one_space:
+                    if coordinate[1] > self.map_size[1] - 1:
+                        coordinate[1] = self.map_size[1] - 1
                 else:
-                    coordinate = correctPlacement(coordinate, size, self.mapSize)
-            if goUpDown == 'down':
-                coordinate[2] -= deltaUD
-            if goUpDown == 'up':
-                coordinate[2] += deltaUD
+                    coordinate = correct_placement(coordinate, size, self.map_size)
+            if go_up_down == 'down':
+                coordinate[2] -= delta_UD
+            if go_up_down == 'up':
+                coordinate[2] += delta_UD
 
-            newCoord = coordinate
+            new_coord = coordinate
                 
         else:
             try:
-                newRow = int(self.entRowCoord.get()) - 1
-                newCol = int(self.entColCoord.get()) - 1
-                newZ = int(self.entZCoord.get())
-                newCoord = [newRow, newCol, newZ]
+                new_row = int(self.ent_row_coord.get()) - 1
+                new_col = int(self.ent_col_coord.get()) - 1
+                new_z = int(self.ent_z_coord.get())
+                new_coord = [new_row, new_col, new_z]
             except ValueError:
                 messagebox.showwarning("Warning", "Set Coordinate fields must be whole numbers!")
                 return False
-            if newCoord[0] > self.mapSize[0] - 1 or newCoord[0] < 0:
+            if new_coord[0] > self.map_size[0] - 1 or new_coord[0] < 0:
                 messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")
                 return False
-            if newCoord[1] > self.mapSize[1] - 1 or newCoord[1] < 0:
+            if new_coord[1] > self.map_size[1] - 1 or new_coord[1] < 0:
                 messagebox.showerror("Error", "Column Coordinate Out of Range of Map!")
                 return False
         #else:
-            #newCoord = ["", "", ""]
+            #new_coord = ["", "", ""]
 
         '''
-        newInit = self.entInit.get()
-        if newInit == "":
-            newInit = self.root.tokenList[index]['initiative']
+        new_init = self.ent_init.get()
+        if new_init == "":
+            new_init = self.root.token_list[index]['initiative']
         else:
             try:
-                newInit = float(newInit)
-                checkNotFinished = True
-                loopCounter = 0
-                while checkNotFinished:
-                    for being in self.root.tokenList:
-                        loopCounter += 1
-                        if being['initiative'] == newInit:
-                            notResolved = True
+                new_init = float(new_init)
+                check_not_finished = True
+                loop_counter = 0
+                while check_not_finished:
+                    for being in self.root.token_list:
+                        loop_counter += 1
+                        if being['initiative'] == new_init:
+                            not_resolved = True
                             multiplyer = 0.1
-                            subOffset = 5
-                            innerFail = 0
-                            while notResolved:
+                            sub_offset = 5
+                            inner_fail = 0
+                            while not_resolved:
                                 multiplyer *= 0.1
-                                subOffset *= 0.1
-                                rollNewGuy = self.dice.roll(dieSize=100)[0]
-                                newInit = newInit + (rollNewGuy * multiplyer - subOffset)
-                                if newInit != being['initiative']:
-                                    notResolved = False
-                                if innerFail == 100:
+                                sub_offset *= 0.1
+                                roll_new_guy = self.dice.roll(dieSize=100)[0]
+                                new_init = new_init + (roll_new_guy * multiplyer - sub_offset)
+                                if new_init != being['initiative']:
+                                    not_resolved = False
+                                if inner_fail == 100:
                                     messagebox.showerror("System Error", "Restart Program\nError 0x004")
-                                    notResolved = False
-                                    checkNotFinished = False
-                                innerFail += 1
+                                    not_resolved = False
+                                    check_not_finished = False
+                                inner_fail += 1
                             break
-                        elif loopCounter >= len(self.root.tokenList):
-                            checkNotFinished = False
-                        elif loopCounter > 100:
+                        elif loop_counter >= len(self.root.token_list):
+                            check_not_finished = False
+                        elif loop_counter > 100:
                             messagebox.showerror("System Error", "Restart Program\nError 0x005")
-                            checkNotFinished = False
+                            check_not_finished = False
             except ValueError:
-                newInit = self.root.tokenList[index]['initiative']
+                new_init = self.root.token_list[index]['initiative']
             except TypeError:
-                newInit = self.root.tokenList[index]['initiative']
+                new_init = self.root.token_list[index]['initiative']
         '''
 
-        for being in self.root.tokenList:
+        for being in self.root.token_list:
             '''
-            if being["coordinate"][0] == str(newCoord[0]) and being["coordinate"][1] == str(newCoord[1]):
+            if being["coordinate"][0] == str(new_coord[0]) and being["coordinate"][1] == str(new_coord[1]):
                     messagebox.showerror("Error", "Space already taken!")
                     return
             '''
-            if being["name"] == selOption:
-                being["coordinate"] = [str(newCoord[0]), str(newCoord[1]), str(newCoord[2])]
-                #being["initiative"] = newInit
-        #self.lblSetFinished.config(text="Position set! Please close window.")
+            if being["name"] == selected_option:
+                being["coordinate"] = [str(new_coord[0]), str(new_coord[1]), str(new_coord[2])]
+                #being["initiative"] = new_init
+        #self.lbl_set_finished.config(text="Position set! Please close window.")
         return True
     
     def removeToken(self):
-        selOption = self.dropSelection.get()
-        if selOption == "":
+        selected_option = self.drop_selection.get()
+        if selected_option == "":
             messagebox.showinfo("Info", "Must select a creature.")
             return False
-        newCoord = ["", "", ""]
-        for being in self.root.tokenList:
-            if being["name"] == selOption:
-                being["coordinate"] = [newCoord[0], newCoord[1], newCoord[2]]
+        new_coord = ["", "", ""]
+        for being in self.root.token_list:
+            if being["name"] == selected_option:
+                being["coordinate"] = [new_coord[0], new_coord[1], new_coord[2]]
         return True
 
     # Unused
-    def rollInit(self):
-        rolledValue = self.dice.roll()[0]
-        self.entInit.delete(0, tk.END)
-        self.entInit.insert(0, rolledValue)
+    def roll_init(self):
+        rolled_value = self.dice.roll()[0]
+        self.ent_init.delete(0, tk.END)
+        self.ent_init.insert(0, rolled_value)

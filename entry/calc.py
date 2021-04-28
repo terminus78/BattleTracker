@@ -9,9 +9,9 @@ class Calculator():
     def __init__(self, root):
         self.root = root
         self.font = ("Papyrus", "14")
-        self.fontSmall = ("Papyrus", "12")
+        self.font_small = ("Papyrus", "12")
 
-    def trigWin(self):
+    def trig_win(self):
         self.trig = tk.Toplevel(self.root)
         self.trig.title("Trig Calculator")
         style = ThemedStyle(self.trig)
@@ -21,59 +21,59 @@ class Calculator():
         self.trig.configure(bg=style.lookup('TLabel', 'background'))
         self.trig.rowconfigure([0,1], minsize=100)
         self.trig.columnconfigure([0,1], minsize=100)
-        self.fromFrame = ttk.Frame(master=self.trig)
-        self.fromFrame.grid(row=0, column=0, padx=5)
-        self.toFrame = ttk.Frame(master=self.trig)
-        self.toFrame.grid(row=0, column=1, padx=5)
-        self.resultFrame = ttk.Frame(master=self.trig)
-        self.resultFrame.grid(row=1, column=0, columnspan=2, pady=5, padx=5)
-        self.infoFrame = ttk.Frame(master=self.trig, borderwidth=2, relief='ridge')
-        self.infoFrame.grid(row=2, column=0, columnspan=2)
+        self.from_frame = ttk.Frame(master=self.trig)
+        self.from_frame.grid(row=0, column=0, padx=5)
+        self.to_frame = ttk.Frame(master=self.trig)
+        self.to_frame.grid(row=0, column=1, padx=5)
+        self.result_frame = ttk.Frame(master=self.trig)
+        self.result_frame.grid(row=1, column=0, columnspan=2, pady=5, padx=5)
+        self.info_frame = ttk.Frame(master=self.trig, borderwidth=2, relief='ridge')
+        self.info_frame.grid(row=2, column=0, columnspan=2)
         names = []
         coordinates = []
-        for being in self.root.tokenList:
+        for being in self.root.token_list:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
-        lblFrom = ttk.Label(master=self.fromFrame, text="Origin", font=self.font)
-        lblFrom.grid(row=0, column=0, sticky='w')
-        self.dropOrigin = ttk.Combobox(self.fromFrame, width=27, values=names)
-        self.dropOrigin.grid(row=0, column=1, sticky='w')
-        btnSelectOrig = ttk.Button(master=self.fromFrame, text="Show Origin", command=lambda arg=[names, coordinates]: self.showOrigin(arg))
-        btnSelectOrig.grid(row=1, column=0, sticky='w')
-        self.lblOrigCoord = ttk.Label(master=self.fromFrame, text=" ", font=self.font)
-        self.lblOrigCoord.grid(row=1, column=1, sticky='w')
-        lblTo = ttk.Label(master=self.toFrame, text="Destination", font=self.font)
-        lblTo.grid(row=0, column=0, sticky='w')
-        self.dropDestination = ttk.Combobox(self.toFrame, width=27, values=names)
-        self.dropDestination.grid(row=0, column=1, sticky='w')
-        btnSelectDest = ttk.Button(master=self.toFrame, text="Show Destination", command=lambda arg=[names, coordinates]: self.showDestination(arg))
-        btnSelectDest.grid(row=1, column=0, sticky='w')
-        self.lblDestCoord = ttk.Label(master=self.toFrame, text=" ", font=self.font)
-        self.lblDestCoord.grid(row=1, column=1, sticky='w')
-        self.btnCalculate = ttk.Button(master=self.resultFrame, text="Calculate Distance", command=lambda arg=[names, coordinates]: self.distBtn(arg))
-        self.btnCalculate.grid(row=0, column=0)
-        lblAct = ttk.Label(master=self.resultFrame, text="True distance: ", font=self.font)
-        lblAct.grid(row=1, column=0)
-        self.lblActCalcResult = ttk.Label(master=self.resultFrame, text="Ready", font=self.font)
-        self.lblActCalcResult.grid(row=1, column=1)
-        lblRel = ttk.Label(master=self.resultFrame, text="Relative distance: ", font=self.font)
-        lblRel.grid(row=2, column=0)
-        self.lblRelCalcResult = ttk.Label(master=self.resultFrame, text="Ready", font=self.font, borderwidth=1, relief='groove')
-        self.lblRelCalcResult.grid(row=2, column=1)
-        self.lblCalcInfo1 = ttk.Label(master=self.infoFrame, text="True distance is based on real-world trigonometry.", font=self.fontSmall)
-        self.lblCalcInfo1.grid(row=0, column=0)
-        self.lblCalcInfo2 = ttk.Label(master=self.infoFrame, text="True distance may not correspond to grid distance counting.", font=self.fontSmall)
-        self.lblCalcInfo2.grid(row=1, column=0)
-        self.lblCalcInfo3 = ttk.Label(master=self.infoFrame, text="Relative distance mimics the game-specific way of adding up blocks.", font=self.fontSmall)
-        self.lblCalcInfo3.grid(row=2, column=0)
-        self.lblCalcInfo3 = ttk.Label(master=self.infoFrame, text="For most situations, relative distance follows the rules of D&D more closely.", font=self.fontSmall)
-        self.lblCalcInfo3.grid(row=3, column=0)
+        lbl_from = ttk.Label(master=self.from_frame, text="Origin", font=self.font)
+        lbl_from.grid(row=0, column=0, sticky='w')
+        self.drop_origin = ttk.Combobox(self.from_frame, width=27, values=names)
+        self.drop_origin.grid(row=0, column=1, sticky='w')
+        btn_select_orig = ttk.Button(master=self.from_frame, text="Show Origin", command=lambda arg=[names, coordinates]: self.show_origin(arg))
+        btn_select_orig.grid(row=1, column=0, sticky='w')
+        self.lbl_orig_coord = ttk.Label(master=self.from_frame, text=" ", font=self.font)
+        self.lbl_orig_coord.grid(row=1, column=1, sticky='w')
+        lbl_to = ttk.Label(master=self.to_frame, text="Destination", font=self.font)
+        lbl_to.grid(row=0, column=0, sticky='w')
+        self.drop_destination = ttk.Combobox(self.to_frame, width=27, values=names)
+        self.drop_destination.grid(row=0, column=1, sticky='w')
+        btn_select_dest = ttk.Button(master=self.to_frame, text="Show Destination", command=lambda arg=[names, coordinates]: self.show_destination(arg))
+        btn_select_dest.grid(row=1, column=0, sticky='w')
+        self.lbl_dest_coord = ttk.Label(master=self.to_frame, text=" ", font=self.font)
+        self.lbl_dest_coord.grid(row=1, column=1, sticky='w')
+        self.btn_calculate = ttk.Button(master=self.result_frame, text="Calculate Distance", command=lambda arg=[names, coordinates]: self.dist_btn(arg))
+        self.btn_calculate.grid(row=0, column=0)
+        lbl_act = ttk.Label(master=self.result_frame, text="True distance: ", font=self.font)
+        lbl_act.grid(row=1, column=0)
+        self.lbl_act_calc_result = ttk.Label(master=self.result_frame, text="Ready", font=self.font)
+        self.lbl_act_calc_result.grid(row=1, column=1)
+        lbl_rel = ttk.Label(master=self.result_frame, text="Relative distance: ", font=self.font)
+        lbl_rel.grid(row=2, column=0)
+        self.lbl_rel_calc_result = ttk.Label(master=self.result_frame, text="Ready", font=self.font, borderwidth=1, relief='groove')
+        self.lbl_rel_calc_result.grid(row=2, column=1)
+        self.lbl_calc_info_1 = ttk.Label(master=self.info_frame, text="True distance is based on real-world trigonometry.", font=self.font_small)
+        self.lbl_calc_info_1.grid(row=0, column=0)
+        self.lbl_calc_info_2 = ttk.Label(master=self.info_frame, text="True distance may not correspond to grid distance counting.", font=self.font_small)
+        self.lbl_calc_info_2.grid(row=1, column=0)
+        self.lbl_calc_info_3 = ttk.Label(master=self.info_frame, text="Relative distance mimics the game-specific way of adding up blocks.", font=self.font_small)
+        self.lbl_calc_info_3.grid(row=2, column=0)
+        self.lbl_calc_info_4 = ttk.Label(master=self.info_frame, text="For most situations, relative distance follows the rules of D&D more closely.", font=self.font_small)
+        self.lbl_calc_info_4.grid(row=3, column=0)
 
-    def showOrigin(self, arg):
-        selOrigin = self.dropOrigin.get()
+    def show_origin(self, arg):
+        select_origin = self.drop_origin.get()
         names = arg[0]
         coordinates = arg[1]
-        index = names.index(selOrigin)
+        index = names.index(select_origin)
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
@@ -81,13 +81,13 @@ class Calculator():
             row = coordinates[index][0]
             col = coordinates[index][1]
         z = coordinates[index][2]
-        self.lblOrigCoord.config(text="{0}: {1}: {2}".format(row, col, z))
+        self.lbl_orig_coord.config(text="{0}: {1}: {2}".format(row, col, z))
 
-    def showDestination(self, arg):
-        selDestination = self.dropDestination.get()
+    def show_destination(self, arg):
+        select_destination = self.drop_destination.get()
         names = arg[0]
         coordinates = arg[1]
-        index = names.index(selDestination)
+        index = names.index(select_destination)
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
@@ -95,89 +95,89 @@ class Calculator():
             row = coordinates[index][0]
             col = coordinates[index][1]
         z = coordinates[index][2]
-        self.lblDestCoord.config(text="{0}: {1}: {2}".format(row, col, z))
+        self.lbl_dest_coord.config(text="{0}: {1}: {2}".format(row, col, z))
     
-    def distBtn(self, arg):
-        origin = self.dropOrigin.get()
-        destination = self.dropDestination.get()
+    def dist_btn(self, arg):
+        origin = self.drop_origin.get()
+        destination = self.drop_destination.get()
         if origin == "" or destination == "":
             messagebox.showwarning("Input Error", "Please select an origin and a destination.")
             return
         names = arg[0]
         coordinates = arg[1]
-        indexOrigin = names.index(origin)
-        indexDest = names.index(destination)
-        coordOrigin = coordinates[indexOrigin]
-        coordDest = coordinates[indexDest]
-        if coordOrigin[0] == "" or coordOrigin[1] == "" or coordOrigin[2] == "":
+        index_origin = names.index(origin)
+        index_dest = names.index(destination)
+        coord_origin = coordinates[index_origin]
+        coord_dest = coordinates[index_dest]
+        if coord_origin[0] == "" or coord_origin[1] == "" or coord_origin[2] == "":
             messagebox.showwarning("Map Coordinate Failure", "Selected Origin Not on Map!")
             return
-        if coordDest[0] == "" or coordDest[1] == "" or coordDest[2] == "":
+        if coord_dest[0] == "" or coord_dest[1] == "" or coord_dest[2] == "":
             messagebox.showwarning("Map Coordinate Failure", "Selected Destination Not on Map!")
             return
         
-        self.actualDistance(coordOrigin, coordDest)
-        self.relativeDistance(coordOrigin, coordDest)
+        self.actual_distance(coord_origin, coord_dest)
+        self.relative_distance(coord_origin, coord_dest)
 
-    def calcDist(self, start, end):
-        deltaX = abs((int(end[1]) * 5) - (int(start[1]) * 5))
-        deltaY = abs((int(end[0]) * 5) - (int(start[0]) * 5))
-        deltaZ = abs((int(end[2]) * 5) - (int(start[2]) * 5))
+    def calc_dist(self, start, end):
+        delta_x = abs((int(end[1]) * 5) - (int(start[1]) * 5))
+        delta_y = abs((int(end[0]) * 5) - (int(start[0]) * 5))
+        delta_z = abs((int(end[2]) * 5) - (int(start[2]) * 5))
         
-        if deltaX == 0:
-            grndHypo = deltaY
-        elif deltaY == 0:
-            grndHypo = deltaX
+        if delta_x == 0:
+            grnd_hypo = delta_y
+        elif delta_y == 0:
+            grnd_hypo = delta_x
         else:
-            grndHypo = math.sqrt(deltaX**2 + deltaY**2)
+            grnd_hypo = math.sqrt(delta_x**2 + delta_y**2)
 
-        if grndHypo == 0:
-            distance = deltaZ
+        if grnd_hypo == 0:
+            distance = delta_z
         else:
-            distance = math.sqrt(grndHypo**2 + deltaZ**2)
+            distance = math.sqrt(grnd_hypo**2 + delta_z**2)
         
         return distance
     
-    def relativeDistance(self, start, end):
-        startX, startY, startZ = int(start[1]), int(start[0]), int(start[2])
-        endX, endY, endZ = int(end[1]), int(end[0]), int(end[2])
-        endAsInts = [int(end[1]), int(end[0]), int(end[2])]
-        currCoord = [startX, startY, startZ]
-        diffX = endX - startX
-        diffY = endY - startY
-        diffZ = endZ - startZ
-        if diffX == 0 and diffY == 0 and diffZ == 0:
-            distFound = True
+    def relative_distance(self, start, end):
+        start_x, start_y, start_z = int(start[1]), int(start[0]), int(start[2])
+        end_x, end_y, end_z = int(end[1]), int(end[0]), int(end[2])
+        end_as_ints = [int(end[1]), int(end[0]), int(end[2])]
+        curr_coord = [start_x, start_y, start_z]
+        diff_x = end_x - start_x
+        diff_y = end_y - start_y
+        diff_z = end_z - start_z
+        if diff_x == 0 and diff_y == 0 and diff_z == 0:
+            dist_found = True
             distance = 0
-            self.lblRelCalcResult.config(text=f"{distance}ft")
+            self.lbl_rel_calc_result.config(text=f"{distance}ft")
             return
         else:
-            distFound = False
+            dist_found = False
 
         # Counterclockwise rotation
-        rotationOffset = [-1, -1, 1, 1]
-        distanceTraveled = 0
-        countRounds = 0
-        while distFound == False:
-            currX, currY, currZ = currCoord
-            diffX = endX - currX
-            diffY = endY - currY
-            diffZ = endZ - currZ
-            if diffX > 0 or diffX < 0:
-                signX = diffX / abs(diffX)
+        rotation_offset = [-1, -1, 1, 1]
+        distance_traveled = 0
+        count_rounds = 0
+        while dist_found == False:
+            curr_x, curr_y, curr_z = curr_coord
+            diff_x = end_x - curr_x
+            diff_y = end_y - curr_y
+            diff_z = end_z - curr_z
+            if diff_x > 0 or diff_x < 0:
+                sign_x = diff_x / abs(diff_x)
             else:
-                signX = 0
-            if diffY > 0 or diffY < 0:
-                signY = diffY / abs(diffY)
+                sign_x = 0
+            if diff_y > 0 or diff_y < 0:
+                sign_y = diff_y / abs(diff_y)
             else:
-                signY = 0
-            if diffZ > 0 or diffZ < 0:
-                signZ = diffZ / abs(diffZ)
+                sign_y = 0
+            if diff_z > 0 or diff_z < 0:
+                sign_z = diff_z / abs(diff_z)
             else:
-                signZ = 0
+                sign_z = 0
 
-            octant = [signX, signY, signZ]
-            shortestDistance = math.inf
+            octant = [sign_x, sign_y, sign_z]
+            shortest_distance = math.inf
             if octant[0] != 0 and octant[1] != 0 and octant[2] != 0:
                 if octant[0] > 0 and octant[1] > 0:
                     index = 2
@@ -188,33 +188,33 @@ class Calculator():
                 else:
                     index = 1
                 if octant[2] > 0:
-                    checkUp = True
+                    check_up = True
                 else:
-                    checkUp = False
+                    check_up = False
                 for i in range(7):
                     if index == 0 or index == 2:
-                        currX += rotationOffset[index]
+                        curr_x += rotation_offset[index]
                     elif index == 1 or index == 3:
-                        currY += rotationOffset[index]
+                        curr_y += rotation_offset[index]
                     else:
                         index = 0
-                        currX += rotationOffset[index]
+                        curr_x += rotation_offset[index]
                     if i == 3:
-                        if checkUp:
-                            currZ += 1
+                        if check_up:
+                            curr_z += 1
                         else:
-                            currZ -= 1
-                    checkDist = self.calcDist([str(currY), str(currX), str(currZ)], end)
-                    if checkDist < shortestDistance:
-                        shortestDistance = checkDist
-                        currCoord = [currX, currY, currZ]
+                            curr_z -= 1
+                    check_dist = self.calc_dist([str(curr_y), str(curr_x), str(curr_z)], end)
+                    if check_dist < shortest_distance:
+                        shortest_distance = check_dist
+                        curr_coord = [curr_x, curr_y, curr_z]
                     index += 1
 
             elif octant[0] == 0:
                 if octant[1] == 0:
-                    currCoord = [currX, currY, currZ + signZ]
+                    curr_coord = [curr_x, curr_y, curr_z + sign_z]
                 elif octant[2] == 0:
-                    currCoord = [currX, currY + signY, currZ]
+                    curr_coord = [curr_x, curr_y + sign_y, curr_z]
                 else:
                     if octant[1] > 0 and octant[2] > 0:
                         index = 2
@@ -226,21 +226,21 @@ class Calculator():
                         index = 1
                     for i in range(3):
                         if index == 0 or index == 2:
-                            currZ += rotationOffset[index]
+                            curr_z += rotation_offset[index]
                         elif index == 1 or index == 3:
-                            currY += rotationOffset[index]
+                            curr_y += rotation_offset[index]
                         else:
                             index = 0
-                            currZ += rotationOffset[index]
-                        checkDist = self.calcDist([str(currY), str(currX), str(currZ)], end)
-                        if checkDist < shortestDistance:
-                            shortestDistance = checkDist
-                            currCoord = [currX, currY, currZ]
+                            curr_z += rotation_offset[index]
+                        check_dist = self.calc_dist([str(curr_y), str(curr_x), str(curr_z)], end)
+                        if check_dist < shortest_distance:
+                            shortest_distance = check_dist
+                            curr_coord = [curr_x, curr_y, curr_z]
                         index += 1
 
             elif octant[1] == 0:
                 if octant[2] == 0:
-                    currCoord = [currX + signX, currY, currZ]
+                    curr_coord = [curr_x + sign_x, curr_y, curr_z]
                 else:
                     if octant[0] > 0 and octant[2] > 0:
                         index = 2
@@ -252,16 +252,16 @@ class Calculator():
                         index = 1
                     for i in range(3):
                         if index == 0 or index == 2:
-                            currX += rotationOffset[index]
+                            curr_x += rotation_offset[index]
                         elif index == 1 or index == 3:
-                            currZ += rotationOffset[index]
+                            curr_z += rotation_offset[index]
                         else:
                             index = 0
-                            currX += rotationOffset[index]
-                        checkDist = self.calcDist([str(currY), str(currX), str(currZ)], end)
-                        if checkDist < shortestDistance:
-                            shortestDistance = checkDist
-                            currCoord = [currX, currY, currZ]
+                            curr_x += rotation_offset[index]
+                        check_dist = self.calc_dist([str(curr_y), str(curr_x), str(curr_z)], end)
+                        if check_dist < shortest_distance:
+                            shortest_distance = check_dist
+                            curr_coord = [curr_x, curr_y, curr_z]
                         index += 1
 
             else:
@@ -275,28 +275,28 @@ class Calculator():
                     index = 1
                 for i in range(3):
                     if index == 0 or index == 2:
-                        currX += rotationOffset[index]
+                        curr_x += rotation_offset[index]
                     elif index == 1 or index == 3:
-                        currY += rotationOffset[index]
+                        curr_y += rotation_offset[index]
                     else:
                         index = 0
-                        currX += rotationOffset[index]
-                    checkDist = self.calcDist([str(currY), str(currX), str(currZ)], end)
-                    if checkDist < shortestDistance:
-                        shortestDistance = checkDist
-                        currCoord = [currX, currY, currZ]
+                        curr_x += rotation_offset[index]
+                    check_dist = self.calc_dist([str(curr_y), str(curr_x), str(curr_z)], end)
+                    if check_dist < shortest_distance:
+                        shortest_distance = check_dist
+                        curr_coord = [curr_x, curr_y, curr_z]
                     index += 1
-            distanceTraveled += 5
-            if currCoord == endAsInts:
-                distFound = True
-            if countRounds == 50:
-                distFound = True
+            distance_traveled += 5
+            if curr_coord == end_as_ints:
+                dist_found = True
+            if count_rounds == 50:
+                dist_found = True
                 messagebox.showerror("System Error", "Restart program.\nError 0x001")
-            countRounds += 1
-        self.lblRelCalcResult.config(text=f"{distanceTraveled}ft")
+            count_rounds += 1
+        self.lbl_rel_calc_result.config(text=f"{distance_traveled}ft")
 
-    def actualDistance(self, start, end):
-        distance = self.calcDist(start, end)
-        distanceFT = math.floor(distance)
-        distanceINCH = round((distance - distanceFT) * 12)
-        self.lblActCalcResult.config(text="{0}ft, {1}in".format(distanceFT, distanceINCH))
+    def actual_distance(self, start, end):
+        distance = self.calc_dist(start, end)
+        distance_FT = math.floor(distance)
+        distance_INCH = round((distance - distance_FT) * 12)
+        self.lbl_act_calc_result.config(text="{0}ft, {1}in".format(distance_FT, distance_INCH))
