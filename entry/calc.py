@@ -34,22 +34,50 @@ class Calculator():
         for being in self.root.token_list:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
+            
         lbl_from = ttk.Label(master=self.from_frame, text="Origin", font=self.font)
         lbl_from.grid(row=0, column=0, sticky='w')
+        lbl_creature_start = ttk.Label(master=self.from_frame, text="Creature/Object", font=self.font)
+        lbl_creature_start.grid(row=0, column=1)
         self.drop_origin = ttk.Combobox(self.from_frame, width=27, values=names)
-        self.drop_origin.grid(row=0, column=1, sticky='w')
+        self.drop_origin.grid(row=1, column=1, sticky='w')
+        btn_clear_orig = ttk.Button(master=self.from_frame, text="Clear Selected")
         btn_select_orig = ttk.Button(master=self.from_frame, text="Show Origin", command=lambda arg=[names, coordinates]: self.show_origin(arg))
-        btn_select_orig.grid(row=1, column=0, sticky='w')
+        btn_select_orig.grid(row=2, column=0, sticky='w')
         self.lbl_orig_coord = ttk.Label(master=self.from_frame, text=" ", font=self.font)
-        self.lbl_orig_coord.grid(row=1, column=1, sticky='w')
+        self.lbl_orig_coord.grid(row=2, column=1, sticky='w')
+        lbl_space_start = ttk.Label(master=self.from_frame, text="Coordinate", font=self.font)
+        lbl_space_start.grid(row=3, column=1)
+        origin_frame = ttk.Frame(master=self.from_frame)
+        origin_frame.grid(row=4, column=1, sticky='w')
+        self.ent_orig_row = ttk.Entry(master=origin_frame, width=5)
+        self.ent_orig_row.grid(row=0, column=0, sticky='w')
+        self.ent_orig_col = ttk.Entry(master=origin_frame, width=5)
+        self.ent_orig_col.grid(row=0, column=1, sticky='w')
+        self.ent_orig_z = ttk.Entry(master=origin_frame, width=5)
+        self.ent_orig_z.grid(row=0, column=2, sticky='w')
+
         lbl_to = ttk.Label(master=self.to_frame, text="Destination", font=self.font)
         lbl_to.grid(row=0, column=0, sticky='w')
+        lbl_creature_end = ttk.Label(master=self.to_frame, text="Creature/Object", font=self.font)
+        lbl_creature_end.grid(row=0, column=1)
         self.drop_destination = ttk.Combobox(self.to_frame, width=27, values=names)
-        self.drop_destination.grid(row=0, column=1, sticky='w')
+        self.drop_destination.grid(row=1, column=1, sticky='w')
         btn_select_dest = ttk.Button(master=self.to_frame, text="Show Destination", command=lambda arg=[names, coordinates]: self.show_destination(arg))
-        btn_select_dest.grid(row=1, column=0, sticky='w')
+        btn_select_dest.grid(row=2, column=0, sticky='w')
         self.lbl_dest_coord = ttk.Label(master=self.to_frame, text=" ", font=self.font)
-        self.lbl_dest_coord.grid(row=1, column=1, sticky='w')
+        self.lbl_dest_coord.grid(row=2, column=1, sticky='w')
+        lbl_space_end = ttk.Label(master=self.to_frame, text="Coordinate", font=self.font)
+        lbl_space_end.grid(row=3, column=1)
+        dest_frame = ttk.Frame(master=self.to_frame)
+        dest_frame.grid(row=4, column=1, sticky='w')
+        self.ent_dest_row = ttk.Entry(master=dest_frame, width=5)
+        self.ent_dest_row.grid(row=0, column=0, sticky='w')
+        self.ent_dest_col = ttk.Entry(master=dest_frame, width=5)
+        self.ent_dest_col.grid(row=0, column=1, sticky='w')
+        self.ent_dest_z = ttk.Entry(master=dest_frame, width=5)
+        self.ent_dest_z.grid(row=0, column=2, sticky='w')
+
         self.btn_calculate = ttk.Button(master=self.result_frame, text="Calculate Distance", command=lambda arg=[names, coordinates]: self.dist_btn(arg))
         self.btn_calculate.grid(row=0, column=0)
         lbl_act = ttk.Label(master=self.result_frame, text="True distance: ", font=self.font)
@@ -98,17 +126,47 @@ class Calculator():
         self.lbl_dest_coord.config(text="{0}: {1}: {2}".format(row, col, z))
     
     def dist_btn(self, arg):
-        origin = self.drop_origin.get()
-        destination = self.drop_destination.get()
-        if origin == "" or destination == "":
-            messagebox.showwarning("Input Error", "Please select an origin and a destination.")
+        origin_creat = self.drop_origin.get()
+        destination_creat = self.drop_destination.get()
+        origin_row = self.ent_orig_row.get()
+        origin_col = self.ent_orig_col.get()
+        origin_z = self.ent_orig_z.get()
+        dest_row = self.ent_dest_row.get()
+        dest_col = self.ent_dest_col.get()
+        dest_z = self.ent_dest_z.get()
+        coord_origin = None
+        coord_dest = None
+        if (origin_row != "" and origin_col != "" and origin_z != "") or (dest_row != "" and dest_col != "" and dest_z != ""):
+            if origin_row != "" and origin_col != "" and origin_z != "":
+                try:
+                    origin_row_int = int(origin_row)
+                    origin_col_int = int(origin_col)
+                    origin_z_int = int(origin_z)
+                except ValueError:
+                    messagebox.showwarning("Input Error", "Origin coordinates must be whole numbers.")
+                    return
+                coord_origin = [origin_row_int, origin_col_int, origin_z_int]
+            if dest_row != "" and dest_col != "" and dest_z != "":
+                try:
+                    dest_row_int = int(dest_row)
+                    dest_col_int = int(dest_col)
+                    dest_z_int = int(dest_z)
+                except ValueError:
+                    messagebox.showwarning("Input Error", "Destination coordinates must be whole numbers.")
+                    return
+                coord_dest = [dest_row_int, dest_col_int, dest_z_int]
+        if origin_creat != "" or destination_creat != "":
+            names = arg[0]
+            coordinates = arg[1]
+            if origin_creat != "":
+                index_creat_origin = names.index(origin_creat)
+                coord_origin = coordinates[index_creat_origin]
+            if destination_creat != "":
+                index_creat_dest = names.index(destination_creat)
+                coord_dest = coordinates[index_creat_dest]
+        if coord_origin is None or coord_dest is None:
+            messagebox.showwarning("Input Error", "Please select or input an origin and a destination.")
             return
-        names = arg[0]
-        coordinates = arg[1]
-        index_origin = names.index(origin)
-        index_dest = names.index(destination)
-        coord_origin = coordinates[index_origin]
-        coord_dest = coordinates[index_dest]
         if coord_origin[0] == "" or coord_origin[1] == "" or coord_origin[2] == "":
             messagebox.showwarning("Map Coordinate Failure", "Selected Origin Not on Map!")
             return

@@ -17,7 +17,7 @@ To Do List:
 		# Way to set in-game
 		# Remove from initiative when dead
 		# Automatic conflict resolution
-	- Convert camelCase to snake_case(AHHHHHHHHH!!!!!!!)
+	# Convert camelCase to snake_case
 	- Trig window error with having been open too long
 	- Investigate calculation while loop inf run
 	# Fix button widths for initiative window
@@ -31,7 +31,7 @@ To Do List:
 	- Resistant or vulnerable dice mods
 	- Trig calculation fix for large and up
 	- Field highlighting
-	- Round/Initiative Progression
+	# Round/Initiative Progression
 	- Collisions
 	- Advanced stats
 	- Minion generator
