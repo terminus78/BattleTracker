@@ -209,6 +209,7 @@ class BattleMap(object):
     
     def place_tokens(self):
         self.initiative_holder = {}
+        spaces_taken = []
         for being in self.map_win.token_list:
             token_type = being["type"]
             if token_type == "ally":
@@ -222,47 +223,56 @@ class BattleMap(object):
             else:
                 raise NameError("Token type not specified.")
             
+            occupied = False
             if being["coordinate"][0] != "" and being["coordinate"][1] != "":
                 row_pos = int(being["coordinate"][1])
                 col_pos = int(being["coordinate"][0])
-                lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
-                lbl_unit.image = token_img
-                #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
-                #row_count = int(space_count / 3)
-                #col_count = space_count % 3
-                #lbl_unit.grid(row=row_count, column=col_count, sticky='nsew')
-                lbl_unit.pack(fill='both', expand=True)
-                lbl_unit.bind("<Button-3>", self.em.right_click_menu)
-                CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
-                if being['initiative'] != -math.inf:
-                    self.initiative_holder[being['name']] = (being['initiative'], being['type'])
-                if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
-                    if being["size"] == "large":
-                        space_need = 4
-                    elif being["size"] == "huge":
-                        space_need = 9
-                    else:
-                        space_need = 16
-                    row_offset = 0
-                    col_offset = 0
-                    go_to_next_row = math.sqrt(space_need)
-                    for i in range(1, space_need):
-                        if i < space_need:
-                            col_offset += 1
-                            if col_offset == go_to_next_row:
-                                col_offset = 0
-                                row_offset += 1
-                            row_pos = int(being["coordinate"][1]) + row_offset
-                            col_pos = int(being["coordinate"][0]) + col_offset
-                            lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
-                            lbl_unit.image = token_img
-                            #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
-                            #row_count = int(space_count / 3)
-                            #col_count = space_count % 3
-                            #lbl_unit.grid(row=row_count, column=col_count)
-                            lbl_unit.pack(fill='both', expand=True)
-                            lbl_unit.bind("<Button-3>", self.em.right_click_menu)
-                            CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
+                for space_tuple in spaces_taken:
+                    if space_tuple[0] == row_pos and space_tuple[1] == col_pos and space_tuple[2] == int(being["coordinate"][2]):
+                        occupied = True
+                if occupied == False:
+                    spaces_taken.append((row_pos, col_pos, int(being["coordinate"][2])))
+                    lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
+                    lbl_unit.image = token_img
+                    #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
+                    #row_count = int(space_count / 3)
+                    #col_count = space_count % 3
+                    #lbl_unit.grid(row=row_count, column=col_count, sticky='nsew')
+                    lbl_unit.pack(fill='both', expand=True)
+                    lbl_unit.bind("<Button-3>", self.em.right_click_menu)
+                    CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
+                    if being['initiative'] != -math.inf:
+                        self.initiative_holder[being['name']] = (being['initiative'], being['type'])
+                    if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
+                        if being["size"] == "large":
+                            space_need = 4
+                        elif being["size"] == "huge":
+                            space_need = 9
+                        else:
+                            space_need = 16
+                        row_offset = 0
+                        col_offset = 0
+                        go_to_next_row = math.sqrt(space_need)
+                        for i in range(1, space_need):
+                            if i < space_need:
+                                col_offset += 1
+                                if col_offset == go_to_next_row:
+                                    col_offset = 0
+                                    row_offset += 1
+                                row_pos = int(being["coordinate"][1]) + row_offset
+                                col_pos = int(being["coordinate"][0]) + col_offset
+                                lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
+                                lbl_unit.image = token_img
+                                #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
+                                #row_count = int(space_count / 3)
+                                #col_count = space_count % 3
+                                #lbl_unit.grid(row=row_count, column=col_count)
+                                lbl_unit.pack(fill='both', expand=True)
+                                lbl_unit.bind("<Button-3>", self.em.right_click_menu)
+                                CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
+                else:
+                    messagebox.showerror("Internal Error", "Restart program\nError 0x006")
+                    return
 
             else:
                 self.unused_tokens(being, token_img)

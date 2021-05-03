@@ -178,8 +178,14 @@ class EventManager():
             return False
 
         name_list = []
+        name_exists = False
         for being in self.root.token_list:
             name_list.append(being['name'])
+            if being['name'] == selected_option:
+                name_exists = True
+        if name_exists == False:
+            messagebox.showinfo("Info", "Creature does not exist in current game.")
+            return
         index = name_list.index(selected_option)
         size = self.root.token_list[index]['size']
         one_space = False
@@ -255,23 +261,23 @@ class EventManager():
             if go_up_down == 'up':
                 coordinate[2] += delta_UD
 
-            new_coord = coordinate
-                
+            new_coord = (str(coordinate[0]), str(coordinate[1]), str(coordinate[2]))
+        
         else:
             try:
                 new_row = int(self.ent_row_coord.get()) - 1
                 new_col = int(self.ent_col_coord.get()) - 1
                 new_z = int(self.ent_z_coord.get())
-                new_coord = [new_row, new_col, new_z]
             except ValueError:
                 messagebox.showwarning("Warning", "Set Coordinate fields must be whole numbers!")
                 return False
-            if new_coord[0] > self.map_size[0] - 1 or new_coord[0] < 0:
+            if new_row > self.map_size[0] - 1 or new_row < 0:
                 messagebox.showerror("Error", "Row Coordinate Out of Range of Map!")
                 return False
-            if new_coord[1] > self.map_size[1] - 1 or new_coord[1] < 0:
+            if new_col > self.map_size[1] - 1 or new_col < 0:
                 messagebox.showerror("Error", "Column Coordinate Out of Range of Map!")
                 return False
+            new_coord = [str(new_row), str(new_col), str(new_z)]
         #else:
             #new_coord = ["", "", ""]
 
@@ -317,15 +323,11 @@ class EventManager():
         '''
 
         for being in self.root.token_list:
-            '''
-            if being["coordinate"][0] == str(new_coord[0]) and being["coordinate"][1] == str(new_coord[1]):
+            if being["coordinate"] == new_coord:
                     messagebox.showerror("Error", "Space already taken!")
                     return
-            '''
-            if being["name"] == selected_option:
-                being["coordinate"] = [str(new_coord[0]), str(new_coord[1]), str(new_coord[2])]
-                #being["initiative"] = new_init
-        #self.lbl_set_finished.config(text="Position set! Please close window.")
+        
+        self.root.token_list[index]['coordinate'] = new_coord
         return True
     
     def removeToken(self):

@@ -136,6 +136,8 @@ class Calculator():
         dest_z = self.ent_dest_z.get()
         coord_origin = None
         coord_dest = None
+        index_creat_origin = None
+        index_creat_dest = None
         if (origin_row != "" and origin_col != "" and origin_z != "") or (dest_row != "" and dest_col != "" and dest_z != ""):
             if origin_row != "" and origin_col != "" and origin_z != "":
                 try:
@@ -175,7 +177,7 @@ class Calculator():
             return
         
         self.actual_distance(coord_origin, coord_dest)
-        self.relative_distance(coord_origin, coord_dest)
+        self.relative_distance(coord_origin, coord_dest, index_creat_origin, index_creat_dest)
 
     def calc_dist(self, start, end):
         delta_x = abs((int(end[1]) * 5) - (int(start[1]) * 5))
@@ -196,7 +198,7 @@ class Calculator():
         
         return distance
     
-    def relative_distance(self, start, end):
+    def relative_distance(self, start, end, start_index, end_index):
         start_x, start_y, start_z = int(start[1]), int(start[0]), int(start[2])
         end_x, end_y, end_z = int(end[1]), int(end[0]), int(end[2])
         end_as_ints = [int(end[1]), int(end[0]), int(end[2])]
@@ -205,12 +207,62 @@ class Calculator():
         diff_y = end_y - start_y
         diff_z = end_z - start_z
         if diff_x == 0 and diff_y == 0 and diff_z == 0:
-            dist_found = True
+            #dist_found = True
             distance = 0
             self.lbl_rel_calc_result.config(text=f"{distance}ft")
             return
+        '''
         else:
             dist_found = False
+        '''
+        start_corners = [curr_coord]
+        end_corners = [end_as_ints]
+        
+        if start_index is not None:
+            start_size = self.root.token_list[start_index]['size']
+            if start_size == 'tiny' or start_size == 'small' or start_size == 'medium':
+                pass
+            else:
+                if start_size == 'large':
+                    mod_plus_min = 1
+                elif start_size == 'huge':
+                    mod_plus_min = 2
+                else:
+                    mod_plus_min = 3
+                for i in range(7):
+                    next_corner = start_corners[i]
+                    row_or_col = i % 2
+                    if i < 3 or i > 3:
+                        next_corner[row_or_col] += mod_plus_min
+                    else:
+                        next_corner = start_corners[0]
+                        next_corner[2] += 1
+                    start_corners.append(next_corner)
+                    if i != 0 and i % 2 == 0:
+                        mod_plus_min *= -1
+
+        if end_index is not None:
+            end_size = self.root.token_list[end_index]['size']
+            if end_size == 'tiny' or end_size == 'small' or end_size == 'medium':
+                pass
+            else:
+                if end_size == 'large':
+                    mod_plus_min = 1
+                elif end_size == 'huge':
+                    mod_plus_min = 2
+                else:
+                    mod_plus_min = 3
+                for i in range(7):
+                    next_corner = end_corners[i]
+                    row_or_col = i % 2
+                    if i < 3 or i > 3:
+                        next_corner[row_or_col] += mod_plus_min
+                    else:
+                        next_corner = end_corners[0]
+                        next_corner[2] += 1
+                    end_corners.append(next_corner)
+                    if i != 0 and i % 2 == 0:
+                        mod_plus_min *= -1
 
         # Counterclockwise rotation
         rotation_offset = [-1, -1, 1, 1]

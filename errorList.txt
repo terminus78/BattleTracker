@@ -3,3 +3,4 @@
 0x003: StatCollector initiative resolution outer loop over count
 0x004: Target initiative resolution inner loop over count
 0x005: Target initiative resolution outer loop over count
+0x006: Map frame already occupied, save file likely corrupted

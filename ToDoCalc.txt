@@ -25,14 +25,14 @@ To Do List:
 	- Multiple roll of same dice considered in net total
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
-	- Trig calculation to any space
+	# Trig calculation to any space
 	- Undo/Redo for actions
 	- Buff/Debuff conditions
 	- Resistant or vulnerable dice mods
 	- Trig calculation fix for large and up
 	- Field highlighting
 	# Round/Initiative Progression
-	- Collisions
+	#T Collisions
 	- Advanced stats
 	- Minion generator
 	- Controller pane
@@ -46,5 +46,6 @@ To Do List:
 		- Object movement
 		- Vehicles
 		- Non-standard creature sizing
+		- Rulesets
 		? Spell compendium
 	? Version for Mac and Linux
