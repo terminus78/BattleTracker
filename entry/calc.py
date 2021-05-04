@@ -1,4 +1,5 @@
 import math
+import copy
 
 import tkinter as tk
 from tkinter import ttk, font, messagebox
@@ -217,53 +218,94 @@ class Calculator():
         '''
         start_corners = [curr_coord]
         end_corners = [end_as_ints]
-        
+        rotation_offset = [1, 1, -1, -1]
         if start_index is not None:
             start_size = self.root.token_list[start_index]['size']
-            if start_size == 'tiny' or start_size == 'small' or start_size == 'medium':
-                pass
-            else:
+            if start_size == 'large' or start_size == 'huge' or start_size == 'gargantuan':
                 if start_size == 'large':
                     mod_plus_min = 1
                 elif start_size == 'huge':
                     mod_plus_min = 2
                 else:
                     mod_plus_min = 3
+                row_mover = start_corners[0][0]
+                col_mover = start_corners[0][1]
+                z_mover = start_corners[0][2]
+                indexer = 0
                 for i in range(7):
-                    next_corner = start_corners[i]
-                    row_or_col = i % 2
-                    if i < 3 or i > 3:
-                        next_corner[row_or_col] += mod_plus_min
+                    if i % 2 == 0:
+                        row_mover += rotation_offset[indexer]
                     else:
-                        next_corner = start_corners[0]
-                        next_corner[2] += 1
-                    start_corners.append(next_corner)
-                    if i != 0 and i % 2 == 0:
-                        mod_plus_min *= -1
+                        col_mover += rotation_offset[indexer]
+                    if i == 3:
+                        z_mover += 1
+                        indexer = -1
+                    start_corners.append([row_mover, col_mover, z_mover])
+                    indexer += 1
 
         if end_index is not None:
             end_size = self.root.token_list[end_index]['size']
-            if end_size == 'tiny' or end_size == 'small' or end_size == 'medium':
-                pass
-            else:
+            if end_size == 'large' or end_size == 'huge' or end_size == 'gargantuan':
                 if end_size == 'large':
                     mod_plus_min = 1
                 elif end_size == 'huge':
                     mod_plus_min = 2
                 else:
                     mod_plus_min = 3
+                row_mover = end_corners[0][0]
+                col_mover = end_corners[0][1]
+                z_mover = end_corners[0][2]
+                indexer = 0
                 for i in range(7):
-                    next_corner = end_corners[i]
-                    row_or_col = i % 2
-                    if i < 3 or i > 3:
-                        next_corner[row_or_col] += mod_plus_min
+                    if i % 2 == 0:
+                        row_mover += rotation_offset[indexer]
                     else:
-                        next_corner = end_corners[0]
-                        next_corner[2] += 1
-                    end_corners.append(next_corner)
-                    if i != 0 and i % 2 == 0:
-                        mod_plus_min *= -1
+                        col_mover += rotation_offset[indexer]
+                    if i == 3:
+                        z_mover += 1
+                        indexer = -1
+                    end_corners.append([row_mover, col_mover, z_mover])
+                    indexer += 1
 
+        if len(start_corners) < 8 and len(end_corners) < 8:
+            diff_x = abs(end_corners[0][1] - start_corners[0][1])
+            diff_y = abs(end_corners[0][0] - start_corners[0][0])
+            diff_z = abs(end_corners[0][2] - start_corners[0][2])
+            max_diff = max(diff_x, diff_y, diff_z)
+            distance_traveled = max_diff * 5
+        elif len(start_corners) == 8 and len(end_corners) < 8:
+            distance_list = []
+            for start_point in start_corners:
+                diff_x = abs(end_corners[0][1] - start_point[1])
+                diff_y = abs(end_corners[0][0] - start_point[0])
+                diff_z = abs(end_corners[0][2] - start_point[2])
+                distance_list.append(max(diff_x, diff_y, diff_z))
+            min_dist_corner = min(distance_list)
+            distance_traveled = min_dist_corner * 5
+        elif len(start_corners) < 8 and len(end_corners) == 8:
+            distance_list = []
+            for end_point in end_corners:
+                diff_x = abs(end_point[1] - start_corners[0][1])
+                diff_y = abs(end_point[0] - start_corners[0][0])
+                diff_z = abs(end_point[2] - start_corners[0][2])
+                distance_list.append(max(diff_x, diff_y, diff_z))
+            min_dist_corner = min(distance_list)
+            distance_traveled = min_dist_corner * 5
+        else:
+            distance_list = []
+            for start_point in start_corners:
+                for end_point in end_corners:
+                    diff_x = abs(end_point[1] - start_point[1])
+                    diff_y = abs(end_point[0] - start_point[0])
+                    diff_z = abs(end_point[2] - start_point[2])
+                    distance_list.append(max(diff_x, diff_y, diff_z))
+            min_dist_corner = min(distance_list)
+            distance_traveled = min_dist_corner * 5
+
+        
+        self.lbl_rel_calc_result.config(text=f"{distance_traveled}ft")
+
+        '''
         # Counterclockwise rotation
         rotation_offset = [-1, -1, 1, 1]
         distance_traveled = 0
@@ -404,6 +446,7 @@ class Calculator():
                 messagebox.showerror("System Error", "Restart program.\nError 0x001")
             count_rounds += 1
         self.lbl_rel_calc_result.config(text=f"{distance_traveled}ft")
+        '''
 
     def actual_distance(self, start, end):
         distance = self.calc_dist(start, end)

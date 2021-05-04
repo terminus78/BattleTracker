@@ -33,9 +33,7 @@ class MainWindow(object):
         self.master = master
         self.countdown = 3
         self.master.cwd = os.getcwd()
-        #print(self.master.cwd)
         self.cache_loc = self.master.cwd + "\\entry\\bin\\cache.json"
-        #print(self.cache_loc)
         try:
             with open(self.cache_loc, 'r') as cache_file:
                 self.cache_info = json.load(cache_file)

@@ -40,6 +40,7 @@ class DiceRoller():
         self.dice_win.maxsize(screen_width, screen_height)
         lbl_title = ttk.Label(master=self.dice_win, text="Dice Roller", font=self.title_font)
         lbl_title.grid(row=0, column=0)
+        self.dice_win.rowconfigure(1, weight=1)
         lbl_instructions = ttk.Label(master=self.dice_win, text="Select the type and number of each that you would like to roll.", font=self.font_small)
         lbl_instructions.grid(row=1, column=0)
         dice_selection_frame = ttk.Frame(master=self.dice_win)
@@ -128,21 +129,21 @@ class DiceRoller():
         #lbl_coin.grid(row=1, column=7)
 
         frame_d100 = ttk.Frame(master=dice_selection_frame)
-        frame_d100.grid(row=2, column=0)
+        frame_d100.grid(row=2, column=0, padx=10)
         frame_d20 = ttk.Frame(master=dice_selection_frame)
-        frame_d20.grid(row=2, column=1)
+        frame_d20.grid(row=2, column=1, padx=10)
         frame_d12 = ttk.Frame(master=dice_selection_frame)
-        frame_d12.grid(row=2, column=2)
+        frame_d12.grid(row=2, column=2, padx=10)
         frame_d10 = ttk.Frame(master=dice_selection_frame)
-        frame_d10.grid(row=2, column=3)
+        frame_d10.grid(row=2, column=3, padx=10)
         frame_d8 = ttk.Frame(master=dice_selection_frame)
-        frame_d8.grid(row=2, column=4)
+        frame_d8.grid(row=2, column=4, padx=10)
         frame_d6 = ttk.Frame(master=dice_selection_frame)
-        frame_d6.grid(row=2, column=5)
+        frame_d6.grid(row=2, column=5, padx=10)
         frame_d4 = ttk.Frame(master=dice_selection_frame)
-        frame_d4.grid(row=2, column=6)
+        frame_d4.grid(row=2, column=6, padx=10)
         #frame_coin = ttk.Frame(master=dice_selection_frame)
-        #frame_coin.grid(row=2, column=7)
+        #frame_coin.grid(row=2, column=7, padx=10)
 
         # Modifiers
         lbl_100_mod = ttk.Label(master=frame_d100, text="Mod", font=self.font_small)
@@ -286,23 +287,118 @@ class DiceRoller():
         btn_4_raise_num = ttk.Button(master=frame_d4, text="+", command=lambda: self.modify_num(die='4', dir='+'), width=2)
         btn_4_raise_num.grid(row=3, column=2)
 
+        # Radio-button modifiers
+        self.vuln_res_100 = tk.StringVar()
+        self.vuln_res_20 = tk.StringVar()
+        self.vuln_res_12 = tk.StringVar()
+        self.vuln_res_10 = tk.StringVar()
+        self.vuln_res_8 = tk.StringVar()
+        self.vuln_res_6 = tk.StringVar()
+        self.vuln_res_4 = tk.StringVar()
+
+        rbn_frame_100 = ttk.Frame(master=frame_d100)
+        rbn_frame_100.grid(row=4, column=0, columnspan=3)
+        rbn_frame_20 = ttk.Frame(master=frame_d20)
+        rbn_frame_20.grid(row=4, column=0, columnspan=3)
+        rbn_frame_12 = ttk.Frame(master=frame_d12)
+        rbn_frame_12.grid(row=4, column=0, columnspan=3)
+        rbn_frame_10 = ttk.Frame(master=frame_d10)
+        rbn_frame_10.grid(row=4, column=0, columnspan=3)
+        rbn_frame_8 = ttk.Frame(master=frame_d8)
+        rbn_frame_8.grid(row=4, column=0, columnspan=3)
+        rbn_frame_6 = ttk.Frame(master=frame_d6)
+        rbn_frame_6.grid(row=4, column=0, columnspan=3)
+        rbn_frame_4 = ttk.Frame(master=frame_d4)
+        rbn_frame_4.grid(row=4, column=0, columnspan=3)
+
+        self.rbn_vuln_100 = ttk.Radiobutton(master=rbn_frame_100, text="Vuln", variable=self.vuln_res_100, value="v")
+        self.rbn_vuln_100.grid(row=0, column=0)
+        self.rbn_norm_100 = ttk.Radiobutton(master=rbn_frame_100, text="Norm", variable=self.vuln_res_100, value="n")
+        self.rbn_norm_100.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_100 = ttk.Radiobutton(master=rbn_frame_100, text="Rsst", variable=self.vuln_res_100, value="r")
+        self.rbn_rsst_100.grid(row=0, column=1)
+        self.rbn_norm_100.state(['selected'])
+
+        self.rbn_vuln_20 = ttk.Radiobutton(master=rbn_frame_20, text="Vuln", variable=self.vuln_res_20, value="v")
+        self.rbn_vuln_20.grid(row=0, column=0)
+        self.rbn_norm_20 = ttk.Radiobutton(master=rbn_frame_20, text="Norm", variable=self.vuln_res_20, value="n")
+        self.rbn_norm_20.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_20 = ttk.Radiobutton(master=rbn_frame_20, text="Rsst", variable=self.vuln_res_20, value="r")
+        self.rbn_rsst_20.grid(row=0, column=1)
+        self.rbn_norm_20.state(['selected'])
+
+        self.rbn_vuln_12 = ttk.Radiobutton(master=rbn_frame_12, text="Vuln", variable=self.vuln_res_12, value="v")
+        self.rbn_vuln_12.grid(row=0, column=0)
+        self.rbn_norm_12 = ttk.Radiobutton(master=rbn_frame_12, text="Norm", variable=self.vuln_res_12, value="n")
+        self.rbn_norm_12.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_12 = ttk.Radiobutton(master=rbn_frame_12, text="Rsst", variable=self.vuln_res_12, value="r")
+        self.rbn_rsst_12.grid(row=0, column=1)
+        self.rbn_norm_12.state(['selected'])
+
+        self.rbn_vuln_10 = ttk.Radiobutton(master=rbn_frame_10, text="Vuln", variable=self.vuln_res_10, value="v")
+        self.rbn_vuln_10.grid(row=0, column=0)
+        self.rbn_norm_10 = ttk.Radiobutton(master=rbn_frame_10, text="Norm", variable=self.vuln_res_10, value="n")
+        self.rbn_norm_10.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_10 = ttk.Radiobutton(master=rbn_frame_10, text="Rsst", variable=self.vuln_res_10, value="r")
+        self.rbn_rsst_10.grid(row=0, column=1)
+        self.rbn_norm_10.state(['selected'])
+
+        self.rbn_vuln_8 = ttk.Radiobutton(master=rbn_frame_8, text="Vuln", variable=self.vuln_res_8, value="v")
+        self.rbn_vuln_8.grid(row=0, column=0)
+        self.rbn_norm_8 = ttk.Radiobutton(master=rbn_frame_8, text="Norm", variable=self.vuln_res_8, value="n")
+        self.rbn_norm_8.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_8 = ttk.Radiobutton(master=rbn_frame_8, text="Rsst", variable=self.vuln_res_8, value="r")
+        self.rbn_rsst_8.grid(row=0, column=1)
+        self.rbn_norm_8.state(['selected'])
+
+        self.rbn_vuln_6 = ttk.Radiobutton(master=rbn_frame_6, text="Vuln", variable=self.vuln_res_6, value="v")
+        self.rbn_vuln_6.grid(row=0, column=0)
+        self.rbn_norm_6 = ttk.Radiobutton(master=rbn_frame_6, text="Norm", variable=self.vuln_res_6, value="n")
+        self.rbn_norm_6.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_6 = ttk.Radiobutton(master=rbn_frame_6, text="Rsst", variable=self.vuln_res_6, value="r")
+        self.rbn_rsst_6.grid(row=0, column=1)
+        self.rbn_norm_6.state(['selected'])
+
+        self.rbn_vuln_4 = ttk.Radiobutton(master=rbn_frame_4, text="Vuln", variable=self.vuln_res_4, value="v")
+        self.rbn_vuln_4.grid(row=0, column=0)
+        self.rbn_norm_4 = ttk.Radiobutton(master=rbn_frame_4, text="Norm", variable=self.vuln_res_4, value="n")
+        self.rbn_norm_4.grid(row=1, column=0, columnspan=2)
+        self.rbn_rsst_4 = ttk.Radiobutton(master=rbn_frame_4, text="Rsst", variable=self.vuln_res_4, value="r")
+        self.rbn_rsst_4.grid(row=0, column=1)
+        self.rbn_norm_4.state(['selected'])
+
         # Roll buttons
         btn_100_roll = ttk.Button(master=frame_d100, text="Roll", command=lambda: self.roll_win_btn('100'))
-        btn_100_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_100_roll.grid(row=5, column=0, columnspan=3, pady=10)
         btn_20_roll = ttk.Button(master=frame_d20, text="Roll", command=lambda: self.roll_win_btn('20'))
-        btn_20_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_20_roll.grid(row=5, column=0, columnspan=3, pady=10)
         btn_12_roll = ttk.Button(master=frame_d12, text="Roll", command=lambda: self.roll_win_btn('12'))
-        btn_12_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_12_roll.grid(row=5, column=0, columnspan=3, pady=10)
         btn_10_roll = ttk.Button(master=frame_d10, text="Roll", command=lambda: self.roll_win_btn('10'))
-        btn_10_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_10_roll.grid(row=5, column=0, columnspan=3, pady=10)
         btn_8_roll = ttk.Button(master=frame_d8, text="Roll", command=lambda: self.roll_win_btn('8'))
-        btn_8_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_8_roll.grid(row=5, column=0, columnspan=3, pady=10)
         btn_6_roll = ttk.Button(master=frame_d6, text="Roll", command=lambda: self.roll_win_btn('6'))
-        btn_6_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_6_roll.grid(row=5, column=0, columnspan=3, pady=10)
         btn_4_roll = ttk.Button(master=frame_d4, text="Roll", command=lambda: self.roll_win_btn('4'))
-        btn_4_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        btn_4_roll.grid(row=5, column=0, columnspan=3, pady=10)
         #btn_coin_roll = ttk.Button(master=frame_coin, text="Roll", command=lambda: self.roll_win_btn('coin'))
-        #btn_coin_roll.grid(row=4, column=0, columnspan=3, pady=10)
+        #btn_coin_roll.grid(row=5, column=0, columnspan=3, pady=10)
+
+        self.btn_100_roll_again = ttk.Button(master=frame_d100, text="Add Roll", command=lambda: self.roll_win_btn('100', True))
+        self.btn_20_roll_again = ttk.Button(master=frame_d20, text="Add Roll", command=lambda: self.roll_win_btn('20', True))
+        self.btn_12_roll_again = ttk.Button(master=frame_d12, text="Add Roll", command=lambda: self.roll_win_btn('12', True))
+        self.btn_10_roll_again = ttk.Button(master=frame_d10, text="Add Roll", command=lambda: self.roll_win_btn('10', True))
+        self.btn_8_roll_again = ttk.Button(master=frame_d8, text="Add Roll", command=lambda: self.roll_win_btn('8', True))
+        self.btn_6_roll_again = ttk.Button(master=frame_d6, text="Add Roll", command=lambda: self.roll_win_btn('6', True))
+        self.btn_4_roll_again = ttk.Button(master=frame_d4, text="Add Roll", command=lambda: self.roll_win_btn('4', True))
+        self.btn_100_roll_again.grid(row=6, column=0, columnspan=3)
+        self.btn_20_roll_again.grid(row=6, column=0, columnspan=3)
+        self.btn_12_roll_again.grid(row=6, column=0, columnspan=3)
+        self.btn_10_roll_again.grid(row=6, column=0, columnspan=3)
+        self.btn_8_roll_again.grid(row=6, column=0, columnspan=3)
+        self.btn_6_roll_again.grid(row=6, column=0, columnspan=3)
+        self.btn_4_roll_again.grid(row=6, column=0, columnspan=3)
 
         self.d100s_rolled = ttk.Label(master=dice_selection_frame, text="", font=self.font_small, anchor='center')
         self.d20s_rolled = ttk.Label(master=dice_selection_frame, text="", font=self.font_small, anchor='center')
@@ -314,28 +410,28 @@ class DiceRoller():
 
         # Results
         frame_res_1 = ttk.Frame(master=frame_d100)
-        frame_res_1.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_1.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_1.columnconfigure([0,1], weight=1)
         frame_res_2 = ttk.Frame(master=frame_d20)
-        frame_res_2.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_2.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_2.columnconfigure([0,1], weight=1)
         frame_res_3 = ttk.Frame(master=frame_d12)
-        frame_res_3.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_3.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_3.columnconfigure([0,1], weight=1)
         frame_res_4 = ttk.Frame(master=frame_d10)
-        frame_res_4.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_4.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_4.columnconfigure([0,1], weight=1)
         frame_res_5 = ttk.Frame(master=frame_d8)
-        frame_res_5.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_5.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_5.columnconfigure([0,1], weight=1)
         frame_res_6 = ttk.Frame(master=frame_d6)
-        frame_res_6.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_6.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_6.columnconfigure([0,1], weight=1)
         frame_res_7 = ttk.Frame(master=frame_d4)
-        frame_res_7.grid(row=6, column=0, columnspan=3, pady=10)
+        frame_res_7.grid(row=7, column=0, columnspan=3, pady=10)
         frame_res_7.columnconfigure([0,1], weight=1)
         #frame_res_8 = ttk.Frame(master=frame_coin)
-        #frame_res_8.grid(row=6, column=0, columnspan=3, pady=10)
+        #frame_res_8.grid(row=7, column=0, columnspan=3, pady=10)
         #frame_res_8.columnconfigure([0,1], weight=1)
 
         lbl_100_marker = ttk.Label(master=frame_res_1, text="Roll: ", font=self.font)
@@ -743,7 +839,7 @@ class DiceRoller():
             messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
             return
 
-    def roll_win_btn(self, die):
+    def roll_win_btn(self, die, add_to_roll=False):
         if die == '100':
             try:
                 mod_100 = int(self.ent_100_mod.get())
@@ -765,6 +861,10 @@ class DiceRoller():
                 return
             result_100_list = self.roll(die_size=100, num_dice=num_100)
             dice_100_sum = 0
+            if add_to_roll:
+                dice_100_sum_last = int(self.lbl_100_total.cget('text'))
+            else:
+                dice_100_sum_last = 0
             roll_values = str(result_100_list[0])
             num_of_loops = 0
             for res in result_100_list:
@@ -784,7 +884,11 @@ class DiceRoller():
                 mod_100_str = "+" + mod_100_str
             self.lbl_100_result.config(text=dice_100_sum)
             self.lbl_100_offset.config(text=mod_100_str)
-            dice_100_total = dice_100_sum + mod_100
+            dice_100_total = dice_100_sum + mod_100 + dice_100_sum_last
+            if self.vuln_res_100.get() == 'v':
+                dice_100_total = math.floor(dice_100_total * 2)
+            elif self.vuln_res_100.get() == 'r':
+                dice_100_total = math.floor(dice_100_total / 2)
             self.lbl_100_total.config(text=dice_100_total)
         elif die == '20':
             try:
@@ -807,6 +911,10 @@ class DiceRoller():
                 return
             result_20_list = self.roll(die_size=20, num_dice=num_20)
             dice_20_sum = 0
+            if add_to_roll:
+                dice_20_sum_last = int(self.lbl_20_total.cget('text'))
+            else:
+                dice_20_sum_last = 0
             roll_values = str(result_20_list[0])
             num_of_loops = 0
             for res in result_20_list:
@@ -826,7 +934,11 @@ class DiceRoller():
                 mod_20_str = "+" + mod_20_str
             self.lbl_20_result.config(text=dice_20_sum)
             self.lbl_20_offset.config(text=mod_20_str)
-            dice_20_total = dice_20_sum + mod_20
+            dice_20_total = dice_20_sum + mod_20 + dice_20_sum_last
+            if self.vuln_res_20.get() == 'v':
+                dice_20_total = math.floor(dice_20_total * 2)
+            elif self.vuln_res_20.get() == 'r':
+                dice_20_total = math.floor(dice_20_total / 2)
             self.lbl_20_total.config(text=dice_20_total)
         elif die == '12':
             try:
@@ -849,6 +961,10 @@ class DiceRoller():
                 return
             result_12_list = self.roll(die_size=12, num_dice=num_12)
             dice_12_sum = 0
+            if add_to_roll:
+                dice_12_sum_last = int(self.lbl_12_total.cget('text'))
+            else:
+                dice_12_sum_last = 0
             roll_values = str(result_12_list[0])
             num_of_loops = 0
             for res in result_12_list:
@@ -868,7 +984,11 @@ class DiceRoller():
                 mod_12_str = "+" + mod_12_str
             self.lbl_12_result.config(text=dice_12_sum)
             self.lbl_12_offset.config(text=mod_12_str)
-            dice_12_total = dice_12_sum + mod_12
+            dice_12_total = dice_12_sum + mod_12 + dice_12_sum_last
+            if self.vuln_res_12.get() == 'v':
+                dice_12_total = math.floor(dice_12_total * 2)
+            elif self.vuln_res_12.get() == 'r':
+                dice_12_total = math.floor(dice_12_total / 2)
             self.lbl_12_total.config(text=dice_12_total)
         elif die == '10':
             try:
@@ -891,6 +1011,10 @@ class DiceRoller():
                 return
             result_10_list = self.roll(die_size=10, num_dice=num_10)
             dice_10_sum = 0
+            if add_to_roll:
+                dice_10_sum_last = int(self.lbl_10_total.cget('text'))
+            else:
+                dice_10_sum_last = 0
             roll_values = str(result_10_list[0])
             num_of_loops = 0
             for res in result_10_list:
@@ -910,7 +1034,11 @@ class DiceRoller():
                 mod_10_str = "+" + mod_10_str
             self.lbl_10_result.config(text=dice_10_sum)
             self.lbl_10_offset.config(text=mod_10_str)
-            dice_10_total = dice_10_sum + mod_10
+            dice_10_total = dice_10_sum + mod_10 + dice_10_sum_last
+            if self.vuln_res_10.get() == 'v':
+                dice_10_total = math.floor(dice_10_total * 2)
+            elif self.vuln_res_10.get() == 'r':
+                dice_10_total = math.floor(dice_10_total / 2)
             self.lbl_10_total.config(text=dice_10_total)
         elif die == '8':
             try:
@@ -933,6 +1061,10 @@ class DiceRoller():
                 return
             result_8_list = self.roll(die_size=8, num_dice=num_8)
             dice_8_sum = 0
+            if add_to_roll:
+                dice_8_sum_last = int(self.lbl_8_total.cget('text'))
+            else:
+                dice_8_sum_last = 0
             roll_values = str(result_8_list[0])
             num_of_loops = 0
             for res in result_8_list:
@@ -952,7 +1084,11 @@ class DiceRoller():
                 mod_8_str = "+" + mod_8_str
             self.lbl_8_result.config(text=dice_8_sum)
             self.lbl_8_offset.config(text=mod_8_str)
-            dice_8_total = dice_8_sum + mod_8
+            dice_8_total = dice_8_sum + mod_8 + dice_8_sum_last
+            if self.vuln_res_8.get() == 'v':
+                dice_8_total = math.floor(dice_8_total * 2)
+            elif self.vuln_res_8.get() == 'r':
+                dice_8_total = math.floor(dice_8_total / 2)
             self.lbl_8_total.config(text=dice_8_total)
         elif die == '6':
             try:
@@ -975,6 +1111,10 @@ class DiceRoller():
                 return
             result_6_list = self.roll(die_size=6, num_dice=num_6)
             dice_6_sum = 0
+            if add_to_roll:
+                dice_6_sum_last = int(self.lbl_6_total.cget('text'))
+            else:
+                dice_6_sum_last = 0
             roll_values = str(result_6_list[0])
             num_of_loops = 0
             for res in result_6_list:
@@ -994,7 +1134,11 @@ class DiceRoller():
                 mod_6_str = "+" + mod_6_str
             self.lbl_6_result.config(text=dice_6_sum)
             self.lbl_6_offset.config(text=mod_6_str)
-            dice_6_total = dice_6_sum + mod_6
+            dice_6_total = dice_6_sum + mod_6 + dice_6_sum_last
+            if self.vuln_res_6.get() == 'v':
+                dice_6_total = math.floor(dice_6_total * 2)
+            elif self.vuln_res_6.get() == 'r':
+                dice_6_total = math.floor(dice_6_total / 2)
             self.lbl_6_total.config(text=dice_6_total)
         elif die == '4':
             try:
@@ -1017,6 +1161,10 @@ class DiceRoller():
                 return
             result_4_list = self.roll(die_size=4, num_dice=num_4)
             dice_4_sum = 0
+            if add_to_roll:
+                dice_4_sum_last = int(self.lbl_4_total.cget('text'))
+            else:
+                dice_4_sum_last = 0
             roll_values = str(result_4_list[0])
             num_of_loops = 0
             for res in result_4_list:
@@ -1036,7 +1184,11 @@ class DiceRoller():
                 mod_4_str = "+" + mod_4_str
             self.lbl_4_result.config(text=dice_4_sum)
             self.lbl_4_offset.config(text=mod_4_str)
-            dice_4_total = dice_4_sum + mod_4
+            dice_4_total = dice_4_sum + mod_4 + dice_4_sum_last
+            if self.vuln_res_4.get() == 'v':
+                dice_4_total = math.floor(dice_4_total * 2)
+            elif self.vuln_res_4.get() == 'r':
+                dice_4_total = math.floor(dice_4_total / 2)
             self.lbl_4_total.config(text=dice_4_total)
         else:
             messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
@@ -1094,6 +1246,7 @@ class DiceRoller():
         self.d8s_rolled.config(text="")
         self.d6s_rolled.config(text="")
         self.d4s_rolled.config(text="")
+
         if self.d100s_rolled.winfo_ismapped():
             self.d100s_rolled.grid_forget()
         if self.d20s_rolled.winfo_ismapped():
@@ -1108,6 +1261,23 @@ class DiceRoller():
             self.d6s_rolled.grid_forget()
         if self.d4s_rolled.winfo_ismapped():
             self.d4s_rolled.grid_forget()
+
+        '''
+        if self.btn_100_roll_again.winfo_ismapped():
+            self.btn_100_roll_again.grid_forget()
+        if self.btn_20_roll_again.winfo_ismapped():
+            self.btn_20_roll_again.grid_forget()
+        if self.btn_12_roll_again.winfo_ismapped():
+            self.btn_12_roll_again.grid_forget()
+        if self.btn_10_roll_again.winfo_ismapped():
+            self.btn_10_roll_again.grid_forget()
+        if self.btn_8_roll_again.winfo_ismapped():
+            self.btn_8_roll_again.grid_forget()
+        if self.btn_6_roll_again.winfo_ismapped():
+            self.btn_6_roll_again.grid_forget()
+        if self.btn_4_roll_again.winfo_ismapped():
+            self.btn_4_roll_again.grid_forget()
+        '''
 
         self.lbl_100_total.config(text="0")
         self.lbl_100_offset.config(text="0")
@@ -1131,3 +1301,25 @@ class DiceRoller():
         self.lbl_4_offset.config(text="0")
         self.lbl_4_result.config(text="0")
         self.lbl_net_total.config(text="0")
+
+        self.rbn_vuln_100.state(["!selected"])
+        self.rbn_rsst_100.state(["!selected"])
+        self.rbn_norm_100.state(["selected"])
+        self.rbn_vuln_20.state(["!selected"])
+        self.rbn_rsst_20.state(["!selected"])
+        self.rbn_norm_20.state(["selected"])
+        self.rbn_vuln_12.state(["!selected"])
+        self.rbn_rsst_12.state(["!selected"])
+        self.rbn_norm_12.state(["selected"])
+        self.rbn_vuln_10.state(["!selected"])
+        self.rbn_rsst_10.state(["!selected"])
+        self.rbn_norm_10.state(["selected"])
+        self.rbn_vuln_8.state(["!selected"])
+        self.rbn_rsst_8.state(["!selected"])
+        self.rbn_norm_8.state(["selected"])
+        self.rbn_vuln_6.state(["!selected"])
+        self.rbn_rsst_6.state(["!selected"])
+        self.rbn_norm_6.state(["selected"])
+        self.rbn_vuln_4.state(["!selected"])
+        self.rbn_rsst_4.state(["!selected"])
+        self.rbn_norm_4.state(["selected"])

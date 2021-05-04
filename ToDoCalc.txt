@@ -18,18 +18,18 @@ To Do List:
 		# Remove from initiative when dead
 		# Automatic conflict resolution
 	# Convert camelCase to snake_case
-	- Trig window error with having been open too long
-	- Investigate calculation while loop inf run
+	# Trig window error with having been open too long
+	# Investigate calculation while loop inf run
 	# Fix button widths for initiative window
 	# Show each roll value in dice roller
-	- Multiple roll of same dice considered in net total
+	# Multiple roll of same dice considered in net total
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
 	# Trig calculation to any space
 	- Undo/Redo for actions
 	- Buff/Debuff conditions
-	- Resistant or vulnerable dice mods
-	- Trig calculation fix for large and up
+	# Resistant or vulnerable dice mods
+	# Trig calculation fix for large and up
 	- Field highlighting
 	# Round/Initiative Progression
 	#T Collisions
@@ -46,6 +46,6 @@ To Do List:
 		- Object movement
 		- Vehicles
 		- Non-standard creature sizing
-		- Rulesets
+		- Rule-sets
 		? Spell compendium
 	? Version for Mac and Linux
