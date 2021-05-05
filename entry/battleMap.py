@@ -32,9 +32,9 @@ class BattleMap(object):
             game_title = game_title[0:31] + "..."
         # Window definition
         with ZipFile(self.master.filename, 'r') as savefile:
-            battle_bytes = savefile.read('battleInfo.json')
+            battle_bytes = savefile.read('battle_info.json')
             battle_obj = json.loads(battle_bytes.decode('utf-8'))
-            self.map_size = battle_obj['mapSize']
+            self.map_size = battle_obj['map_size']
             self.round = battle_obj['round']
             self.turn = battle_obj['turn']
         self.map_win = tk.Toplevel(self.master)
@@ -114,13 +114,13 @@ class BattleMap(object):
         d20_icon_path = "entry\\bin\\role-playing.png"
         d20_icon = ImageTk.PhotoImage(image=PIL.Image.open(d20_icon_path).resize((20,20)))
 
-        ally_path = "entry\\bin\\allyToken.png"
+        ally_path = "entry\\bin\\ally_token.png"
         self.ally_img = ImageTk.PhotoImage(image=PIL.Image.open(ally_path).resize((15,15)))
-        enemy_path = "entry\\bin\\enemyToken.png"
+        enemy_path = "entry\\bin\\enemy_token.png"
         self.enemy_img = ImageTk.PhotoImage(image=PIL.Image.open(enemy_path).resize((15,15)))
-        bystander_path = "entry\\bin\\bystanderToken.png"
+        bystander_path = "entry\\bin\\bystander_token.png"
         self.bystander_img = ImageTk.PhotoImage(image=PIL.Image.open(bystander_path).resize((15,15)))
-        dead_path = "entry\\bin\\deadToken.png"
+        dead_path = "entry\\bin\\dead_token.png"
         self.dead_img = ImageTk.PhotoImage(image=PIL.Image.open(dead_path).resize((15,15)))
         
         self.map_frames = []
@@ -365,14 +365,14 @@ class BattleMap(object):
             name = being["name"]
             new_token_dict[name] = being
         battle_dict = {
-            "mapSize": self.map_size,
+            "map_size": self.map_size,
             "round": self.round,
             "turn": self.turn
         }
         battleJSON = json.dumps(battle_dict, indent=4)
         with ZipFile(self.master.filename, "w") as savefile:
             creatJSON = json.dumps(new_token_dict, indent=4)
-            savefile.writestr('battleInfo.json', battleJSON)
+            savefile.writestr('battle_info.json', battleJSON)
             savefile.writestr('creatures.json', creatJSON)
 
     def clear_map(self):
@@ -439,14 +439,14 @@ class BattleMap(object):
         make_sure = messagebox.askokcancel("Warning", "Confirm request to delete ALL tokens and FULL RESET MAP.\nIf confirmed, this action cannot be undone.")
         if make_sure:
             battle_dict = {
-                "mapSize": self.map_size,
+                "map_size": self.map_size,
                 "round": 0,
                 "turn": 0
             }
             battleJSON = json.dumps(battle_dict, indent=4)
             with ZipFile(self.master.filename, "w") as savefile:
                 creatJSON = json.dumps(empty_dict)
-                savefile.writestr('battleInfo.json', battleJSON)
+                savefile.writestr('battle_info.json', battleJSON)
                 savefile.writestr('creatures.json', creatJSON)
             self.refresh_map(reset=True)
 

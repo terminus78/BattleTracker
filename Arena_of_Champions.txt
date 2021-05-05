@@ -1,0 +1,19 @@
+Fredrick Dormer
+Max HP: 60
+Current HP: 60
+Type: enemy
+Height: 6.0
+Size: medium
+Not on map
+Initiative: 10
+Condition: normal
+
+Simir Grumblegut
+Max HP: 113
+Current HP: 113
+Type: enemy
+Height: 5.0
+Size: medium
+Not on map
+Initiative: 7.9
+Condition: normal

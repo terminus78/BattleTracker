@@ -40,7 +40,7 @@ class MainWindow(object):
         except IOError:
             with open(self.cache_loc, 'w') as cache_file:
                 default_loc = {
-                    'lastDir': 'C:\\'
+                    'last_dir': 'C:\\'
                 }
                 json.dump(default_loc, cache_file, indent=4)
             with open(self.cache_loc, 'r') as cache_file:
@@ -102,7 +102,7 @@ class MainWindow(object):
         lbl_select_file_loc = ttk.Label(master=file_frame, text="Select file location", font=papyrus_font)
         lbl_select_file_loc.grid(row=0, column=0, sticky='w')
         self.ent_file_loc = ttk.Entry(master=file_frame, width=50)
-        self.ent_file_loc.insert(0, self.cache_info['lastDir'])
+        self.ent_file_loc.insert(0, self.cache_info['last_dir'])
         self.ent_file_loc.grid(row=1, column=0, sticky='w')
         btn_look_up_file = ttk.Button(master=file_frame, text="...", width=2, command=self.look_up_command)
         btn_look_up_file.grid(row=1, column=1, sticky='w')
@@ -145,17 +145,17 @@ class MainWindow(object):
             return
 
         battle_dict = {
-            "mapSize": map_size,
+            "map_size": map_size,
             "round": 0,
             "turn": 0
         }
         battleJSON = json.dumps(battle_dict, indent=4)
         with ZipFile(self.master.filename, 'w') as brpg_file:
-            brpg_file.writestr("battleInfo.json", battleJSON)
+            brpg_file.writestr("battle_info.json", battleJSON)
             brpg_file.writestr("creatures.json", "{}")
         save_dir = os.path.dirname(self.master.filename)
-        if save_dir != self.cache_info['lastDir']:
-            self.cache_info['lastDir'] = save_dir
+        if save_dir != self.cache_info['last_dir']:
+            self.cache_info['last_dir'] = save_dir
             with open(self.cache_loc, 'w') as cache_file:
                 json.dump(self.cache_info, cache_file, indent=4)
         self.map_win = BattleMap(self.master)
@@ -168,13 +168,13 @@ class MainWindow(object):
         self.ent_file_loc.insert(0, self.master.filedir)
 
     def open_file(self):
-        self.master.filename = filedialog.askopenfilename(initialdir=self.cache_info['lastDir'], title='Select File', filetypes=(('BRPG files', '*.brpg'),))
+        self.master.filename = filedialog.askopenfilename(initialdir=self.cache_info['last_dir'], title='Select File', filetypes=(('BRPG files', '*.brpg'),))
         if type(self.master.filename) is str and self.master.filename != "":
             if os.path.exists(self.master.filename) == False:
                 messagebox.showerror("Start Game", "File location does not exist or your access level requires elevation.")
             save_dir = os.path.dirname(self.master.filename)
-            if save_dir != self.cache_info['lastDir']:
-                self.cache_info['lastDir'] = save_dir
+            if save_dir != self.cache_info['last_dir']:
+                self.cache_info['last_dir'] = save_dir
                 with open(self.cache_loc, 'w') as cache_file:
                     json.dump(self.cache_info, cache_file, indent=4)
             game_file = os.path.split(self.master.filename)[-1]

@@ -1,0 +1,24 @@
+name
+race/subrace/creature name
+*class/archtype
+*background
+stats/bonuses
+skills
+hp
+*equipment
+init bonus
+speed
+hit dice
+ac
+*proficiency/proficiencies
+level/cr
+weapons
+*spells/slots/dc/attack
+*features
+*languages
+*money
+*character traits
+notes
+
+----------------
+*when applicable

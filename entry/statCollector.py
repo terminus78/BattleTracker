@@ -9,6 +9,7 @@ from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
 from dice import DiceRoller
+from press import Press
 
 papyrus_font = ('Papyrus', '14')
 
@@ -27,6 +28,10 @@ class StatCollector(object):
         fg = style.lookup('TLabel', 'foreground')
         self.range_win.configure(bg=style.lookup('TLabel', 'background'))
         self.dice = DiceRoller()
+        self.forge = Press(self.master)
+
+        btn_forge = ttk.Button(master=self.range_win, command=self.forge.init_press, text="Use Forge")
+        btn_forge.grid(row=0, column=0)
 
         upper_frame = ttk.Frame(master=self.range_win)
         lower_frame = ttk.Frame(master=self.range_win)
@@ -41,9 +46,9 @@ class StatCollector(object):
 
         frame_list = [frame1_1, frame1_2, frame2_1, frame2_2, frame3_1, frame3_2]
 
-        upper_frame.grid(row=0, column=0, sticky="w")
-        lower_frame.grid(row=1, column=0, sticky="w")
-        under_frame.grid(row=2, column=0, pady=8)
+        upper_frame.grid(row=1, column=0, sticky="w")
+        lower_frame.grid(row=2, column=0, sticky="w")
+        under_frame.grid(row=3, column=0, pady=8)
 
         fr_row = 0
         fr_col = 0
@@ -253,9 +258,9 @@ class StatCollector(object):
 
         self.stats = {
             "name": name_get,
-            "maxHP": max_HP_int,
-            "tempHP": temp_HP_int,
-            "currentHP": max_HP_int,
+            "max_HP": max_HP_int,
+            "temp_HP": temp_HP_int,
+            "current_HP": max_HP_int,
             "type": foe_friend_get,
             "height": height_flt,
             "size": size_get,
@@ -276,7 +281,7 @@ class StatCollector(object):
     # Unused
     def write_file(self):
         battle_dict = {
-            "mapSize": self.map_size,
+            "map_size": self.map_size,
             "round": self.round,
             "turn": self.turn
         }
@@ -287,7 +292,7 @@ class StatCollector(object):
             read_obj.update(self.stats)
         with ZipFile(self.master.filename, "w") as savefile:
             readJSON = json.dumps(read_obj, indent=4)
-            savefile.writestr('battleInfo.json', battleJSON)
+            savefile.writestr('battle_info.json', battleJSON)
             savefile.writestr('creatures.json', readJSON)
 
     def roll_dice(self):

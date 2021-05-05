@@ -41,6 +41,7 @@ To Do List:
 	- Creature Template Library
 	- Library Template Creator
 	- TV Pixel resolution differences
+	- Mirror pane for players
 	-- Advanced Version
 		- Terrain mapping
 		- Object movement

@@ -432,9 +432,9 @@ class Target():
 
         new_obj_target = {
             "name": new_name,
-            "maxHP": new_max_HP,
-            "tempHP": new_temp_HP,
-            "currentHP": new_curr_HP,
+            "max_HP": new_max_HP,
+            "temp_HP": new_temp_HP,
+            "current_HP": new_curr_HP,
             "type": new_type,
             "height": object_target['height'],
             "size": object_target['size'],
