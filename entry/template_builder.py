@@ -557,7 +557,7 @@ class TemplateBuilder():
                     'acrobatics': skill_matrix[1],
                     'sleight_of_hand': skill_matrix[2],
                     'stealth': skill_matrix[3],
-                    'arcane': skill_matrix[4],
+                    'arcana': skill_matrix[4],
                     'history': skill_matrix[5],
                     'investigation': skill_matrix[6],
                     'nature': skill_matrix[7],
