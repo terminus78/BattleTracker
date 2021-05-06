@@ -424,7 +424,7 @@ class Target():
                 new_type = 'dead'
 
         no_notes = self.check_delete.get()
-        new_notes = self.txt_change_notes.get(1.0, tk.END)
+        new_notes = self.txt_change_notes.get(1.0, 'end-1c')
         if no_notes == 0 and new_notes == "":
             new_notes = object_target['notes']
         elif no_notes == 1:

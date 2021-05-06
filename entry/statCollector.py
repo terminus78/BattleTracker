@@ -160,7 +160,7 @@ class StatCollector(object):
         height_get = self.ent_height.get()
         size_get = self.rad_size.get()
         init_get = self.ent_init.get()
-        notes_get = self.txt_notes.get(1.0, tk.END)
+        notes_get = self.txt_notes.get(1.0, 'end-1c')
         if name_get == "":
             messagebox.showinfo("Character Input", "Must input a name.")
             return False
