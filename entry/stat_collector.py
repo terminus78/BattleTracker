@@ -14,7 +14,7 @@ from press import Press
 papyrus_font = ('Papyrus', '14')
 
 
-class StatCollector(object):
+class StatCollector():
     def __init__(self, master, map_size, round_num, turn):
         self.master = master
         self.map_size = map_size
@@ -182,8 +182,8 @@ class StatCollector(object):
                 check_not_finished = True
                 loop_counter = 0
                 while check_not_finished:
+                    loop_counter += 1
                     for being in self.master.token_list:
-                        loop_counter += 1
                         if being['initiative'] == init_flt:
                             not_resolved = True
                             multiplyer = 0.1
@@ -202,11 +202,11 @@ class StatCollector(object):
                                     check_not_finished = False
                                 inner_fail += 1
                             break
-                        elif loop_counter >= len(self.master.token_list):
-                            check_not_finished = False
-                        elif loop_counter > 100:
-                            messagebox.showerror("System Error", "Restart Program\nError 0x003")
-                            check_not_finished = False
+                    if loop_counter >= len(self.master.token_list):
+                        check_not_finished = False
+                    elif loop_counter > 100:
+                        messagebox.showerror("System Error", "Restart Program\nError 0x003")
+                        check_not_finished = False
 
             except ValueError:
                 messagebox.showwarning("Character Input", "Initiative must be a number.")

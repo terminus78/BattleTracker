@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
 
-from bigHelper2D import correct_placement
+from big_helper_2D import correct_placement
 from dice import DiceRoller
 
 class EventManager():
