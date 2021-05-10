@@ -3,8 +3,9 @@ import random
 import pathlib
 import json
 import os
-from zipfile import ZipFile
+import copy
 
+from zipfile import ZipFile
 import PIL.Image
 from PIL import ImageTk
 import tkinter as tk
@@ -21,6 +22,7 @@ from condition_info import InfoClass
 from dice import DiceRoller
 from player_window import PlayerWin
 from starter import *
+from undo_redo import ActionStack
 
 
 map_win = tk.Tk()
@@ -30,7 +32,6 @@ map_win.withdraw()
 class BattleMap():
     def __init__(self, root):
         self.root = root
-        self.first_go_around = True
         self.reg_font = ('Papyrus', '14')
         self.small_font = ("Papyrus", "9")
         self.big_font = ("Papyrus", "16")
@@ -62,7 +63,7 @@ class BattleMap():
 
     def new_game_btns(self, btn):
         if btn == 'start':
-            start_complete = self.start_new_battle()
+            start_complete = self.start_win.start_new_battle()
             if start_complete:
                 self.start_win.win_start.destroy()
                 self.main_window()
@@ -102,7 +103,7 @@ class BattleMap():
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, minsize=100)
         self.quote_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')
-        self.quote_frame.pack(side='top', fill='x')
+        self.quote_frame.pack(side='top', fill='x', expand=True)
         self.quote_frame.columnconfigure(0, minsize=20)
         self.bottom_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
         self.bottom_frame.pack(side='top', fill='both', expand=True)
@@ -120,24 +121,25 @@ class BattleMap():
         self.info = InfoClass(self.root)
         self.dice_roll = DiceRoller(self.root)
         self.copy_win = PlayerWin(self.root, self.map_size, game_title)
+        self.go_back = ActionStack(self.root)
 
         # Board Setup
         lbl_map = ttk.Label(master=self.top_frame, text=game_title, font=('Papyrus', '16'))
-        lbl_map.grid(row=0, column=0)
+        lbl_map.grid(row=0, column=1)
         btn_player_win = ttk.Button(master=self.top_frame, command=self.copy_win.start_win, text="Player Window")
-        btn_player_win.grid(row=0, column=1, sticky='se')
+        btn_player_win.grid(row=0, column=2, sticky='se')
         btn_save = ttk.Button(master=self.top_frame, command=self.save_game, text="Save")
-        btn_save.grid(row=0, column=2, sticky='se')
+        btn_save.grid(row=0, column=3, sticky='se')
         btn_clear = ttk.Button(master=self.top_frame, command=self.clear_map, text="Clear Map")
-        btn_clear.grid(row=0, column=3, sticky='se')
+        btn_clear.grid(row=0, column=4, sticky='se')
         btn_input = ttk.Button(master=self.top_frame, command=self.input_creature_window, text="Input Creature")
-        btn_input.grid(row=0, column=4, sticky='se')
+        btn_input.grid(row=0, column=5, sticky='se')
         btn_reset = ttk.Button(master=self.top_frame, command=lambda: self.refresh_map(reset=True), text="Reset Map")
-        btn_reset.grid(row=0, column=5, sticky='se')
+        btn_reset.grid(row=0, column=6, sticky='se')
         btn_restart = ttk.Button(master=self.top_frame, command=self.full_reset, text="Reset Battle")
-        btn_restart.grid(row=0, column=6, sticky='se')
+        btn_restart.grid(row=0, column=7, sticky='se')
         btn_close_all = ttk.Button(master=self.top_frame, command=self.root.destroy, text="Close All")
-        btn_close_all.grid(row=0, column=7, sticky='se')
+        btn_close_all.grid(row=0, column=8, sticky='se')
         self.lbl_quote = ttk.Label(master=self.quote_frame, text="", font=self.reg_font)
         self.lbl_quote.grid(row=0, column=0, sticky='w', pady=5)
         self.find_quote()
@@ -145,14 +147,23 @@ class BattleMap():
         self.side_board = ttk.Frame(master=self.bottom_frame)
         self.side_count = 0
         grid_frame = ttk.Frame(master=self.bottom_frame, borderwidth=2, relief='ridge')
+        grid_scroll = ttk.Scrollbar(master=grid_frame)
+        grid_canvas = tk.Canvas(master=grid_frame, bg='gray28', yscrollcommand=grid_scroll.set)
         self.round_bar = ttk.Frame(master=self.bottom_frame)
         self.tool_bar = ttk.Frame(master=self.bottom_frame)
         self.side_board.grid(row=0, column=0, padx=5, pady=10, sticky="nw")
         grid_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+        grid_canvas.grid(row=0, column=0, sticky='nsew')
+        grid_scroll.grid(row=0, column=1, sticky='nse')
+        grid_scroll.config(scrollregion=grid_canvas.bbox('all'), command=grid_canvas.yview)
         self.round_bar.grid(row=0, column=2, padx=5, pady=10, sticky="nw")
         self.tool_bar.grid(row=0, column=3, padx=5, pady=10, sticky="nw")
 
         # Image paths
+        undo_icon_path = "entry\\bin\\17989932761556277131-128.png"
+        undo_icon = ImageTk.PhotoImage(image=PIL.Image.open(undo_icon_path).resize((20,20)))
+        redo_icon_path = "entry\\bin\\19936986571556277126-128.png"
+        redo_icon = ImageTk.PhotoImage(image=PIL.Image.open(redo_icon_path).resize((20,20)))
         move_icon_path = "entry\\bin\\icons8-circled-down-left-32.png"
         move_icon = ImageTk.PhotoImage(image=PIL.Image.open(move_icon_path).resize((20,20)))
         trig_icon_path = "entry\\bin\\3228996421547464107-128.png"
@@ -181,28 +192,39 @@ class BattleMap():
 
         # Grid labels
         for col_spot in range(self.map_size[1]):
-            lbl_grid_top = ttk.Label(master=grid_frame, text=col_spot+1, font=self.small_font)
+            lbl_grid_top = ttk.Label(master=grid_canvas, text=col_spot+1, font=self.small_font)
             lbl_grid_top.grid(row=0, column=col_spot+1)
-            grid_frame.columnconfigure(col_spot+1, weight=1, minsize=20)
+            grid_canvas.columnconfigure(col_spot+1, minsize=30)#, weight=1)
 
         for row_spot in range(self.map_size[0]):
-            lbl_grid_side = ttk.Label(master=grid_frame, text=row_spot+1, font=self.small_font)
+            lbl_grid_side = ttk.Label(master=grid_canvas, text=row_spot+1, font=self.small_font)
             lbl_grid_side.grid(row=row_spot+1, column=0)
-            grid_frame.rowconfigure(row_spot+1, weight=1, minsize=20)
+            grid_canvas.rowconfigure(row_spot+1, minsize=30)#, weight=1)
 
-        grid_frame.columnconfigure(0, weight=1, minsize=20)
-        grid_frame.rowconfigure(0, weight=1, minsize=20)
+        grid_canvas.columnconfigure(0, minsize=30)#, weight=1)
+        grid_canvas.rowconfigure(0, minsize=30)#, weight=1)
 
         # Space frames
         for i in range(self.map_size[0]):
             self.map_frames.append([])
             for j in range(self.map_size[1]):
-                self.space = ttk.Frame(master=grid_frame, relief=tk.RAISED, borderwidth=1)
+                self.space = ttk.Frame(master=grid_canvas, relief=tk.RAISED, borderwidth=1)
                 self.space.grid(row=i+1, column=j+1, sticky='nsew')
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.map_frames[i].append(self.space)
         
         self.initialize_tokens()
+
+        go_back_frame = ttk.Frame(master=self.top_frame)
+        go_back_frame.grid(row=0, column=0, sticky='nw')
+        self.btn_undo = tk.Button(master=go_back_frame, command=lambda: self.time_travel(True), image=undo_icon, bd=0, bg='gray28', activebackground='gray28')
+        self.btn_undo.grid(row=0, column=0, padx=5, pady=5, sticky='nw')
+        self.btn_undo.image = undo_icon
+        self.btn_undo['state'] = 'disabled'
+        self.btn_redo = tk.Button(master=go_back_frame, command=lambda: self.time_travel(False), image=redo_icon, bd=0, bg='gray28', activebackground='gray28')
+        self.btn_redo.grid(row=0, column=1, padx=5, pady=5, sticky='nw')
+        self.btn_redo.image = redo_icon
+        self.btn_redo['state'] = 'disabled'
 
         # Round bar
         lbl_round_title = ttk.Label(master=self.round_bar, text="Round: ", font=self.big_font)
@@ -363,10 +385,12 @@ class BattleMap():
                 item.destroy()
         self.post_initiatives()
 
-    def next_turn(self):
+    def next_turn(self, not_from_redo=True):
+        if not_from_redo:
+            self.log_action('turn button')
         on_board_inits = self.initiative_holder
         inf_exists = True
-        fucked_up = 30
+        fucked_up = 100
         while inf_exists and fucked_up > 0:
             for key, value in on_board_inits.items():
                 if value == math.inf:
@@ -381,13 +405,21 @@ class BattleMap():
         else:
             self.refresh_initiatives()
 
-    def next_round(self):
+    def next_round(self, not_from_redo=True):
+        if not_from_redo:
+            self.log_action('round button', {'turn': self.turn})
         self.round += 1
         self.lbl_round.config(text=self.round)
         self.turn = 0
         self.refresh_initiatives()
 
-    def reset_round(self):
+    def reset_round(self, not_from_redo=True):
+        if not_from_redo:
+            restore_round = {
+                'round': self.round,
+                'turn': self.turn
+            }
+            self.log_action('reset round', restore_round)
         self.round = 0
         self.lbl_round.config(text="S")
         self.turn = 0
@@ -429,8 +461,11 @@ class BattleMap():
             creatJSON = json.dumps(new_token_dict, indent=4)
             savefile.writestr('battle_info.json', battleJSON)
             savefile.writestr('creatures.json', creatJSON)
+        self.go_back.clear_all()
 
     def clear_map(self):
+        restore_tokens = copy.deepcopy(self.root.token_list)
+        self.log_action('list', restore_tokens)
         for being in self.root.token_list:
             being["coordinate"] = ['', '', '']
         self.refresh_map()
@@ -444,28 +479,38 @@ class BattleMap():
         select_btn = arg[1]
         if origin == 'move_win':
             if select_btn == 'set':
+                old_copy = copy.deepcopy(self.root.token_list)
+                self.log_action('list', old_copy)
                 set_complete = self.em.set_new_coord()
                 if set_complete:
                     self.em.move_win.destroy()
                     self.refresh_map()
             elif select_btn == 'remove':
+                old_copy = copy.deepcopy(self.root.token_list)
+                self.log_action('list', old_copy)
                 rem_complete = self.em.remove_token()
                 if rem_complete:
                     self.em.move_win.destroy()
                     self.refresh_map()
         elif origin == 'target_win':
             if select_btn == 'submit':
+                old_copy = copy.deepcopy(self.root.token_list)
+                self.log_action('list', old_copy)
                 submit_complete = self.target.on_submit()
                 if submit_complete:
                     self.target.target_win.destroy()
                     self.refresh_map()
             elif select_btn == 'delete':
+                old_copy = copy.deepcopy(self.root.token_list)
+                self.log_action('list', old_copy)
                 delete_complete = self.target.delete_token()
                 if delete_complete:
                     self.target.target_win.destroy()
                     self.refresh_map()
         elif origin == 'in_win':
             if select_btn == 'submit':
+                old_copy = copy.deepcopy(self.root.token_list)
+                self.log_action('list', old_copy)
                 submit_complete = self.in_win.submit()
                 if submit_complete:
                     self.in_win.range_win.destroy()
@@ -504,6 +549,7 @@ class BattleMap():
                 savefile.writestr('battle_info.json', battleJSON)
                 savefile.writestr('creatures.json', creatJSON)
             self.refresh_map(reset=True)
+        self.go_back.clear_all()
 
     def find_quote(self):
         last_index = len(self.quoter.quote_list) - 1
@@ -513,6 +559,73 @@ class BattleMap():
 
     def show_cond_info(self):
         self.info.explain_conditions()
+
+    def time_travel(self, do_undo):
+        if do_undo:
+            hist_action = self.go_back.undo()
+            if self.go_back.undo_empty():
+                self.btn_undo['state'] = 'disabled'
+            self.btn_redo['state'] = 'normal'
+        else:
+            hist_action = self.go_back.redo()
+            if self.go_back.redo_empty():
+                self.btn_redo['state'] = 'disabled'
+            self.btn_undo['state'] = 'normal'
+
+        action_name = hist_action['origin']
+        
+        if action_name == 'turn button':
+            if do_undo:
+                self.turn -= 1
+                if self.turn < 0:
+                    self.turn = len(self.initiative_holder) - 1
+                    self.round -= 1
+                    if self.round <= 0:
+                        self.round = 0
+                        self.lbl_round.config(text="S")
+                    else:
+                        self.lbl_round.config(text=self.round)
+                    self.refresh_initiatives()
+            else:
+                self.next_turn(False)
+        
+        elif action_name == 'round button':
+            if do_undo:
+                self.round -= 1
+                if self.round <= 0:
+                    self.round = 0
+                    self.lbl_round.config(text="S")
+                else:
+                    self.lbl_round.config(text=self.round)
+                self.turn = hist_action['restore']['turn']
+                self.refresh_initiatives()
+            else:
+                self.next_round(False)
+        
+        elif action_name == 'reset round':
+            if do_undo:
+                self.round = hist_action['restore']['round']
+                self.turn = hist_action['restore']['turn']
+                if self.round <= 0:
+                    self.round = 0
+                    self.lbl_round.config(text="S")
+                else:
+                    self.lbl_round.config(text=self.round)
+                self.refresh_initiatives()
+            else:
+                self.reset_round(False)
+
+        elif action_name == 'list':
+                self.root.token_list = copy.deepcopy(hist_action['restore'])
+                self.refresh_map()
+
+    def log_action(self, origin, restore_data=None):
+        if self.btn_undo['state'] == 'disabled':
+            self.btn_undo['state'] = 'normal'
+        self.go_back.add_undo(origin, restore_data)
+        if self.go_back.redo_empty() == False:
+            self.go_back.clear_redo()
+            self.btn_redo['state'] = 'disabled'
 
 battle = BattleMap(map_win)
 

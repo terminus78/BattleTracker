@@ -2,6 +2,7 @@ import math
 import tkinter as tk
 from tkinter import ttk, font, messagebox
 from ttkthemes import ThemedStyle
+from collections import deque
 
 from dice import DiceRoller
 

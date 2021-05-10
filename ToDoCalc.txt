@@ -28,12 +28,13 @@ To Do List:
 	# Round/Initiative Progression
 	# Creature Template Library
 	# Mirror pane for players
+	# Convert file maker/open window to a top level and map to root
+	# Undo/Redo for actions
 	T# Input scrubbing
 	T# Collisions
-	# Convert file maker/open window to a top level and map to root
+	- Initiative picture on player window
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
-	- Undo/Redo for actions
 	- Buff/Debuff conditions
 	- Field highlighting
 	- Advanced stats
