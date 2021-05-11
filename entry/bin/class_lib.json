@@ -1,0 +1,27 @@
+{
+    "Artificer": {
+        "base": {
+            "hit_die": "8",
+            "proficiencies": {
+                "armor": ["light", "medium", "shield"],
+                "weapons": ["simple"],
+                "tools": ["thieves' tools", "tinker's tools", "choice"],
+                "saves": ["con", "int"],
+                "skills": [2, "arcana", "history", "investigation", "medicine", "nature", "perception", "sleight of hand"]
+            },
+            "equipment": {
+                "simple": 2,
+                "martial": 0,
+                "given": ["light crossbow", "bolts 20"],
+                "choice": {
+                    "1": {
+                        "a": ["studded leather"],
+                        "b": ["scale mail"]
+                    }
+                },
+                "tools": "theives' tools",
+                "pack": "dungeoneer's pack"
+            }
+        }
+    }
+}

@@ -77,23 +77,6 @@ class StatCollector():
         lbl_temp_HP.grid(row=1, column=0, sticky="w")
         self.ent_temp_HP.grid(row=1, column=1, sticky="e")
 
-        '''
-        lbl_coord = ttk.Label(master=frame2_1, text="Coordinate", font=papyrus_font)
-        self.ent_x_coord = ttk.Entry(master=frame2_1, width=2)
-        lblX = ttk.Label(master=frame2_1, text="X", font=papyrus_font)
-        self.ent_y_coord = ttk.Entry(master=frame2_1, width=2)
-        lblY = ttk.Label(master=frame2_1, text="Y", font=papyrus_font)
-        self.ent_z_coord = ttk.Entry(master=frame2_1, width=2)
-        lblZ = ttk.Label(master=frame2_1, text="Z", font=papyrus_font)
-        lbl_coord.grid(row=0, column=0, sticky="w")
-        self.ent_x_coord.grid(row=0, column=1, sticky="e")
-        lblX.grid(row=0, column=2, sticky="e")
-        self.ent_y_coord.grid(row=0, column=3, sticky="e")
-        lblY.grid(row=0, column=4, sticky="e")
-        self.ent_z_coord.grid(row=0, column=5, sticky="e")
-        lblZ.grid(row=0, column=6, sticky="e")
-        '''
-
         frame_FF_upper = ttk.Frame(master=frame2_1)
         frame_FF_lower = ttk.Frame(master=frame2_1)
         lbl_FF = ttk.Label(master=frame_FF_upper, text="Strategic Status", font=papyrus_font)
@@ -197,7 +180,7 @@ class StatCollector():
                                 if init_flt != being['initiative']:
                                     not_resolved = False
                                 if inner_fail == 100:
-                                    messagebox.showerror("System Error", "Restart Program\nError 0x002")
+                                    messagebox.showerror("Fatal Error", "Restart Program\nError 0x002")
                                     not_resolved = False
                                     check_not_finished = False
                                 inner_fail += 1
@@ -205,7 +188,7 @@ class StatCollector():
                     if loop_counter >= len(self.master.token_list):
                         check_not_finished = False
                     elif loop_counter > 100:
-                        messagebox.showerror("System Error", "Restart Program\nError 0x003")
+                        messagebox.showerror("Fatal Error", "Restart Program\nError 0x003")
                         check_not_finished = False
 
             except ValueError:

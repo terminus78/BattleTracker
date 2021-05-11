@@ -25,11 +25,12 @@ To Do List:
 	# Trig calculation to any space
 	# Resistant or vulnerable dice mods
 	# Trig calculation fix for large and up
-	# Round/Initiative Progression
-	# Creature Template Library
+	# Round/Initiative Progressiont
+	# Library Template Creator
 	# Mirror pane for players
 	# Convert file maker/open window to a top level and map to root
 	# Undo/Redo for actions
+	# Battlefield scroll and grid enlargement
 	T# Input scrubbing
 	T# Collisions
 	- Initiative picture on player window
@@ -42,7 +43,13 @@ To Do List:
 	- Controller pane
 	- Movement
 	- Objects
-	- Library Template Creator
+	- Libraries
+		- Creature Template Library
+		- Race Library
+		- Class Library
+		- Background Library
+		- Feat Library
+		- Spell Library
 	- PC/Full NPC Creation
 	- TV Pixel resolution differences
 	-- Advanced Version

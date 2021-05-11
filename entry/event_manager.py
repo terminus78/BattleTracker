@@ -308,7 +308,7 @@ class EventManager():
                                 if new_init != being['initiative']:
                                     not_resolved = False
                                 if inner_fail == 100:
-                                    messagebox.showerror("System Error", "Restart Program\nError 0x004")
+                                    messagebox.showerror("Fatal Error", "Restart Program\nError 0x004")
                                     not_resolved = False
                                     check_not_finished = False
                                 inner_fail += 1
@@ -316,7 +316,7 @@ class EventManager():
                         elif loop_counter >= len(self.root.token_list):
                             check_not_finished = False
                         elif loop_counter > 100:
-                            messagebox.showerror("System Error", "Restart Program\nError 0x005")
+                            messagebox.showerror("Fatal Error", "Restart Program\nError 0x005")
                             check_not_finished = False
             except ValueError:
                 new_init = self.root.token_list[index]['initiative']

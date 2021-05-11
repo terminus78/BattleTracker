@@ -29,16 +29,32 @@ class PlayerWin():
         self.root.copy_win_open = True
         self.play_window.protocol('WM_DELETE_WINDOW', self.destroy_play_window)
         self.play_window.columnconfigure(0, minsize=100)
-        self.play_window.columnconfigure(1, weight=1, minsize=200)
-        self.play_window.rowconfigure(0, weight=1, minsize=100)
+        self.play_window.columnconfigure(1, weight=1, minsize=700)
+        self.play_window.rowconfigure(0, weight=1, minsize=200)
+        self.play_window.rowconfigure(1, weight=1, minsize=700)
         lbl_title = ttk.Label(master=self.play_window, text=self.title, font=self.big_font)
         lbl_title.grid(row=0, column=0, columnspan=2)
 
         self.side_board = ttk.Frame(master=self.play_window)
         self.side_board.grid(row=1, column=0, padx=5, pady=10, sticky="nw")
         self.side_count = 0
-        grid_frame = ttk.Frame(master=self.play_window, borderwidth=2, relief='ridge')
-        grid_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+        #grid_frame = ttk.Frame(master=self.play_window, borderwidth=2, relief='ridge')
+        #grid_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+        canvas_frame = ttk.Frame(master=self.play_window, borderwidth=2, relief='ridge')
+        self.grid_canvas = tk.Canvas(master=canvas_frame, bg='gray28', borderwidth=0)
+        grid_scroll_vert = ttk.Scrollbar(master=canvas_frame, command=self.grid_canvas.yview)
+        grid_scroll_horz = ttk.Scrollbar(master=self.play_window, orient='horizontal', command=self.grid_canvas.xview)
+        self.grid_frame = ttk.Frame(master=self.grid_canvas)
+        canvas_frame.grid(row=1, column=1, sticky="nsew")
+        self.grid_canvas.pack(side='left', fill='both', expand=True)
+        self.grid_canvas.config(yscrollcommand=grid_scroll_vert.set, xscrollcommand=grid_scroll_horz.set)
+        grid_scroll_vert.pack(side='right', fill='y')
+        grid_scroll_horz.grid(row=2, column=1, sticky='ew')
+        self.grid_canvas.create_window((4,4), window=self.grid_frame, anchor='nw', tags='self.grid_frame')
+        self.grid_frame.bind("<Configure>", self._on_config)
+        self.grid_canvas.bind('<Enter>', self._on_enter_canvas)
+        self.grid_canvas.bind('<Leave>', self._on_leave_canvas)
+        self.grid_frame.lower()
 
         ally_path = "entry\\bin\\ally_token.png"
         self.ally_img = ImageTk.PhotoImage(image=PIL.Image.open(ally_path).resize((15,15)))
@@ -53,28 +69,45 @@ class PlayerWin():
 
         # Grid labels
         for col_spot in range(self.map_size[1]):
-            lbl_grid_top = ttk.Label(master=grid_frame, text=col_spot+1, font=self.small_font)
+            lbl_grid_top = ttk.Label(master=self.grid_frame, text=col_spot+1, font=self.small_font)
             lbl_grid_top.grid(row=0, column=col_spot+1)
-            grid_frame.columnconfigure(col_spot+1, weight=1, minsize=20)
+            self.grid_frame.columnconfigure(col_spot+1, weight=1, minsize=33)
 
         for row_spot in range(self.map_size[0]):
-            lbl_grid_side = ttk.Label(master=grid_frame, text=row_spot+1, font=self.small_font)
+            lbl_grid_side = ttk.Label(master=self.grid_frame, text=row_spot+1, font=self.small_font)
             lbl_grid_side.grid(row=row_spot+1, column=0)
-            grid_frame.rowconfigure(row_spot+1, weight=1, minsize=20)
+            self.grid_frame.rowconfigure(row_spot+1, weight=1, minsize=33)
 
-        grid_frame.columnconfigure(0, weight=1, minsize=20)
-        grid_frame.rowconfigure(0, weight=1, minsize=20)
+        self.grid_frame.columnconfigure(0, weight=1, minsize=33)
+        self.grid_frame.rowconfigure(0, weight=1, minsize=33)
 
         # Space frames
         for i in range(self.map_size[0]):
             self.map_frames.append([])
             for j in range(self.map_size[1]):
-                self.space = ttk.Frame(master=grid_frame, relief=tk.RAISED, borderwidth=1)
+                self.space = ttk.Frame(master=self.grid_frame, relief=tk.RAISED, borderwidth=1)
                 self.space.grid(row=i+1, column=j+1, sticky='nsew')
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.map_frames[i].append(self.space)
 
         self.set_board()
+
+    def _on_config(self, event):
+        self.grid_canvas.configure(scrollregion=self.grid_canvas.bbox('all'))
+
+    def _on_enter_canvas(self, event):
+        self.grid_canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+        self.grid_canvas.bind_all('<Shift-MouseWheel>', self._on_shift_mousewheel)
+    
+    def _on_leave_canvas(self, event):
+        self.grid_canvas.unbind_all('<MouseWheel>')
+        self.grid_canvas.unbind_all('<Shift-MouseWheel>')
+
+    def _on_mousewheel(self, event):
+        self.grid_canvas.yview_scroll(int(-1*(event.delta/120)), 'units')
+
+    def _on_shift_mousewheel(self, event):
+        self.grid_canvas.xview_scroll(int(-1*(event.delta/120)), 'units')
 
     def set_board(self):
         spaces_taken = []

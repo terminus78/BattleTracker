@@ -443,7 +443,7 @@ class Calculator():
                 dist_found = True
             if count_rounds == 50:
                 dist_found = True
-                messagebox.showerror("System Error", "Restart program.\nError 0x001")
+                messagebox.showerror("Fatal Error", "Restart program.\nError 0x001")
             count_rounds += 1
         self.lbl_rel_calc_result.config(text=f"{distance_traveled}ft")
         '''

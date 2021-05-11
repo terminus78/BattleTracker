@@ -691,7 +691,7 @@ class DiceRoller():
                 self.ent_4_mod.delete(0, tk.END)
                 self.ent_4_mod.insert(0, mod_val)
         else:
-            messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
+            messagebox.showerror("Dice Roller", "Fatal error. File may be corrupted.")
             return
 
     def modify_num(self, die, dir):
@@ -836,7 +836,7 @@ class DiceRoller():
                 self.ent_4_num.delete(0, tk.END)
                 self.ent_4_num.insert(0, num_val)
         else:
-            messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
+            messagebox.showerror("Dice Roller", "Fatal error. File may be corrupted.")
             return
 
     def roll_win_btn(self, die, add_to_roll=False):
@@ -1191,7 +1191,7 @@ class DiceRoller():
                 dice_4_total = math.floor(dice_4_total / 2)
             self.lbl_4_total.config(text=dice_4_total)
         else:
-            messagebox.showerror("Dice Roller", "Internal system error. File may be corrupted.")
+            messagebox.showerror("Dice Roller", "Fatal error. File may be corrupted.")
             return
 
     def calc_net(self):

@@ -98,20 +98,20 @@ class BattleMap():
             self.round = battle_obj['round']
             self.turn = battle_obj['turn']
 
-        self.top_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge',)# bg='dark green')
-        self.top_frame.pack(side='top', fill='x')
-        self.top_frame.columnconfigure(0, weight=1)
-        self.top_frame.rowconfigure(0, minsize=100)
-        self.quote_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')
+        self.top_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
+        self.top_frame.pack(side='top', fill='both')
+        self.top_frame.columnconfigure(1, weight=1)
+        self.top_frame.rowconfigure(0, minsize=100, weight=1)
+        self.quote_frame = ttk.Frame(master=self.root)
         self.quote_frame.pack(side='top', fill='x', expand=True)
         self.quote_frame.columnconfigure(0, minsize=20)
         self.bottom_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
         self.bottom_frame.pack(side='top', fill='both', expand=True)
         self.bottom_frame.columnconfigure(0, minsize=100)
-        self.bottom_frame.columnconfigure(1, weight=1, minsize=200)
+        self.bottom_frame.columnconfigure(1, weight=1, minsize=700)
         self.bottom_frame.columnconfigure(2, minsize=150)
         self.bottom_frame.columnconfigure(3, minsize=50)
-        self.bottom_frame.rowconfigure(0, weight=1, minsize=200)
+        self.bottom_frame.rowconfigure(0, weight=1, minsize=700)
 
         self.em = EventManager(self.root)
         self.calculator = Calculator(self.root)
@@ -145,17 +145,29 @@ class BattleMap():
         self.find_quote()
 
         self.side_board = ttk.Frame(master=self.bottom_frame)
+        self.side_board.grid(row=0, column=0, padx=5, pady=10, sticky="nw")
         self.side_count = 0
-        grid_frame = ttk.Frame(master=self.bottom_frame, borderwidth=2, relief='ridge')
-        grid_scroll = ttk.Scrollbar(master=grid_frame)
-        grid_canvas = tk.Canvas(master=grid_frame, bg='gray28', yscrollcommand=grid_scroll.set)
+
+        canvas_frame = ttk.Frame(master=self.bottom_frame, borderwidth=2, relief='ridge')
+        self.grid_canvas = tk.Canvas(master=canvas_frame, bg='gray28', borderwidth=0)
+        grid_scroll_vert = ttk.Scrollbar(master=canvas_frame, command=self.grid_canvas.yview)
+        grid_scroll_horz = ttk.Scrollbar(master=self.bottom_frame, orient='horizontal', command=self.grid_canvas.xview)
+        self.grid_frame = ttk.Frame(master=self.grid_canvas)
+        canvas_frame.grid(row=0, column=1, sticky="nsew")
+        #self.grid_canvas.grid(row=0, column=0, sticky='nsew')
+        self.grid_canvas.pack(side='left', fill='both', expand=True)
+        self.grid_canvas.config(yscrollcommand=grid_scroll_vert.set, xscrollcommand=grid_scroll_horz.set)
+        #grid_scroll_vert.grid(row=0, column=1, sticky='nse')
+        grid_scroll_vert.pack(side='right', fill='y')
+        grid_scroll_horz.grid(row=1, column=1, sticky='ew')
+        self.grid_canvas.create_window((4,4), window=self.grid_frame, anchor='nw', tags='self.grid_frame')
+        self.grid_frame.bind("<Configure>", self._on_config)
+        self.grid_canvas.bind('<Enter>', self._on_enter_canvas)
+        self.grid_canvas.bind('<Leave>', self._on_leave_canvas)
+        self.grid_frame.lower()
+
         self.round_bar = ttk.Frame(master=self.bottom_frame)
         self.tool_bar = ttk.Frame(master=self.bottom_frame)
-        self.side_board.grid(row=0, column=0, padx=5, pady=10, sticky="nw")
-        grid_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-        grid_canvas.grid(row=0, column=0, sticky='nsew')
-        grid_scroll.grid(row=0, column=1, sticky='nse')
-        grid_scroll.config(scrollregion=grid_canvas.bbox('all'), command=grid_canvas.yview)
         self.round_bar.grid(row=0, column=2, padx=5, pady=10, sticky="nw")
         self.tool_bar.grid(row=0, column=3, padx=5, pady=10, sticky="nw")
 
@@ -192,23 +204,23 @@ class BattleMap():
 
         # Grid labels
         for col_spot in range(self.map_size[1]):
-            lbl_grid_top = ttk.Label(master=grid_canvas, text=col_spot+1, font=self.small_font)
+            lbl_grid_top = ttk.Label(master=self.grid_frame, text=col_spot+1, font=self.small_font)
             lbl_grid_top.grid(row=0, column=col_spot+1)
-            grid_canvas.columnconfigure(col_spot+1, minsize=30)#, weight=1)
+            self.grid_frame.columnconfigure(col_spot+1, minsize=33)#, weight=1)
 
         for row_spot in range(self.map_size[0]):
-            lbl_grid_side = ttk.Label(master=grid_canvas, text=row_spot+1, font=self.small_font)
+            lbl_grid_side = ttk.Label(master=self.grid_frame, text=row_spot+1, font=self.small_font)
             lbl_grid_side.grid(row=row_spot+1, column=0)
-            grid_canvas.rowconfigure(row_spot+1, minsize=30)#, weight=1)
+            self.grid_frame.rowconfigure(row_spot+1, minsize=33)#, weight=1)
 
-        grid_canvas.columnconfigure(0, minsize=30)#, weight=1)
-        grid_canvas.rowconfigure(0, minsize=30)#, weight=1)
+        self.grid_frame.columnconfigure(0, minsize=33)#, weight=1)
+        self.grid_frame.rowconfigure(0, minsize=33)#, weight=1)
 
         # Space frames
         for i in range(self.map_size[0]):
             self.map_frames.append([])
             for j in range(self.map_size[1]):
-                self.space = ttk.Frame(master=grid_canvas, relief=tk.RAISED, borderwidth=1)
+                self.space = ttk.Frame(master=self.grid_frame, relief=tk.RAISED, borderwidth=1)
                 self.space.grid(row=i+1, column=j+1, sticky='nsew')
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.map_frames[i].append(self.space)
@@ -272,6 +284,23 @@ class BattleMap():
         CreateToolTip(self.btn_dice_roller, text="Dice Roller", left_disp=True)
 
         self.place_tokens()
+
+    def _on_config(self, event):
+        self.grid_canvas.configure(scrollregion=self.grid_canvas.bbox('all'))
+
+    def _on_enter_canvas(self, event):
+        self.grid_canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+        self.grid_canvas.bind_all('<Shift-MouseWheel>', self._on_shift_mousewheel)
+    
+    def _on_leave_canvas(self, event):
+        self.grid_canvas.unbind_all('<MouseWheel>')
+        self.grid_canvas.unbind_all('<Shift-MouseWheel>')
+
+    def _on_mousewheel(self, event):
+        self.grid_canvas.yview_scroll(int(-1*(event.delta/120)), 'units')
+
+    def _on_shift_mousewheel(self, event):
+        self.grid_canvas.xview_scroll(int(-1*(event.delta/120)), 'units')
 
     def initialize_tokens(self):
         self.root.token_list = []

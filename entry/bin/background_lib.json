@@ -1,0 +1,30 @@
+{
+    "Acolyte": {
+        "skills": ["insight", "religion"],
+        "languages": {
+            "choice": 2,
+            "given": []
+        },
+        "tools": [],
+        "equipment": {
+            "gold": 15,
+            "given": ["holy symbol", "5 sticks of incense", "vestments", "common clothes", "belt pouch"],
+            "choice": [],
+            "feature": "assistance from temples and followers of your faith"
+        }
+    },
+    "Anthropologist": {
+        "skills": ["insight", "religion"],
+        "languages": {
+            "choice": 2,
+            "given": []
+        },
+        "tools": [],
+        "equipment": {
+            "gold": 10,
+            "given": ["leather-bound diary", "ink (1-ounce bottle)", "ink pen", "traveler's clothes", "pouch", "one trinket"],
+            "choice": [],
+            "feature": "can communicate with humanoids on a rudimentary level after observing them for at least a day"
+        }
+    }
+}

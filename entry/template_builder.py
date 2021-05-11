@@ -28,20 +28,22 @@ class TemplateBuilder():
         catg_frame = ttk.Frame(master=self.root)
         catg_frame.grid(row=0, column=0)
         self.input_frame = ttk.Frame(master=self.root)
-        self.input_frame.grid(row=1, column=0)
+        self.input_frame.grid(row=1, column=0, padx=10, pady=10)
         self.send_it_frame = ttk.Frame(master=self.root)
         self.send_it_frame.grid(row=2, column=0)
         btn_npc = ttk.Button(master=catg_frame, command=lambda: self.build_form('npc'), text="Fast NPC")
         btn_npc.grid(row=0, column=0, sticky='w', padx=5, pady=10)
         btn_monster = ttk.Button(master=catg_frame, command=lambda: self.build_form('monster'), text="Monster")
         btn_monster.grid(row=0, column=1, sticky='w', padx=5, pady=10)
-        lbl_waiting = ttk.Label(master=self.input_frame, text="Waiting...").grid(row=0, column=0)
+        lbl_waiting = ttk.Label(master=self.input_frame, text="Waiting...")
+        lbl_waiting.grid(row=0, column=0)
         on_img_path = 'entry\\bin\\on.png'
         self.on_img = ImageTk.PhotoImage(image=PIL.Image.open(on_img_path))
         off_img_path = 'entry\\bin\\off.png'
         self.off_img = ImageTk.PhotoImage(image=PIL.Image.open(off_img_path))
 
     def build_form(self, catg):
+        self.catg = catg
         try:
             old_widg = self.input_frame.grid_slaves()
             if old_widg is not None:
@@ -55,7 +57,7 @@ class TemplateBuilder():
         underline_font = font.Font(lbl_catg, lbl_catg.cget("font"))
         underline_font.configure(underline = True)
         lbl_catg.config(font=underline_font)
-        if catg == 'npc':
+        if self.catg == 'npc':
             lbl_catg.config(text='NPC')
         else:
             lbl_catg.config(text="Monster")
@@ -146,7 +148,7 @@ class TemplateBuilder():
         lbl_skills.grid(row=1, column=2, sticky='w')
 
         skill_frame = ttk.Frame(master=self.input_frame)
-        skill_frame.grid(row=2, column=3, rowspan=10, columnspan=4, sticky='nsew')
+        skill_frame.grid(row=2, column=3, rowspan=9, columnspan=4, sticky='nsew')
         skill_frame.rowconfigure([0,1,2,3,4,5,6,7,8,9], weight=1)
         skill_frame.columnconfigure([0,1,2,3], weight=1)
         lbl_prof_1 = ttk.Label(master=skill_frame, text="Prof")
@@ -276,6 +278,33 @@ class TemplateBuilder():
         cbn_performance.grid(row=9, column=0, sticky='w')
         cbn_persuasion.grid(row=9, column=2, sticky='w')
 
+        lbl_saving_throws = ttk.Label(master=self.input_frame, text="Proficient Saves: ")
+        lbl_saving_throws.grid(row=11, column=2, sticky='w')
+
+        saves_frame = ttk.Frame(master=self.input_frame)
+        saves_frame.grid(row=12, column=3, rowspan=2, columnspan=3, sticky='w')
+
+        self.prof_str = tk.IntVar()
+        self.prof_dex = tk.IntVar()
+        self.prof_con = tk.IntVar()
+        self.prof_int = tk.IntVar()
+        self.prof_wis = tk.IntVar()
+        self.prof_cha = tk.IntVar()
+
+        cbn_str_save = ttk.Checkbutton(master=saves_frame, text="STR", variable=self.prof_str)
+        cbn_dex_save = ttk.Checkbutton(master=saves_frame, text="DEX", variable=self.prof_dex)
+        cbn_con_save = ttk.Checkbutton(master=saves_frame, text="CON", variable=self.prof_con)
+        cbn_int_save = ttk.Checkbutton(master=saves_frame, text="INT", variable=self.prof_int)
+        cbn_wis_save = ttk.Checkbutton(master=saves_frame, text="WIS", variable=self.prof_wis)
+        cbn_cha_save = ttk.Checkbutton(master=saves_frame, text="CHA", variable=self.prof_cha)
+
+        cbn_str_save.grid(row=0, column=0, sticky='w')
+        cbn_dex_save.grid(row=0, column=1, sticky='w')
+        cbn_con_save.grid(row=0, column=2, sticky='w')
+        cbn_int_save.grid(row=1, column=0, sticky='w')
+        cbn_wis_save.grid(row=1, column=1, sticky='w')
+        cbn_cha_save.grid(row=1, column=2, sticky='w')
+
         lbl_senses = ttk.Label(master=self.input_frame, text="Senses: ")
         lbl_senses.grid(row=9, column=0, sticky='w')
         self.txt_senses = tk.Text(master=self.input_frame, height=4, width=30)
@@ -294,6 +323,22 @@ class TemplateBuilder():
         self.ent_init = ttk.Entry(master=self.input_frame, width=20)
         self.ent_init.grid(row=12, column=1, sticky='w')
         self.ent_init.insert(0, "0")
+        lbl_dmg_vuln = ttk.Label(master=self.input_frame, text="Damage Vulnerabilities: ")
+        lbl_dmg_vuln.grid(row=13, column=0, sticky='w')
+        self.txt_dmg_vuln = tk.Text(master=self.input_frame, height=2, width=30)
+        self.txt_dmg_vuln.grid(row=13, column=1, sticky='w')
+        lbl_dmg_res = ttk.Label(master=self.input_frame, text="Damage Resistances: ")
+        lbl_dmg_res.grid(row=14, column=0, sticky='w')
+        self.txt_dmg_res = tk.Text(master=self.input_frame, height=2, width=30)
+        self.txt_dmg_res.grid(row=14, column=1, sticky='w')
+        lbl_dmg_immn = ttk.Label(master=self.input_frame, text="Damage Immunities: ")
+        lbl_dmg_immn.grid(row=15, column=0, sticky='w')
+        self.txt_dmg_immn = tk.Text(master=self.input_frame, height=2, width=30)
+        self.txt_dmg_immn.grid(row=15, column=1, sticky='w')
+        lbl_cond_immn = ttk.Label(master=self.input_frame, text="Condition Immunities: ")
+        lbl_cond_immn.grid(row=16, column=0, sticky='w')
+        self.txt_cond_immn = tk.Text(master=self.input_frame, height=2, width=30)
+        self.txt_cond_immn.grid(row=16, column=1, sticky='w')
         
         lbl_look_ma = ttk.Label(master=self.input_frame, text="Combat: ")
         lbl_look_ma.grid(row=1, column=7, sticky='w')
@@ -349,6 +394,10 @@ class TemplateBuilder():
         get_lang = self.txt_languages.get(1.0, 'end-1c')
         get_cr = self.ent_cr.get()
         get_init = self.ent_init.get()
+        get_dmg_vuln = self.txt_dmg_vuln.get(1.0, 'end-1c')
+        get_dmg_res = self.txt_dmg_res.get(1.0, 'end-1c')
+        get_dmg_immn = self.txt_dmg_immn.get(1.0, 'end-1c')
+        get_cond_immn = self.txt_cond_immn.get(1.0, 'end-1c')
 
         #get_skill_mod = self.ent_skill_mod.get()
         get_athl = self.athletics.get()
@@ -389,6 +438,13 @@ class TemplateBuilder():
         get_dbl_perf = self.dbl_performance.get()
         get_dbl_pers = self.dbl_persuasion.get()
 
+        get_prof_str = self.prof_str.get()
+        get_prof_dex = self.prof_dex.get()
+        get_prof_con = self.prof_con.get()
+        get_prof_int = self.prof_int.get()
+        get_prof_wis = self.prof_wis.get()
+        get_prof_cha = self.prof_cha.get()
+
         get_abil = self.txt_abilities.get(1.0, 'end-1c')
         get_actn = self.txt_actions.get(1.0, 'end-1c')
         get_reac = self.txt_reactions.get(1.0, 'end-1c')
@@ -423,6 +479,8 @@ class TemplateBuilder():
             else:
                 messagebox.showwarning("Template Creator", "All fields except Abilities and Reactions must be filled out.")
                 return
+        get_name = get_name.title()
+        get_type = get_type.lower()
 
         if get_hp_die != 100 and get_hp_die != 20 and get_hp_die != 12 and get_hp_die != 10 and get_hp_die != 8 and get_hp_die != 6 and get_hp_die != 4:
             if self.mean_mode:
@@ -473,6 +531,14 @@ class TemplateBuilder():
         for stat in stat_list:
             stat = math.floor((stat - 10) / 2)
             stat_matrix.append(stat)
+
+        save_list = []
+        get_saves = [get_prof_str, get_prof_dex, get_prof_con, get_prof_int, get_prof_wis, get_prof_cha]
+        for i in range(6):
+            save_mod = stat_matrix[i]
+            if get_saves[i] == 1:
+                save_mod += cr_prof_mod
+            save_list.append(save_mod)
 
         init_bonus = stat_matrix[1] + get_init
 
@@ -554,7 +620,7 @@ class TemplateBuilder():
                 'ac': get_ac,
                 'hp': [get_hp_avg, get_hp_num_dice, get_hp_die, get_mod_hp],
                 'speed': get_speed,
-                'initiative': [math.inf, init_bonus],
+                'initiative': [None, init_bonus],
                 'raw_stats': [
                     get_str,
                     get_dex,
@@ -564,6 +630,11 @@ class TemplateBuilder():
                     get_cha
                 ],
                 'mod_stats': stat_matrix,
+                'saves': save_list,
+                'dmg_vuln': get_dmg_vuln,
+                'dmg_res': get_dmg_res,
+                'dmg_immn': get_dmg_immn,
+                'cond_immn': get_cond_immn,
                 'senses': get_senses,
                 'languages': get_lang,
                 'cr': [get_cr, cr_prof_mod],
@@ -594,15 +665,12 @@ class TemplateBuilder():
         }
         # Temporary jump out to keep from making unnecessary files
         #return
-        self.template_info = {}
-        try:
-            with open(self.file_loc, 'r') as template_file:
-                self.template_info = json.load(template_file)
-        except IOError:
+        if os.path.exists(self.file_loc) == False:
             with open(self.file_loc, 'w') as template_file:
-                json.dump(template_dict, template_file, indent=4)
-            return
-        self.template_info.update(template_dict)
+                json.dump({'npc':{}, 'monster': {}}, template_file, indent=4)
+        with open(self.file_loc, 'r') as template_file:
+            self.template_info = json.load(template_file)
+        self.template_info[self.catg].update(template_dict)
         with open(self.file_loc, 'w') as template_file:
             json.dump(self.template_info, template_file, indent=4)
 
