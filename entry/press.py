@@ -1,6 +1,7 @@
 import json
 import os
 import math
+import copy
 
 import PIL.Image
 from PIL import ImageTk
@@ -162,26 +163,35 @@ class Press():
     def full_build_2b(self, sel_in):
         self.clear_build_frame()
         lbl_input_title = ttk.Label(master=self.build_frame, text="", font=self.reg_font)
-        lbl_input_title.grid(row=0, column=0, columnspan=2)
-        for i in range(1, 7):
+        lbl_input_title.grid(row=0, column=0, columnspan=3)
+        lbl_stat_block = ttk.Label(master=self.build_frame, text="Stats", font=self.reg_font)
+        lbl_stat_block.grid(row=1, column=1, padx=10)
+        lbl_results = ttk.Label(master=self.build_frame, text="", font=self.reg_font)
+        lbl_results.grid(row=1, column=2, sticky='w')
+        stat_titles = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
+        for i in range(2, 8):
+            lbl_stat = ttk.Label(master=self.build_frame, text=stat_titles[i-2], font=self.reg_font)
+            lbl_stat.grid(row=i, column=0)
             lbl_stat_frame = tk.Label(master=self.build_frame, image=self.stat_box, bg='gray28')
-            lbl_stat_frame.grid(row=i, column=0, pady=5)
+            lbl_stat_frame.grid(row=i, column=1, pady=5)
             lbl_stat_frame.image=self.stat_box
         self.stat_block = []
-        for i in range(6):
+        for i in range(2, 8):
             lbl_stat = tk.Label(master=self.build_frame, text="8", font=self.reg_font, anchor='center', bg='gray28', fg='white')
-            lbl_stat.grid(row=i+1, column=0)
+            lbl_stat.grid(row=i, column=1)
             self.stat_block.append(lbl_stat)
 
         if sel_in == 'roll':
+            lbl_input_title.config(text="Roll Method")
+            lbl_results.config(text="Dice Rolls")
             self.roll_labels = []
-            for i in range(1, 7):
+            for i in range(2, 8):
                 lbl_rolls = ttk.Label(master=self.build_frame, text="", font=self.small_font, width=17)
-                lbl_rolls.grid(row=i, column=1, sticky='w')
+                lbl_rolls.grid(row=i, column=2, sticky='w')
                 self.roll_labels.append(lbl_rolls)
             self.dice_per_roll = tk.IntVar()
             under_frame = ttk.Frame(master=self.build_frame)
-            under_frame.grid(row=8, column=0, columnspan=2)
+            under_frame.grid(row=8, column=0, columnspan=3)
             rbn_4d6 = ttk.Radiobutton(master=under_frame, text="4d6", variable=self.dice_per_roll, value=4)
             rbn_4d6.grid(row=0, column=0, padx=5)
             rbn_3d6 = ttk.Radiobutton(master=under_frame, text="3d6", variable=self.dice_per_roll, value=3)
@@ -190,7 +200,7 @@ class Press():
             btn_roll = ttk.Button(master=under_frame, command=self.roll_stats, text="Roll", width=13)
             btn_roll.grid(row=1, column=0, columnspan=2)
         btn_frame = ttk.Frame(master=self.build_frame)
-        btn_frame.grid(row=9, column=0, columnspan=2)
+        btn_frame.grid(row=9, column=0, columnspan=3, pady=15)
         self.btn_next = ttk.Button(master=btn_frame, command=self.full_build_3, text="Next", width=13)
         self.btn_next.grid(row=0, column=0, padx=5)
         self.btn_next.state(['disabled'])
@@ -217,12 +227,12 @@ class Press():
         self.set_4 = self.dice.roll(die_size=6, num_dice=dpr)
         self.set_5 = self.dice.roll(die_size=6, num_dice=dpr)
         self.set_6 = self.dice.roll(die_size=6, num_dice=dpr)
-        mid_1 = self.set_1
-        mid_2 = self.set_2
-        mid_3 = self.set_3
-        mid_4 = self.set_4
-        mid_5 = self.set_5
-        mid_6 = self.set_6
+        mid_1 = copy.deepcopy(self.set_1)
+        mid_2 = copy.deepcopy(self.set_2)
+        mid_3 = copy.deepcopy(self.set_3)
+        mid_4 = copy.deepcopy(self.set_4)
+        mid_5 = copy.deepcopy(self.set_5)
+        mid_6 = copy.deepcopy(self.set_6)
         if dpr == 4:
             mid_1.pop(mid_1.index(min(mid_1)))
             mid_2.pop(mid_2.index(min(mid_2)))
@@ -240,13 +250,16 @@ class Press():
         ]
         set_list = [self.set_1, self.set_2, self.set_3, self.set_4, self.set_5, self.set_6]
         for i in range(6):
+            leader = ""
+            for val in set_list[i]:
+                leader += f"{val}, "
+            leader = leader[:-2]
+            self.roll_labels[i].config(text=leader)
+
+        for i in range(6):
             total = 0
-            roll_add = ""
-            for j in range(6):
+            for j in range(3):
                 total += mid_sums[i][j]
-                roll_add += f"{set_list[i][j]}, "
-            roll_add = roll_add[:-2]
-            self.roll_labels[i].config(text=roll_add)
             self.stat_block[i].config(text=total)
 
     # Events
