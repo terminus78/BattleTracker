@@ -103,7 +103,7 @@ class StartWindow():
         lbl_map_size_select = ttk.Label(master=file_frame, text="Select map size", font=self.papyrus_font)
         lbl_map_size_select.grid(row=2, column=1, sticky='w')
         self.map_choice = ["Tiny (8 X 12)", "Small (16 X 24)", "Medium (24 X 36)", "Large (32 X 46)"]
-        self.cbx_map_sizes = ttk.Combobox(master=file_frame, width=27, values=self.map_choice)
+        self.cbx_map_sizes = ttk.Combobox(master=file_frame, width=27, values=self.map_choice, state='readonly')
         self.cbx_map_sizes.grid(row=3, column=1, sticky='w')
         self.btn_start_game = ttk.Button(master=finish_frame, text="Start Game")#, command=self.start_new_battle)
         self.btn_cancel = ttk.Button(master=finish_frame, text="Cancel")#, command=self.game_start_win.destroy)

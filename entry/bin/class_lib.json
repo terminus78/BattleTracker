@@ -21,7 +21,8 @@
                 },
                 "tools": "theives' tools",
                 "pack": "dungeoneer's pack"
-            }
+            },
+            "desc": "An ingenuious master of magic through tools."
         }
     }
 }

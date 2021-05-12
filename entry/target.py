@@ -41,7 +41,7 @@ class Target():
             self.names.append(being["name"])
         lbl_top_info = ttk.Label(master=self.top_frame, text="Select target creature and desired action.", font=self.reg_font)
         lbl_top_info.grid(row=0, column=0)
-        self.drop_targets = ttk.Combobox(master=self.select_frame, width=27, values=self.names)
+        self.drop_targets = ttk.Combobox(master=self.select_frame, width=27, values=self.names, state='readonly')
         self.drop_targets.grid(row=0, column=0, sticky='w')
         btn_select = ttk.Button(master=self.select_frame, command=self.select_target, text="Select")
         btn_select.grid(row=0, column=1, sticky='w')

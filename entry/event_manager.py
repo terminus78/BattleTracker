@@ -64,7 +64,7 @@ class EventManager():
         for being in self.root.token_list:
             names.append(being["name"])
             coordinates.append(being["coordinate"])
-        self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=names)
+        self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=names, state='readonly')
         self.drop_selection.grid(row=0, column=1, sticky='w')
         self.drop_selection.current()
         self.btn_current_coord = ttk.Button(master=self.selection_frame, text="Show Current Coordinate", command=lambda arg=[names, coordinates]: self.show_coord(arg))
