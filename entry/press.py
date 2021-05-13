@@ -25,6 +25,10 @@ class Press():
         self.bkgd_loc = 'entry\\bin\\background_lib.json'
         stat_box_path = 'entry\\bin\\frame.png'
         self.stat_box = ImageTk.PhotoImage(image=PIL.Image.open(stat_box_path).resize((40,40)))
+        up_arrow_path = 'entry\\bin\\1086673941579697367-128.png'
+        self.up_arrow = ImageTk.PhotoImage(image=PIL.Image.open(up_arrow_path).resize((15,15)))
+        down_arrow_path = 'entry\\bin\\16755934531579697357-128.png'
+        self.down_arrow = ImageTk.PhotoImage(image=PIL.Image.open(down_arrow_path).resize((15,15)))
         self.press_box = tk.Toplevel(self.root)
         self.press_box.title("Creature Generator")
         style = ThemedStyle(self.press_box)
@@ -163,23 +167,56 @@ class Press():
     def full_build_2b(self, sel_in):
         self.clear_build_frame()
         lbl_input_title = ttk.Label(master=self.build_frame, text="", font=self.reg_font)
-        lbl_input_title.grid(row=0, column=0, columnspan=3)
+        lbl_input_title.grid(row=0, column=0, columnspan=5)
         lbl_stat_block = ttk.Label(master=self.build_frame, text="Stats", font=self.reg_font)
         lbl_stat_block.grid(row=1, column=1, padx=10)
         lbl_results = ttk.Label(master=self.build_frame, text="", font=self.reg_font)
         lbl_results.grid(row=1, column=2, sticky='w')
+        lbl_controls = ttk.Label(master=self.build_frame, text="Change Stats", font=self.reg_font)
+        lbl_controls.grid(row=1, column=3, columnspan=2)
         stat_titles = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
+        self.stat_block = []
         for i in range(2, 8):
-            lbl_stat = ttk.Label(master=self.build_frame, text=stat_titles[i-2], font=self.reg_font)
-            lbl_stat.grid(row=i, column=0)
+            lbl_stat_name = ttk.Label(master=self.build_frame, text=stat_titles[i-2], font=self.reg_font)
+            lbl_stat_name.grid(row=i, column=0)
             lbl_stat_frame = tk.Label(master=self.build_frame, image=self.stat_box, bg='gray28')
             lbl_stat_frame.grid(row=i, column=1, pady=5)
             lbl_stat_frame.image=self.stat_box
-        self.stat_block = []
-        for i in range(2, 8):
-            lbl_stat = tk.Label(master=self.build_frame, text="8", font=self.reg_font, anchor='center', bg='gray28', fg='white')
-            lbl_stat.grid(row=i, column=1)
-            self.stat_block.append(lbl_stat)
+            lbl_stat_num = tk.Label(master=self.build_frame, text="8", font=self.reg_font, anchor='center', bg='gray28', fg='white')
+            lbl_stat_num.grid(row=i, column=1)
+            self.stat_block.append(lbl_stat_num)
+
+        roll_mode = sel_in == 'roll'
+        btn_move_down_1 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(0, 'd', roll_mode), image=self.down_arrow, bg='gray28', bd=0)
+        btn_move_down_1.image = self.down_arrow
+        btn_move_down_1.grid(row=2, column=4, padx=5)
+        btn_move_up_2 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(1, 'u', roll_mode), image=self.up_arrow, bg='gray28', bd=0)
+        btn_move_up_2.image = self.up_arrow
+        btn_move_up_2.grid(row=3, column=3, padx=5)
+        btn_move_down_2 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(1, 'd', roll_mode), image=self.down_arrow, bg='gray28', bd=0)
+        btn_move_down_2.image = self.down_arrow
+        btn_move_down_2.grid(row=3, column=4, padx=5)
+        btn_move_up_3 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(2, 'u', roll_mode), image=self.up_arrow, bg='gray28', bd=0)
+        btn_move_up_3.image = self.up_arrow
+        btn_move_up_3.grid(row=4, column=3, padx=5)
+        btn_move_down_3 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(2, 'd', roll_mode), image=self.down_arrow, bg='gray28', bd=0)
+        btn_move_down_3.image = self.down_arrow
+        btn_move_down_3.grid(row=4, column=4, padx=5)
+        btn_move_up_4 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(3, 'u', roll_mode), image=self.up_arrow, bg='gray28', bd=0)
+        btn_move_up_4.image = self.up_arrow
+        btn_move_up_4.grid(row=5, column=3, padx=5)
+        btn_move_down_4 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(3, 'd', roll_mode), image=self.down_arrow, bg='gray28', bd=0)
+        btn_move_down_4.image = self.down_arrow
+        btn_move_down_4.grid(row=5, column=4, padx=5)
+        btn_move_up_5 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(4, 'u', roll_mode), image=self.up_arrow, bg='gray28', bd=0)
+        btn_move_up_5.image = self.up_arrow
+        btn_move_up_5.grid(row=6, column=3, padx=5)
+        btn_move_down_5 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(4, 'd', roll_mode), image=self.down_arrow, bg='gray28', bd=0)
+        btn_move_down_5.image = self.down_arrow
+        btn_move_down_5.grid(row=6, column=4, padx=5)
+        btn_move_up_6 = tk.Button(master=self.build_frame, command=lambda: self.move_stat(5, 'u', roll_mode), image=self.up_arrow, bg='gray28', bd=0)
+        btn_move_up_6.image = self.up_arrow
+        btn_move_up_6.grid(row=7, column=3, padx=5)
 
         if sel_in == 'roll':
             lbl_input_title.config(text="Roll Method")
@@ -191,7 +228,7 @@ class Press():
                 self.roll_labels.append(lbl_rolls)
             self.dice_per_roll = tk.IntVar()
             under_frame = ttk.Frame(master=self.build_frame)
-            under_frame.grid(row=8, column=0, columnspan=3)
+            under_frame.grid(row=8, column=0, columnspan=5)
             rbn_4d6 = ttk.Radiobutton(master=under_frame, text="4d6", variable=self.dice_per_roll, value=4)
             rbn_4d6.grid(row=0, column=0, padx=5)
             rbn_3d6 = ttk.Radiobutton(master=under_frame, text="3d6", variable=self.dice_per_roll, value=3)
@@ -199,8 +236,9 @@ class Press():
             self.dice_per_roll.set(4)
             btn_roll = ttk.Button(master=under_frame, command=self.roll_stats, text="Roll", width=13)
             btn_roll.grid(row=1, column=0, columnspan=2)
+        
         btn_frame = ttk.Frame(master=self.build_frame)
-        btn_frame.grid(row=9, column=0, columnspan=3, pady=15)
+        btn_frame.grid(row=9, column=0, columnspan=5, pady=15)
         self.btn_next = ttk.Button(master=btn_frame, command=self.full_build_3, text="Next", width=13)
         self.btn_next.grid(row=0, column=0, padx=5)
         self.btn_next.state(['disabled'])
@@ -261,6 +299,22 @@ class Press():
             for j in range(3):
                 total += mid_sums[i][j]
             self.stat_block[i].config(text=total)
+
+    def move_stat(self, pos, dir, rolled):
+        if dir == 'd':
+            next_index = 1
+        else:
+            next_index = -1
+        
+        from_label = self.stat_block[pos].cget('text')
+        to_label = self.stat_block[pos+next_index].cget('text')
+        self.stat_block[pos].config(text=to_label)
+        self.stat_block[pos+next_index].config(text=from_label)
+        if rolled:
+            from_rolls = self.roll_labels[pos].cget('text')
+            to_rolls = self.roll_labels[pos+next_index].cget('text')
+            self.roll_labels[pos].config(text=to_rolls)
+            self.roll_labels[pos+next_index].config(text=from_rolls)
 
     # Events
     def _on_select_race(self, event):
