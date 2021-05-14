@@ -33,6 +33,8 @@ To Do List:
 	# Battlefield scroll and grid enlargement
 	T# Input scrubbing
 	T# Collisions
+	- Add background, feat, race, and class input functionality to template creator
+	- Integrate template usage to build tokens
 	- Initiative picture on player window
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
@@ -52,6 +54,7 @@ To Do List:
 		- Spell Library
 	- PC/Full NPC Creation
 	- TV Pixel resolution differences
+	- Beautification of all aspects
 	-- Advanced Version
 		- Terrain mapping
 		- Object movement

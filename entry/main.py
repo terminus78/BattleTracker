@@ -170,21 +170,21 @@ class BattleMap():
         self.tool_bar.grid(row=0, column=3, padx=5, pady=10, sticky="nw")
 
         # Image paths
-        undo_icon_path = "entry\\bin\\17989932761556277131-128.png"
+        undo_icon_path = "entry\\bin\\red_undo.png"
         undo_icon = ImageTk.PhotoImage(image=PIL.Image.open(undo_icon_path).resize((20,20)))
-        redo_icon_path = "entry\\bin\\19936986571556277126-128.png"
+        redo_icon_path = "entry\\bin\\red_redo.png"
         redo_icon = ImageTk.PhotoImage(image=PIL.Image.open(redo_icon_path).resize((20,20)))
-        move_icon_path = "entry\\bin\\icons8-circled-down-left-32.png"
+        move_icon_path = "entry\\bin\\red_icons8-circled-down-left-32.png"
         move_icon = ImageTk.PhotoImage(image=PIL.Image.open(move_icon_path).resize((20,20)))
-        trig_icon_path = "entry\\bin\\3228996421547464107-128.png"
+        trig_icon_path = "entry\\bin\\red_trig.png"
         trig_icon = ImageTk.PhotoImage(image=PIL.Image.open(trig_icon_path).resize((20,20)))
-        target_icon_path = "entry\\bin\\11749495271547546487-128.png"
+        target_icon_path = "entry\\bin\\red_target.png"
         target_icon = ImageTk.PhotoImage(image=PIL.Image.open(target_icon_path).resize((20,20)))
-        cond_info_icon_path = "entry\\bin\\2780604101548336129-128.png"
+        cond_info_icon_path = "entry\\bin\\red_page_icon.png"
         cond_info_icon = ImageTk.PhotoImage(image=PIL.Image.open(cond_info_icon_path).resize((20,20)))
         turn_icon_path = "entry\\bin\\swords.png"
         self.turn_icon = ImageTk.PhotoImage(image=PIL.Image.open(turn_icon_path).resize((20,20)))
-        d20_icon_path = "entry\\bin\\role-playing.png"
+        d20_icon_path = "entry\\bin\\red_role-playing.png"
         d20_icon = ImageTk.PhotoImage(image=PIL.Image.open(d20_icon_path).resize((20,20)))
 
         ally_path = "entry\\bin\\ally_token.png"

@@ -6,3 +6,4 @@
 0x006: Map frame already occupied, save file likely corrupted
 0x007: Missing class_lib.json
 0x008: Missing race_lib.json
+0x009: Up and down arrow states disabled

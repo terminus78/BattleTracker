@@ -11,30 +11,38 @@ import PIL.Image
 from PIL import ImageTk
 
 
-'''
-root = tk.Tk()
-root.title("Template Builder")
-root_width = root.winfo_reqwidth()
-root_height = root.winfo_reqheight()
-position_horizontal = int(root.winfo_screenwidth()/2 - root_width/2)
-position_vertical = int(root.winfo_screenheight()/2 - root_height/2)
-root.geometry("+{}+{}".format(position_horizontal, position_vertical))
-'''
-
 class TemplateBuilder():
     def __init__(self, root):
         self.root = root
-        self.file_loc = 'entry\\bin\\template_library.json'
+        self.npc_m_loc = 'entry\\bin\\npc_monster.json'
+        self.race_loc = 'entry\\bin\\race_lib.json'
+        self.class_loc = 'entry\\bin\\class_lib.json'
+        self.feat_loc = 'entry\\bin\\feat_lib.json'
+        self.bkgd_loc = 'entry\\bin\\background_lib.json'
+        lbl_title = ttk.Label(master=self.root, text="What would you like to build?")
+        lbl_title.grid(row=0, column=0)
+        self.underline_font = font.Font(lbl_title, lbl_title.cget("font"))
+        self.underline_font.configure(underline = True)
         catg_frame = ttk.Frame(master=self.root)
-        catg_frame.grid(row=0, column=0)
+        catg_frame.grid(row=1, column=0)
         self.input_frame = ttk.Frame(master=self.root)
-        self.input_frame.grid(row=1, column=0, padx=10, pady=10)
+        self.input_frame.grid(row=2, column=0, padx=10, pady=10)
         self.send_it_frame = ttk.Frame(master=self.root)
-        self.send_it_frame.grid(row=2, column=0)
+        self.send_it_frame.grid(row=3, column=0)
         btn_npc = ttk.Button(master=catg_frame, command=lambda: self.build_form('npc'), text="Fast NPC")
         btn_npc.grid(row=0, column=0, sticky='w', padx=5, pady=10)
         btn_monster = ttk.Button(master=catg_frame, command=lambda: self.build_form('monster'), text="Monster")
         btn_monster.grid(row=0, column=1, sticky='w', padx=5, pady=10)
+        btn_race = ttk.Button(master=catg_frame, command=self.build_race, text="Race")
+        btn_race.grid(row=0, column=2, sticky='w', padx=5, pady=10)
+        btn_class = ttk.Button(master=catg_frame, command=lambda: self.build_class('c'), text="Class")
+        btn_class.grid(row=0, column=3, sticky='w', padx=5, pady=10)
+        btn_archtype = ttk.Button(master=catg_frame, command=lambda: self.build_class('a'), text="Arch Type")
+        btn_archtype.grid(row=0, column=4, sticky='w', padx=5, pady=10)
+        btn_feat = ttk.Button(master=catg_frame, command=self.build_feat, text="Feat")
+        btn_feat.grid(row=0, column=5, sticky='w', padx=5, pady=10)
+        btn_bkgd = ttk.Button(master=catg_frame, command=self.build_bkgd, text="Background")
+        btn_bkgd.grid(row=0, column=6, sticky='w', padx=5, pady=10)
         lbl_waiting = ttk.Label(master=self.input_frame, text="Waiting...")
         lbl_waiting.grid(row=0, column=0)
         on_img_path = 'entry\\bin\\on.png'
@@ -44,19 +52,11 @@ class TemplateBuilder():
 
     def build_form(self, catg):
         self.catg = catg
-        try:
-            old_widg = self.input_frame.grid_slaves()
-            if old_widg is not None:
-                for widg in old_widg:
-                    widg.destroy()
-        except AttributeError:
-            pass
+        self.wipe_off()
 
         lbl_catg = ttk.Label(master=self.input_frame, text="")
         lbl_catg.grid(row=0, column=0, sticky='w')
-        underline_font = font.Font(lbl_catg, lbl_catg.cget("font"))
-        underline_font.configure(underline = True)
-        lbl_catg.config(font=underline_font)
+        lbl_catg.config(font=self.underline_font)
         if self.catg == 'npc':
             lbl_catg.config(text='NPC')
         else:
@@ -361,8 +361,111 @@ class TemplateBuilder():
         self.btn_mean_mode.grid(row=11, column=8)
         self.btn_mean_mode.image = self.off_img
         self.mean_mode = False
-        btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_it, text="Send", width=20)
+        btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_npc_m, text="Send", width=20)
         btn_send_it.grid(row=0, column=0, pady=15)
+
+    def build_race(self):
+        self.wipe_off()
+        lbl_mode = ttk.Label(master=self.input_frame, text="Race", font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, sticky='w')
+        lbl_size = ttk.Label(master=self.input_frame, text="Size: ")
+        lbl_size.grid(row=1, column=0, sticky='w')
+        self.ent_size = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_size.grid(row=1, column=1, sticky='w')
+        lbl_walk_speed = ttk.Label(master=self.input_frame, text="Walking Speed: ")
+        lbl_walk_speed.grid(row=2, column=0, sticky='w')
+        self.ent_gnd_speed = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_gnd_speed.grid(row=2, column=1, sticky='w')
+        lbl_fly_speed = ttk.Label(master=self.input_frame, text="Flying Speed: ")
+        lbl_fly_speed.grid(row=3, column=0, sticky='w')
+        self.ent_fly_speed = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_fly_speed.grid(row=3, column=1, sticky='w')
+        lbl_swim_speed = ttk.Label(master=self.input_frame, text="Swim Speed: ")
+        lbl_swim_speed.grid(row=4, column=0, sticky='w')
+        self.ent_swim_speed = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_swim_speed.grid(row=4, column=1, sticky='w')
+        lbl_burrow_speed = ttk.Label(master=self.input_frame, text="Burrow Speed: ")
+        lbl_burrow_speed.grid(row=5, column=0, sticky='w')
+        self.ent_burrow_speed = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_burrow_speed.grid(row=5, column=1, sticky='w')
+        lbl_stats = ttk.Label(master=self.input_frame, text="Bonuses: ")
+        lbl_stats.grid(row=6, column=0, columnspan=2)
+        stat_frame = ttk.Frame(master=self.input_frame)
+        stat_frame.grid(row=7, column=0, columnspan=2)
+        lbl_str_mod = ttk.Label(master=stat_frame, text="STR")
+        lbl_str_mod.grid(row=0, column=0)
+        lbl_dex_mod = ttk.Label(master=stat_frame, text="DEX")
+        lbl_dex_mod.grid(row=0, column=1)
+        lbl_con_mod = ttk.Label(master=stat_frame, text="CON")
+        lbl_con_mod.grid(row=0, column=2)
+        self.ent_str_mod = ttk.Entry(master=stat_frame, width=5)
+        self.ent_str_mod.grid(row=1, column=0)
+        self.ent_dex_mod = ttk.Entry(master=stat_frame, width=5)
+        self.ent_dex_mod.grid(row=1, column=1)
+        self.ent_con_mod = ttk.Entry(master=stat_frame, width=5)
+        self.ent_con_mod.grid(row=1, column=2)
+        self.ent_str_mod.insert(0, "0")
+        self.ent_dex_mod.insert(0, "0")
+        self.ent_con_mod.insert(0, "0")
+        lbl_int_mod = ttk.Label(master=stat_frame, text="INT")
+        lbl_int_mod.grid(row=2, column=0)
+        lbl_wis_mod = ttk.Label(master=stat_frame, text="WIS")
+        lbl_wis_mod.grid(row=2, column=1)
+        lbl_cha_mod = ttk.Label(master=stat_frame, text="CHA")
+        lbl_cha_mod.grid(row=2, column=2)
+        self.ent_int_mod = ttk.Entry(master=stat_frame, width=5)
+        self.ent_int_mod.grid(row=3, column=0)
+        self.ent_wis_mod = ttk.Entry(master=stat_frame, width=5)
+        self.ent_wis_mod.grid(row=3, column=1)
+        self.ent_cha_mod = ttk.Entry(master=stat_frame, width=5)
+        self.ent_cha_mod.grid(row=3, column=2)
+        self.ent_int_mod.insert(0, "0")
+        self.ent_wis_mod.insert(0, "0")
+        self.ent_cha_mod.insert(0, "0")
+        lbl_langs = ttk.Label(master=self.input_frame, text="Languages: ")
+        lbl_langs.grid(row=8, column=0, sticky='w')
+        lbl_lang_1 = ttk.Label(master=self.input_frame, text="1: ")
+        lbl_lang_1.grid(row=9, column=0, sticky='e')
+        self.ent_lang_1 = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_1.grid(row=9, column=1, sticky='w')
+        lbl_lang_2 = ttk.Label(master=self.input_frame, text="2: ")
+        lbl_lang_2.grid(row=10, column=0, sticky='e')
+        self.ent_lang_2 = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_2.grid(row=10, column=1, sticky='w')
+        lbl_lang_3 = ttk.Label(master=self.input_frame, text="3: ")
+        lbl_lang_3.grid(row=11, column=0, sticky='e')
+        self.ent_lang_3 = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_3.grid(row=11, column=1, sticky='w')
+        lbl_lang_4 = ttk.Label(master=self.input_frame, text="4: ")
+        lbl_lang_4.grid(row=12, column=0, sticky='e')
+        self.ent_lang_4 = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_4.grid(row=12, column=1, sticky='w')
+        lbl_abilities = ttk.Label(master=self.input_frame, text="Abilities: ")
+        lbl_abilities.grid(row=0, column=2, sticky='w', padx=30)
+        self.txt_racials = tk.Text(master=self.input_frame)
+        self.txt_racials.grid(row=1, column=2, rowspan=12, sticky='w', padx=30)
+        btn_send_it = ttk.Button(master=self.send_it_frame, command=lambda: self.send_it('race'), text="Send", width=20)
+        btn_send_it.grid(row=0, column=0, pady=15)
+        
+
+    def build_class(self, layer):
+        self.wipe_off()
+        if layer == 'c':
+            mode = "Class"
+        else:
+            mode = "Arch Type"
+        lbl_mode = ttk.Label(master=self.input_frame, text=mode, font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, sticky='w')
+
+    def build_feat(self):
+        self.wipe_off()
+        lbl_mode = ttk.Label(master=self.input_frame, text="Feat", font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, sticky='w')
+
+    def build_bkgd(self):
+        self.wipe_off()
+        lbl_mode = ttk.Label(master=self.input_frame, text="Background", font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, sticky='w')
 
     def on_off_switch(self):
         if self.mean_mode:
@@ -374,7 +477,7 @@ class TemplateBuilder():
             self.btn_mean_mode.config(image=self.on_img)
             self.btn_mean_mode.image = self.on_img
 
-    def send_it(self):
+    def send_npc_m(self):
         get_name = self.ent_name.get()
         get_type = self.ent_type.get()
         get_size = self.size.get()
@@ -663,16 +766,27 @@ class TemplateBuilder():
                 'reactions': get_reac
             }
         }
-        # Temporary jump out to keep from making unnecessary files
-        #return
-        if os.path.exists(self.file_loc) == False:
-            with open(self.file_loc, 'w') as template_file:
+
+        if os.path.exists(self.npc_m_loc) == False:
+            with open(self.npc_m_loc, 'w') as template_file:
                 json.dump({'npc':{}, 'monster': {}}, template_file, indent=4)
-        with open(self.file_loc, 'r') as template_file:
+        with open(self.npc_m_loc, 'r') as template_file:
             self.template_info = json.load(template_file)
         self.template_info[self.catg].update(template_dict)
-        with open(self.file_loc, 'w') as template_file:
+        with open(self.npc_m_loc, 'w') as template_file:
             json.dump(self.template_info, template_file, indent=4)
+
+    def send_race(self):
+        pass
+
+    def wipe_off(self):
+        try:
+            old_widg = self.input_frame.grid_slaves()
+            if old_widg is not None:
+                for widg in old_widg:
+                    widg.destroy()
+        except AttributeError:
+            pass
 
 if __name__ == '__main__':
     root = tk.Tk()
