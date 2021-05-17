@@ -31,9 +31,13 @@ To Do List:
 	# Convert file maker/open window to a top level and map to root
 	# Undo/Redo for actions
 	# Battlefield scroll and grid enlargement
+	# Add background input functionality to template creator
+	# Add race input functionality to template creator
+	# Add subrace input functionality to template creator
 	T# Input scrubbing
 	T# Collisions
-	- Add background, feat, race, and class input functionality to template creator
+	- Add feat input functionality to template creator
+	- Add class input functionality to template creator
 	- Delete and modify options for template creator
 	- Integrate template usage to build tokens
 	- Initiative picture on player window
