@@ -35,14 +35,16 @@ class TemplateBuilder():
         btn_monster.grid(row=0, column=1, sticky='w', padx=5, pady=10)
         btn_race = ttk.Button(master=catg_frame, command=self.build_race, text="Race")
         btn_race.grid(row=0, column=2, sticky='w', padx=5, pady=10)
+        btn_subrace = ttk.Button(master=catg_frame, command=self.build_subrace, text="Subrace")
+        btn_subrace.grid(row=0, column=3, sticky='w', padx=5, pady=10)
         btn_class = ttk.Button(master=catg_frame, command=lambda: self.build_class('c'), text="Class")
-        btn_class.grid(row=0, column=3, sticky='w', padx=5, pady=10)
+        btn_class.grid(row=0, column=4, sticky='w', padx=5, pady=10)
         btn_archtype = ttk.Button(master=catg_frame, command=lambda: self.build_class('a'), text="Arch Type")
-        btn_archtype.grid(row=0, column=4, sticky='w', padx=5, pady=10)
+        btn_archtype.grid(row=0, column=5, sticky='w', padx=5, pady=10)
         btn_feat = ttk.Button(master=catg_frame, command=self.build_feat, text="Feat")
-        btn_feat.grid(row=0, column=5, sticky='w', padx=5, pady=10)
+        btn_feat.grid(row=0, column=6, sticky='w', padx=5, pady=10)
         btn_bkgd = ttk.Button(master=catg_frame, command=self.build_bkgd, text="Background")
-        btn_bkgd.grid(row=0, column=6, sticky='w', padx=5, pady=10)
+        btn_bkgd.grid(row=0, column=7, sticky='w', padx=5, pady=10)
         lbl_waiting = ttk.Label(master=self.input_frame, text="Waiting...")
         lbl_waiting.grid(row=0, column=0)
         on_img_path = 'entry\\bin\\on.png'
@@ -377,19 +379,19 @@ class TemplateBuilder():
         self.size_race = tk.StringVar()
         size_frame = ttk.Frame(master=self.input_frame)
         size_frame.grid(row=2, column=1, sticky='w')
-        rbn_tiny = ttk.Radiobutton(master=size_frame, text="tiny", variable=self.size, value='tiny')
+        rbn_tiny = ttk.Radiobutton(master=size_frame, text="tiny", variable=self.size_race, value='tiny')
         rbn_tiny.grid(row=0, column=0, sticky='w')
-        rbn_small = ttk.Radiobutton(master=size_frame, text="small", variable=self.size, value='small')
+        rbn_small = ttk.Radiobutton(master=size_frame, text="small", variable=self.size_race, value='small')
         rbn_small.grid(row=0, column=1, sticky='w')
-        rbn_medium = ttk.Radiobutton(master=size_frame, text="medium", variable=self.size, value='medium')
+        rbn_medium = ttk.Radiobutton(master=size_frame, text="medium", variable=self.size_race, value='medium')
         rbn_medium.grid(row=1, column=0, sticky='w')
-        rbn_large = ttk.Radiobutton(master=size_frame, text="large", variable=self.size, value='large')
+        rbn_large = ttk.Radiobutton(master=size_frame, text="large", variable=self.size_race, value='large')
         rbn_large.grid(row=1, column=1, sticky='w')
-        rbn_huge = ttk.Radiobutton(master=size_frame, text="huge", variable=self.size, value='huge')
+        rbn_huge = ttk.Radiobutton(master=size_frame, text="huge", variable=self.size_race, value='huge')
         rbn_huge.grid(row=2, column=0, sticky='w')
-        rbn_gargantuan = ttk.Radiobutton(master=size_frame, text="garg", variable=self.size, value='gargantuan')
+        rbn_gargantuan = ttk.Radiobutton(master=size_frame, text="garg", variable=self.size_race, value='gargantuan')
         rbn_gargantuan.grid(row=2, column=1, sticky='w')
-        self.size.set("medium")
+        self.size_race.set("medium")
         lbl_walk_speed = ttk.Label(master=self.input_frame, text="Walking Speed: ")
         lbl_walk_speed.grid(row=3, column=0, sticky='w')
         self.ent_gnd_speed = ttk.Entry(master=self.input_frame, width=20)
@@ -399,17 +401,17 @@ class TemplateBuilder():
         lbl_fly_speed.grid(row=4, column=0, sticky='w')
         self.ent_fly_speed = ttk.Entry(master=self.input_frame, width=20)
         self.ent_fly_speed.grid(row=4, column=1, sticky='w')
-        self.ent_fly_speed.insert(0, "0")
+        #self.ent_fly_speed.insert(0, "0")
         lbl_swim_speed = ttk.Label(master=self.input_frame, text="Swim Speed: ")
         lbl_swim_speed.grid(row=5, column=0, sticky='w')
         self.ent_swim_speed = ttk.Entry(master=self.input_frame, width=20)
         self.ent_swim_speed.grid(row=5, column=1, sticky='w')
-        self.ent_swim_speed.insert(0, "0")
+        #self.ent_swim_speed.insert(0, "0")
         lbl_burrow_speed = ttk.Label(master=self.input_frame, text="Burrow Speed: ")
         lbl_burrow_speed.grid(row=6, column=0, sticky='w')
         self.ent_burrow_speed = ttk.Entry(master=self.input_frame, width=20)
         self.ent_burrow_speed.grid(row=6, column=1, sticky='w')
-        self.ent_burrow_speed.insert(0, "0")
+        #self.ent_burrow_speed.insert(0, "0")
         lbl_stats = ttk.Label(master=self.input_frame, text="Bonuses: ")
         lbl_stats.grid(row=7, column=0, columnspan=2)
         stat_frame = ttk.Frame(master=self.input_frame)
@@ -467,9 +469,133 @@ class TemplateBuilder():
         lbl_abilities.grid(row=0, column=2, sticky='w', padx=30)
         self.txt_racials = tk.Text(master=self.input_frame)
         self.txt_racials.grid(row=1, column=2, rowspan=13, sticky='w', padx=30)
-        btn_send_it = ttk.Button(master=self.send_it_frame, command=lambda: self.send_race, text="Send", width=20)
+        btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_race, text="Send", width=20)
         btn_send_it.grid(row=0, column=0, pady=15)
-        
+
+    def build_subrace(self):
+        self.wipe_off()
+        lbl_mode = ttk.Label(master=self.input_frame, text="Subrace", font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, sticky='w')
+
+        if os.path.exists(self.race_loc) == False:
+            messagebox.showwarning("Forge", "Must build base races before subraces.")
+            return
+        else:
+            with open(self.race_loc, 'r') as race_file:
+                self.race_info_sub = json.load(race_file)
+            if len(self.race_info_sub) == 0:
+                messagebox.showwarning("Forge", "Must build base races before subraces.")
+                return
+            race_list_sub = []
+            for race in self.race_info_sub.keys():
+                race_list_sub.append(race)
+
+        lbl_select_race_sub = ttk.Label(master=self.input_frame, text="Select Race: ")
+        lbl_select_race_sub.grid(row=1, column=0, sticky='w')
+        self.cbx_races_sub = ttk.Combobox(master=self.input_frame, width=20, values=race_list_sub, state='readonly')
+        self.cbx_races_sub.grid(row=1, column=1, sticky='w')
+        self.cbx_races_sub.bind("<<ComboboxSelected>>", self._on_select_race)
+        lbl_name = ttk.Label(master=self.input_frame, text="Name: ")
+        lbl_name.grid(row=2, column=0, sticky='w')
+        self.ent_name_race_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_name_race_sub.grid(row=2, column=1, sticky='w')
+        lbl_size = ttk.Label(master=self.input_frame, text="Size: ")
+        lbl_size.grid(row=3, column=0, sticky='w')
+        self.size_race_sub = tk.StringVar()
+        size_frame = ttk.Frame(master=self.input_frame)
+        size_frame.grid(row=3, column=1, sticky='w')
+        rbn_tiny = ttk.Radiobutton(master=size_frame, text="tiny", variable=self.size_race_sub, value='tiny')
+        rbn_tiny.grid(row=0, column=0, sticky='w')
+        rbn_small = ttk.Radiobutton(master=size_frame, text="small", variable=self.size_race_sub, value='small')
+        rbn_small.grid(row=0, column=1, sticky='w')
+        rbn_medium = ttk.Radiobutton(master=size_frame, text="medium", variable=self.size_race_sub, value='medium')
+        rbn_medium.grid(row=1, column=0, sticky='w')
+        rbn_large = ttk.Radiobutton(master=size_frame, text="large", variable=self.size_race_sub, value='large')
+        rbn_large.grid(row=1, column=1, sticky='w')
+        rbn_huge = ttk.Radiobutton(master=size_frame, text="huge", variable=self.size_race_sub, value='huge')
+        rbn_huge.grid(row=2, column=0, sticky='w')
+        rbn_gargantuan = ttk.Radiobutton(master=size_frame, text="garg", variable=self.size_race_sub, value='gargantuan')
+        rbn_gargantuan.grid(row=2, column=1, sticky='w')
+        self.size_race_sub.set("medium")
+        lbl_walk_speed = ttk.Label(master=self.input_frame, text="Walking Speed: ")
+        lbl_walk_speed.grid(row=4, column=0, sticky='w')
+        self.ent_gnd_speed_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_gnd_speed_sub.grid(row=4, column=1, sticky='w')
+        self.ent_gnd_speed_sub.insert(0, "30")
+        lbl_fly_speed = ttk.Label(master=self.input_frame, text="Flying Speed: ")
+        lbl_fly_speed.grid(row=5, column=0, sticky='w')
+        self.ent_fly_speed_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_fly_speed_sub.grid(row=5, column=1, sticky='w')
+        #self.ent_fly_speed_sub.insert(0, "0")
+        lbl_swim_speed = ttk.Label(master=self.input_frame, text="Swim Speed: ")
+        lbl_swim_speed.grid(row=6, column=0, sticky='w')
+        self.ent_swim_speed_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_swim_speed_sub.grid(row=6, column=1, sticky='w')
+        #self.ent_swim_speed_sub.insert(0, "0")
+        lbl_burrow_speed = ttk.Label(master=self.input_frame, text="Burrow Speed: ")
+        lbl_burrow_speed.grid(row=7, column=0, sticky='w')
+        self.ent_burrow_speed_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_burrow_speed_sub.grid(row=7, column=1, sticky='w')
+        #self.ent_burrow_speed_sub.insert(0, "0")
+        lbl_stats = ttk.Label(master=self.input_frame, text="Bonuses: ")
+        lbl_stats.grid(row=8, column=0, columnspan=2)
+        stat_frame = ttk.Frame(master=self.input_frame)
+        stat_frame.grid(row=9, column=0, columnspan=2)
+        lbl_str_mod = ttk.Label(master=stat_frame, text="STR")
+        lbl_str_mod.grid(row=0, column=0)
+        lbl_dex_mod = ttk.Label(master=stat_frame, text="DEX")
+        lbl_dex_mod.grid(row=0, column=1)
+        lbl_con_mod = ttk.Label(master=stat_frame, text="CON")
+        lbl_con_mod.grid(row=0, column=2)
+        self.ent_str_mod_sub = ttk.Entry(master=stat_frame, width=5)
+        self.ent_str_mod_sub.grid(row=1, column=0)
+        self.ent_dex_mod_sub = ttk.Entry(master=stat_frame, width=5)
+        self.ent_dex_mod_sub.grid(row=1, column=1)
+        self.ent_con_mod_sub = ttk.Entry(master=stat_frame, width=5)
+        self.ent_con_mod_sub.grid(row=1, column=2)
+        self.ent_str_mod_sub.insert(0, "0")
+        self.ent_dex_mod_sub.insert(0, "0")
+        self.ent_con_mod_sub.insert(0, "0")
+        lbl_int_mod = ttk.Label(master=stat_frame, text="INT")
+        lbl_int_mod.grid(row=2, column=0)
+        lbl_wis_mod = ttk.Label(master=stat_frame, text="WIS")
+        lbl_wis_mod.grid(row=2, column=1)
+        lbl_cha_mod = ttk.Label(master=stat_frame, text="CHA")
+        lbl_cha_mod.grid(row=2, column=2)
+        self.ent_int_mod_sub = ttk.Entry(master=stat_frame, width=5)
+        self.ent_int_mod_sub.grid(row=3, column=0)
+        self.ent_wis_mod_sub = ttk.Entry(master=stat_frame, width=5)
+        self.ent_wis_mod_sub.grid(row=3, column=1)
+        self.ent_cha_mod_sub = ttk.Entry(master=stat_frame, width=5)
+        self.ent_cha_mod_sub.grid(row=3, column=2)
+        self.ent_int_mod_sub.insert(0, "0")
+        self.ent_wis_mod_sub.insert(0, "0")
+        self.ent_cha_mod_sub.insert(0, "0")
+        lbl_langs = ttk.Label(master=self.input_frame, text="Languages: ")
+        lbl_langs.grid(row=10, column=0, sticky='w')
+        lbl_lang_1 = ttk.Label(master=self.input_frame, text="1: ")
+        lbl_lang_1.grid(row=11, column=0, sticky='e')
+        self.ent_lang_1_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_1_sub.grid(row=11, column=1, sticky='w')
+        self.ent_lang_1_sub.insert(0, "Common")
+        lbl_lang_2 = ttk.Label(master=self.input_frame, text="2: ")
+        lbl_lang_2.grid(row=12, column=0, sticky='e')
+        self.ent_lang_2_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_2_sub.grid(row=12, column=1, sticky='w')
+        lbl_lang_3 = ttk.Label(master=self.input_frame, text="3: ")
+        lbl_lang_3.grid(row=13, column=0, sticky='e')
+        self.ent_lang_3_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_3_sub.grid(row=13, column=1, sticky='w')
+        lbl_lang_4 = ttk.Label(master=self.input_frame, text="4: ")
+        lbl_lang_4.grid(row=14, column=0, sticky='e')
+        self.ent_lang_4_sub = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_4_sub.grid(row=14, column=1, sticky='w')
+        lbl_abilities = ttk.Label(master=self.input_frame, text="Abilities: ")
+        lbl_abilities.grid(row=0, column=2, sticky='w', padx=30)
+        self.txt_racials_sub = tk.Text(master=self.input_frame)
+        self.txt_racials_sub.grid(row=1, column=2, rowspan=13, sticky='w', padx=30)
+        btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_subrace, text="Send", width=20)
+        btn_send_it.grid(row=0, column=0, pady=15)
 
     def build_class(self, layer):
         self.wipe_off()
@@ -488,7 +614,85 @@ class TemplateBuilder():
     def build_bkgd(self):
         self.wipe_off()
         lbl_mode = ttk.Label(master=self.input_frame, text="Background", font=self.underline_font)
-        lbl_mode.grid(row=0, column=0, sticky='w')
+        lbl_mode.grid(row=0, column=0, columnspan=2, sticky='w')
+        lbl_name = ttk.Label(master=self.input_frame, text="Name: ")
+        lbl_name.grid(row=1, column=0, sticky='w')
+        self.ent_name_bkgd = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_name_bkgd.grid(row=1, column=1, sticky='w')
+        lbl_prof = ttk.Label(master=self.input_frame, text="Proficiencies: ")
+        lbl_prof.grid(row=1, column=2, sticky='w')
+        self.ent_prof = ttk.Entry(master=self.input_frame, width=40)
+        self.ent_prof.grid(row=1, column=3, sticky='w')
+        #lbl_skills = ttk.Label(master=self.input_frame, text="")
+        #lbl_skills.grid(row=2, column=0, columnspan=4)
+        self.skill_list = ['athletics', 'acrobatics', 'sleight_of_hand', 'stealth', 'arcana', 'history', 'investigation', 'nature', 'religion', 'animal_handling', 'insight', 'medicine', 'perception', 'survival', 'deception', 'intimidation', 'performance', 'persuasion', 'choice']
+        skill_titles = []
+        for item in self.skill_list:
+            if "_" in item:
+                item = item.split("_")
+                item = " ".join(item)
+            skill_titles.append(item.title())
+        
+        lbl_skill_1 = ttk.Label(master=self.input_frame, text="Skill 1: ")
+        lbl_skill_1.grid(row=3, column=0, sticky='w')
+        self.cbx_skill_1 = ttk.Combobox(master=self.input_frame, width=20, values=skill_titles, state='readonly')
+        self.cbx_skill_1.grid(row=3, column=1, sticky='w')
+        self.cbx_skill_1.bind("<<ComboboxSelected>>", lambda e: self._on_select_skill(box=1))
+        lbl_skill_2 = ttk.Label(master=self.input_frame, text="Skill 2: ")
+        lbl_skill_2.grid(row=3, column=2, sticky='w')
+        self.cbx_skill_2 = ttk.Combobox(master=self.input_frame, width=20, values=skill_titles, state='readonly')
+        self.cbx_skill_2.grid(row=3, column=3, sticky='w')
+        self.cbx_skill_2.bind("<<ComboboxSelected>>", lambda e: self._on_select_skill(box=2))
+        lbl_choice_1 = ttk.Label(master=self.input_frame, text="Choice: ")
+        lbl_choice_1.grid(row=4, column=0, sticky='nw')
+        skill_frame_1 = ttk.Frame(master=self.input_frame)
+        skill_frame_1.grid(row=4, column=1, sticky='w', padx=10)
+        lbl_choice_2 = ttk.Label(master=self.input_frame, text="Choice: ")
+        lbl_choice_2.grid(row=4, column=2, sticky='nw')
+        skill_frame_2 = ttk.Frame(master=self.input_frame)
+        skill_frame_2.grid(row=4, column=3, sticky='w', padx=10)
+        self.skill_var_1 = []
+        self.skill_var_2 = []
+        self.cbn_1 = []
+        self.cbn_2 = []
+        row_num = 0
+        col_num = 0
+        for i in range(18):
+            self.skill_var_1.append(tk.IntVar())
+            self.skill_var_2.append(tk.IntVar())
+            cbn_skill_1 = ttk.Checkbutton(master=skill_frame_1, text=skill_titles[i], variable=self.skill_var_1[i])
+            cbn_skill_1.grid(row=row_num, column=col_num, sticky='w')
+            cbn_skill_1.state(['disabled'])
+            self.cbn_1.append(cbn_skill_1)
+            cbn_skill_2 = ttk.Checkbutton(master=skill_frame_2, text=skill_titles[i], variable=self.skill_var_2[i])
+            cbn_skill_2.grid(row=row_num, column=col_num, sticky='w')
+            cbn_skill_2.state(['disabled'])
+            self.cbn_2.append(cbn_skill_2)
+            row_num += 1
+            if row_num >= 5:
+                row_num = 0
+                col_num += 1
+        
+        lbl_languages = ttk.Label(master=self.input_frame, text="Number of Languages: ")
+        lbl_languages.grid(row=5, column=0, sticky='w', pady=5)
+        self.ent_lang_num = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_lang_num.grid(row=5, column=1, sticky='w')
+        self.ent_lang_num.insert(0, '0')
+        lbl_gold = ttk.Label(master=self.input_frame, text="Gold: ")
+        lbl_gold.grid(row=5, column=2, sticky='w')
+        self.ent_gold = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_gold.grid(row=5, column=3, sticky='w')
+        self.ent_gold.insert(0, '0')
+        lbl_equip = ttk.Label(master=self.input_frame, text="Equipment: ")
+        lbl_equip.grid(row=6, column=0, sticky='w')
+        self.txt_equip = tk.Text(master=self.input_frame, height=5, width=110)
+        self.txt_equip.grid(row=7, column=0, columnspan=4, pady=15)
+        lbl_feature = ttk.Label(master=self.input_frame, text="Feature: ")
+        lbl_feature.grid(row=8, column=0, sticky='w')
+        self.txt_feature = tk.Text(master=self.input_frame, height=10, width=110)
+        self.txt_feature.grid(row=9, column=0, columnspan=4, pady=15)
+        btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_bkgd, text="Send", width=20)
+        btn_send_it.grid(row=0, column=0, pady=15)
 
     def on_off_switch(self):
         if self.mean_mode:
@@ -818,6 +1022,253 @@ class TemplateBuilder():
         lang_4 = self.ent_lang_4.get()
         racial_abil = self.txt_racials.get(1.0, 'end-1c')
 
+        if race_name == "" or race_size == "" or racial_abil == "":
+            messagebox.showwarning("Forge", "Name, size, and abilities cannot be empty.")
+            return
+
+        race_name = race_name.title()
+
+        try:
+            speed_walk = int(speed_walk)
+            get_str_mod = int(get_str_mod)
+            get_dex_mod = int(get_dex_mod)
+            get_con_mod = int(get_con_mod)
+            get_int_mod = int(get_int_mod)
+            get_wis_mod = int(get_wis_mod)
+            get_cha_mod = int(get_cha_mod)
+        except ValueError:
+            messagebox.showwarning("Forge", "Walking speed and modifier fields must be whole numbers")
+            return
+
+        if speed_fly != "":
+            try:
+                speed_fly = int(speed_fly)
+            except:
+                messagebox.showwarning("Forge", "If entered, flying speed must be a whole number.")
+                return
+        else:
+            speed_fly = None
+
+        if speed_swim != "":
+            try:
+                speed_swim = int(speed_swim)
+            except:
+                messagebox.showwarning("Forge", "If entered, swim speed must be a whole number.")
+                return
+        else:
+            speed_swim = None
+
+        if speed_burrow != "":
+            try:
+                speed_burrow = int(speed_burrow)
+            except:
+                messagebox.showwarning("Forge", "If entered, burrow speed must be a whole number.")
+                return
+        else:
+            speed_burrow = None
+        
+        race_dict = {
+            race_name: {
+                "stat_bonus": [
+                    get_str_mod,
+                    get_dex_mod,
+                    get_con_mod,
+                    get_int_mod,
+                    get_wis_mod,
+                    get_cha_mod
+                ],
+                "size": race_size,
+                "speed_walk": speed_walk,
+                "speed_fly": speed_fly,
+                "speed_swim": speed_swim,
+                "speed_burrow": speed_burrow,
+                "languages": [
+                    lang_1,
+                    lang_2,
+                    lang_3,
+                    lang_4
+                ],
+                "notes": racial_abil,
+                "subrace": {}
+            }
+        }
+
+        if os.path.exists(self.race_loc) == False:
+            with open(self.race_loc, 'w') as race_file:
+                json.dump(race_dict, race_file, indent=4)
+        else:
+            with open(self.race_loc, 'r') as race_file:
+                race_info = json.load(race_file)
+            race_info.update(race_dict)
+            with open(self.race_loc, 'w') as race_file:
+                json.dump(race_info, race_file, indent=4)
+
+    def send_subrace(self):
+        sel_race = self.cbx_races_sub.get()
+        subrace_name = self.ent_name_race_sub.get()
+        subrace_size = self.size_race_sub.get()
+        speed_walk = self.ent_gnd_speed_sub.get()
+        speed_fly = self.ent_fly_speed_sub.get()
+        speed_swim = self.ent_swim_speed_sub.get()
+        speed_burrow = self.ent_burrow_speed_sub.get()
+        get_str_mod = self.ent_str_mod_sub.get()
+        get_dex_mod = self.ent_dex_mod_sub.get()
+        get_con_mod = self.ent_con_mod_sub.get()
+        get_int_mod = self.ent_int_mod_sub.get()
+        get_wis_mod = self.ent_wis_mod_sub.get()
+        get_cha_mod = self.ent_cha_mod_sub.get()
+        lang_1 = self.ent_lang_1_sub.get()
+        lang_2 = self.ent_lang_2_sub.get()
+        lang_3 = self.ent_lang_3_sub.get()
+        lang_4 = self.ent_lang_4_sub.get()
+        racial_abil = self.txt_racials_sub.get(1.0, 'end-1c')
+
+        if sel_race == "":
+            messagebox.showwarning("Forge", "Must select base race.")
+            return
+
+        if subrace_name == "" or subrace_size == "" or racial_abil == "":
+            messagebox.showwarning("Forge", "Name, size, and abilities cannot be empty.")
+            return
+
+        subrace_name = subrace_name.title()
+
+        try:
+            speed_walk = int(speed_walk)
+            get_str_mod = int(get_str_mod)
+            get_dex_mod = int(get_dex_mod)
+            get_con_mod = int(get_con_mod)
+            get_int_mod = int(get_int_mod)
+            get_wis_mod = int(get_wis_mod)
+            get_cha_mod = int(get_cha_mod)
+        except ValueError:
+            messagebox.showwarning("Forge", "Walking speed and modifier fields must be whole numbers")
+            return
+
+        if speed_fly != "":
+            try:
+                speed_fly = int(speed_fly)
+            except:
+                messagebox.showwarning("Forge", "If entered, flying speed must be a whole number.")
+                return
+        else:
+            speed_fly = None
+
+        if speed_swim != "":
+            try:
+                speed_swim = int(speed_swim)
+            except:
+                messagebox.showwarning("Forge", "If entered, swim speed must be a whole number.")
+                return
+        else:
+            speed_swim = None
+
+        if speed_burrow != "":
+            try:
+                speed_burrow = int(speed_burrow)
+            except:
+                messagebox.showwarning("Forge", "If entered, burrow speed must be a whole number.")
+                return
+        else:
+            speed_burrow = None
+        
+        subrace_dict = {
+            subrace_name: {
+                "stat_bonus": [
+                    get_str_mod,
+                    get_dex_mod,
+                    get_con_mod,
+                    get_int_mod,
+                    get_wis_mod,
+                    get_cha_mod
+                ],
+                "size": subrace_size,
+                "speed_walk": speed_walk,
+                "speed_fly": speed_fly,
+                "speed_swim": speed_swim,
+                "speed_burrow": speed_burrow,
+                "languages": [
+                    lang_1,
+                    lang_2,
+                    lang_3,
+                    lang_4
+                ],
+                "notes": racial_abil
+            }
+        }
+
+        with open(self.race_loc, 'r') as race_file:
+            race_info = json.load(race_file)
+        race_info[sel_race]["subrace"].update(subrace_dict)
+        with open(self.race_loc, 'w') as race_file:
+            json.dump(race_info, race_file, indent=4)
+
+    def send_bkgd(self):
+        bkgd_name = self.ent_name_bkgd.get()
+        bkgd_prof = self.ent_prof.get()
+        skill_1 = self.cbx_skill_1.get()
+        skill_2 = self.cbx_skill_2.get()
+        num_lang = self.ent_lang_num.get()
+        gold = self.ent_gold.get()
+        bkgd_equip = self.txt_equip.get(1.0, 'end-1c')
+        bkgd_feature = self.txt_feature.get(1.0, 'end-1c')
+
+        if bkgd_name == "" or skill_1 == "" or skill_2 == "" or num_lang == "" or gold == "":
+            messagebox.showwarning("Forge", "Name, skills, number of languages, and gold fields cannot be empty.")
+            return
+        bkgd_name = bkgd_name.title()
+        try:
+            num_lang = int(num_lang)
+            gold = int(gold)
+        except ValueError:
+            messagebox.showwarning("Forge", "Number of languages and gold must be whole numbers.")
+            return
+
+        pick_skills_1 = []
+        if skill_1 == "Choice":
+            for i in range(18):
+                if self.skill_var_1[i] == 1:
+                    pick_skills_1.append(self.skill_list[i])
+        pick_skills_2 = []
+        if skill_2 == "Choice":
+            for i in range(18):
+                if self.skill_var_2[i] == 1:
+                    pick_skills_2.append(self.skill_list[i])
+
+        skill_1 = skill_1.lower()
+        if " " in skill_1:
+            skill_1 = skill_1.split()
+            skill_1 = "_".join(skill_1)
+
+        skill_2 = skill_2.lower()
+        if " " in skill_2:
+            skill_2 = skill_2.split()
+            skill_2 = "_".join(skill_2)
+
+        bkgd_dict = {
+            bkgd_name: {
+                "skills": {
+                    skill_1: pick_skills_1,
+                    skill_2: pick_skills_2
+                },
+                "proficiencies": bkgd_prof,
+                "num_lang": num_lang,
+                "gold": gold,
+                "equipment": bkgd_equip,
+                "feature": bkgd_feature
+            }
+        }
+
+        if os.path.exists(self.bkgd_loc) == False:
+            with open(self.bkgd_loc, 'w') as bkgd_file:
+                json.dump(bkgd_dict, bkgd_file, indent=4)
+        else:
+            with open(self.bkgd_loc, 'r') as bkgd_file:
+                bkgd_info = json.load(bkgd_file)
+            bkgd_info.update(bkgd_dict)
+            with open(self.bkgd_loc, 'w') as bkgd_file:
+                json.dump(bkgd_info, bkgd_file, indent=4)
+
     def wipe_off(self):
         try:
             old_widg = self.input_frame.grid_slaves()
@@ -826,6 +1277,33 @@ class TemplateBuilder():
                     widg.destroy()
         except AttributeError:
             pass
+
+    def _on_select_race(self, event):
+        mod_ent_list = [self.ent_str_mod_sub, self.ent_dex_mod_sub, self.ent_con_mod_sub, self.ent_int_mod_sub, self.ent_wis_mod_sub, self.ent_cha_mod_sub]
+        sel_race = self.cbx_races_sub.get()
+        for i in range(6):
+            if self.race_info_sub[sel_race]['stat_bonus'][i] != 0:
+                mod_ent_list[i].state(['disabled'])
+            else:
+                mod_ent_list[i].state(['!disabled'])
+
+    def _on_select_skill(self, box):
+        if box == 1:
+            sel_skill = self.cbx_skill_1.get()
+        else:
+            sel_skill = self.cbx_skill_2.get()
+
+        for i in range(18):
+            if sel_skill == 'Choice':
+                if box == 1:
+                    self.cbn_1[i].state(['!disabled'])
+                else:
+                    self.cbn_2[i].state(['!disabled'])
+            else:
+                if box == 1:
+                    self.cbn_1[i].state(['disabled'])
+                else:
+                    self.cbn_2[i].state(['disabled'])
 
 if __name__ == '__main__':
     root = tk.Tk()

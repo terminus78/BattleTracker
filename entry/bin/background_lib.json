@@ -1,30 +1,24 @@
 {
     "Acolyte": {
-        "skills": ["insight", "religion"],
-        "languages": {
-            "choice": 2,
-            "given": []
+        "skills": {
+            "insight": [],
+            "religion": []
         },
-        "tools": [],
-        "equipment": {
-            "gold": 15,
-            "given": ["holy symbol", "5 sticks of incense", "vestments", "common clothes", "belt pouch"],
-            "choice": [],
-            "feature": "assistance from temples and followers of your faith"
-        }
+        "proficiencies": "",
+        "num_lang": 2,
+        "gold": 15,
+        "equipment": "holy symbol, prayer book or prayer wheel, 5 sticks of incense, vestments, set of common clothes, belt pouch",
+        "feature": "respected by those of your faith, may ask for aid from others of same faith"
     },
     "Anthropologist": {
-        "skills": ["insight", "religion"],
-        "languages": {
-            "choice": 2,
-            "given": []
+        "skills": {
+            "insight": [],
+            "religion": []
         },
-        "tools": [],
-        "equipment": {
-            "gold": 10,
-            "given": ["leather-bound diary", "ink (1-ounce bottle)", "ink pen", "traveler's clothes", "pouch", "one trinket"],
-            "choice": [],
-            "feature": "can communicate with humanoids on a rudimentary level after observing them for at least a day"
-        }
+        "proficiencies": "",
+        "num_lang": 2,
+        "gold": 10,
+        "equipment": "leather-bound diary, 1-ounce ink bottle, ink pen, set of traveler's clothes, one trinket of special significance, pouch",
+        "feature": "can communicate on a rudimentary level with any humanoids you observe interacting for 24 hours"
     }
 }

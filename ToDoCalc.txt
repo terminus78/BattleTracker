@@ -34,6 +34,7 @@ To Do List:
 	T# Input scrubbing
 	T# Collisions
 	- Add background, feat, race, and class input functionality to template creator
+	- Delete and modify options for template creator
 	- Integrate template usage to build tokens
 	- Initiative picture on player window
 	- Multiple images for all token types and options
