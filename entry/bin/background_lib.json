@@ -20,5 +20,16 @@
         "gold": 10,
         "equipment": "leather-bound diary, 1-ounce ink bottle, ink pen, set of traveler's clothes, one trinket of special significance, pouch",
         "feature": "can communicate on a rudimentary level with any humanoids you observe interacting for 24 hours"
+    },
+    "Archaeologist": {
+        "skills": {
+            "history": [],
+            "survival": []
+        },
+        "proficiencies": "cartographer's tools or navigator's tools",
+        "num_lang": 1,
+        "gold": 25,
+        "equipment": "map or scroll case containing a map to a ruin or dungeon, bullseye lantern, miner's pick, set of travler's clothes, shovel, two-person tent, trinket from dig site, pouch",
+        "feature": "ascertain original purpose and builders of ruins and dungeons, determine value of art objects over a century old"
     }
 }

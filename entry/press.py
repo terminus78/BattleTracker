@@ -2,6 +2,7 @@ import json
 import os
 import math
 import copy
+from tkinter.constants import S
 
 import PIL.Image
 from PIL import ImageTk
@@ -395,11 +396,10 @@ class Press():
     # Events
     def _on_select_race(self, event):
         select_race = self.cbox_race.get()
+        self.subraces = []
         if len(self.race_lib[select_race]['subrace']) > 0:
             for subrace in self.race_lib[select_race]['subrace']:
                 self.subraces.append(subrace)
-        else:
-            self.subraces = []
         stat_order = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]
         benefit = ""
         for i in range(len(self.race_lib[select_race]['stat_bonus'])):
@@ -407,6 +407,9 @@ class Press():
                 benefit += f"{self.race_lib[select_race]['stat_bonus'][i]} {stat_order[i]}, "
         benefit = benefit[:-2]
         self.lbl_race_ben.config(text=benefit)
+        self.lbl_subrace_ben.config(text="")
+        self.cbox_subrace.config(values=self.subraces)
+        self.cbox_subrace.set("")
 
     def _on_select_subrace(self, event):
         select_sub = self.cbox_subrace.get()
@@ -415,9 +418,9 @@ class Press():
             return
         stat_order = ["Str", "Dex", "Con", "Int", "Wis", "Cha"]
         benefit = ""
-        for i in range(len(self.race_lib[select_race][select_sub]['stat_bonus'])):
-            if self.race_lib[select_race][select_sub]['stat_bonus'][i] != 0:
-                benefit += f"{self.race_lib[select_race][select_sub]['stat_bonus'][i]} {stat_order[i]}, "
+        for i in range(len(self.race_lib[select_race]['subrace'][select_sub]['stat_bonus'])):
+            if self.race_lib[select_race]['subrace'][select_sub]['stat_bonus'][i] != 0:
+                benefit += f"{self.race_lib[select_race]['subrace'][select_sub]['stat_bonus'][i]} {stat_order[i]}, "
         benefit = benefit[:-2]
         self.lbl_subrace_ben.config(text=benefit)
 
