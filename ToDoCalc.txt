@@ -34,6 +34,7 @@ To Do List:
 	# Add background input functionality to template creator
 	# Add race input functionality to template creator
 	# Add subrace input functionality to template creator
+	# Add weapon input functionality to template creator
 	T# Input scrubbing
 	T# Collisions
 	- Add feat input functionality to template creator

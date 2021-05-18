@@ -1,0 +1,33 @@
+{
+    "simple": {
+        "melee": {
+            "Club": {
+                "distance": 5,
+                "damage": [
+                    1,
+                    4
+                ],
+                "type": "b",
+                "properties": [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "ranged": {}
+    },
+    "martial": {
+        "melee": {},
+        "ranged": {}
+    }
+}

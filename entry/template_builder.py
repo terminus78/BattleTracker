@@ -2,6 +2,8 @@ import pathlib
 import json
 import os
 import math
+import copy
+from tkinter.constants import S
 from zipfile import ZipFile
 
 import tkinter as tk
@@ -19,10 +21,14 @@ class TemplateBuilder():
         self.class_loc = 'entry\\bin\\class_lib.json'
         self.feat_loc = 'entry\\bin\\feat_lib.json'
         self.bkgd_loc = 'entry\\bin\\background_lib.json'
+        self.weap_loc = 'entry\\bin\\weapon_lib.json'
+        self.prop_list = ["Ammunition", "Finesse", "Heavy", "Light", "Loading", "Special", "Thrown", "Two-Handed", "Versatile", "Improvised", "Silvered", "Magical"]
         lbl_title = ttk.Label(master=self.root, text="What would you like to build?")
         lbl_title.grid(row=0, column=0)
         self.underline_font = font.Font(lbl_title, lbl_title.cget("font"))
         self.underline_font.configure(underline = True)
+        self.small_font = font.Font(lbl_title, lbl_title.cget("font"))
+        self.small_font.configure(size=7)
         catg_frame = ttk.Frame(master=self.root)
         catg_frame.grid(row=1, column=0)
         self.input_frame = ttk.Frame(master=self.root)
@@ -45,6 +51,8 @@ class TemplateBuilder():
         btn_feat.grid(row=0, column=6, sticky='w', padx=5, pady=10)
         btn_bkgd = ttk.Button(master=catg_frame, command=self.build_bkgd, text="Background")
         btn_bkgd.grid(row=0, column=7, sticky='w', padx=5, pady=10)
+        btn_weap = ttk.Button(master=catg_frame, command=self.build_weap, text="Weapon")
+        btn_weap.grid(row=0, column=8, sticky='w', padx=5, pady=10)
         lbl_waiting = ttk.Label(master=self.input_frame, text="Waiting...")
         lbl_waiting.grid(row=0, column=0)
         on_img_path = 'entry\\bin\\on.png'
@@ -610,6 +618,38 @@ class TemplateBuilder():
         self.wipe_off()
         lbl_mode = ttk.Label(master=self.input_frame, text="Feat", font=self.underline_font)
         lbl_mode.grid(row=0, column=0, sticky='w')
+        lbl_name = ttk.Label(master=self.input_frame, text="Name: ")
+        lbl_name.grid(row=1, column=0, sticky='w')
+        self.ent_name_feat = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_name_feat.grid(row=1, column=1, sticky='w')
+        stat_list = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
+        self.stat_inc = tk.IntVar()
+        cbn_stat_inc = ttk.Checkbutton(master=self.input_frame, variable=self.stat_inc, command=self._toggle_stats)
+        cbn_stat_inc.grid(row=2, column=0, sticky='nw')
+        lbl_stat_inc = ttk.Label(master=self.input_frame, text="Stat Increase: ")
+        lbl_stat_inc.grid(row=2, column=1, sticky='nw', pady=5)
+        stat_pick_frame = ttk.Frame(master=self.input_frame)
+        stat_pick_frame.grid(row=2, column=2, sticky='w')
+        self.stat_vars = []
+        self.stat_cbns = []
+        row_pos = 0
+        col_pos = 0
+        for i in range(6):
+            self.stat_vars.append(tk.IntVar())
+            self.stat_cbns.append(
+                ttk.Checkbutton(master=stat_pick_frame, text=stat_list[i], variable=self.stat_vars[i])
+            )
+            self.stat_cbns[i].grid(row=row_pos, column=col_pos, sticky='w')
+            self.stat_cbns[i].state(['disabled'])
+            col_pos += 1
+            if col_pos >= 3:
+                col_pos = 0
+                row_pos += 1
+        self.prof_weap = tk.IntVar()
+        cbn_prof_weap = ttk.Checkbutton(master=self.input_frame, variable=self.prof_weap, command=self._toggle_weap)
+        cbn_prof_weap.grid(row=3, column=0, sticky='w')
+        lbl_prof_weap = ttk.Label(master=self.input_frame, text="Weapon Proficiency: ")
+        lbl_prof_weap.grid(row=3, column=1, sticky='w')
 
     def build_bkgd(self):
         self.wipe_off()
@@ -693,6 +733,91 @@ class TemplateBuilder():
         self.txt_feature.grid(row=9, column=0, columnspan=4, pady=15)
         btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_bkgd, text="Send", width=20)
         btn_send_it.grid(row=0, column=0, pady=15)
+
+    def build_weap(self):
+        self.wipe_off()
+        lbl_mode = ttk.Label(master=self.input_frame, text="Weapon", font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, columnspan=2, sticky='w')
+        lbl_name = ttk.Label(master=self.input_frame, text="Name: ")
+        lbl_name.grid(row=1, column=0, sticky='w')
+        self.ent_name_weap = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_name_weap.grid(row=1, column=1, sticky='w')
+        lbl_catg_weap = ttk.Label(master=self.input_frame, text="Category: ")
+        lbl_catg_weap.grid(row=2, column=0, sticky='w')
+        self.catg_weap = tk.StringVar()
+        rbn_simple = ttk.Radiobutton(master=self.input_frame, text="Simple", variable=self.catg_weap, value='s')
+        rbn_simple.grid(row=2, column=1, sticky='w')
+        rbn_martial = ttk.Radiobutton(master=self.input_frame, text="Martial", variable=self.catg_weap, value='m')
+        rbn_martial.grid(row=2, column=2, sticky='w')
+        self.catg_weap.set('s')
+        lbl_range = ttk.Label(master=self.input_frame, text="Range: ")
+        lbl_range.grid(row=3, column=0, sticky='w')
+        self.range = tk.StringVar()
+        rbn_melee = ttk.Radiobutton(master=self.input_frame, text="Melee", variable=self.range, value='m', command=self._toggle_range)
+        rbn_melee.grid(row=3, column=1, sticky='w')
+        rbn_ranged = ttk.Radiobutton(master=self.input_frame, text="Ranged", variable=self.range, value='r', command=self._toggle_range)
+        rbn_ranged.grid(row=3, column=2, sticky='w')
+        self.reach = tk.IntVar()
+        self.cbn_reach = ttk.Checkbutton(master=self.input_frame, text="Reach", variable=self.reach)
+        self.cbn_reach.grid(row=4, column=1, sticky='w')
+        self.cbn_reach.state(['disabled'])
+        range_frame = ttk.Frame(master=self.input_frame)
+        range_frame.grid(row=4, column=2, sticky='w')
+        self.ent_range_norm = ttk.Entry(master=range_frame, width=5)
+        self.ent_range_norm.grid(row=0, column=0, sticky='w')
+        self.ent_range_norm.state(['disabled'])
+        lbl_slash = ttk.Label(master=range_frame, text="/")
+        lbl_slash.grid(row=0, column=1, sticky='w')
+        self.ent_range_dis = ttk.Entry(master=range_frame, width=5)
+        self.ent_range_dis.grid(row=0, column=2, sticky='w')
+        self.ent_range_dis.state(['disabled'])
+        rbn_melee.invoke()
+        lbl_dmg_weap = ttk.Label(master=self.input_frame, text="Damage: ")
+        lbl_dmg_weap.grid(row=5, column=0, sticky='w')
+        dmg_frame = ttk.Frame(master=self.input_frame)
+        dmg_frame.grid(row=5, column=1, columnspan=2, sticky='w')
+        self.ent_dmg_num = ttk.Entry(master=dmg_frame, width=5)
+        self.ent_dmg_num.grid(row=0, column=0)
+        lbl_d = ttk.Label(master=dmg_frame, text='d')
+        lbl_d.grid(row=0, column=1, padx=5)
+        self.ent_dmg_die = ttk.Entry(master=dmg_frame, width=5)
+        self.ent_dmg_die.grid(row=0, column=2)
+        self.no_dmg = tk.IntVar()
+        self.cbn_no_damage = ttk.Checkbutton(master=self.input_frame, text="No Damage", variable=self.no_dmg, command=self._toggle_no_dmg)
+        self.cbn_no_damage.grid(row=5, column=2, sticky='w')
+        lbl_vers = ttk.Label(master=self.input_frame, text="(If versatile, use one-hand damage.)", font=self.small_font)
+        lbl_vers.grid(row=6, column=0, columnspan=3, sticky='w')
+        lbl_weap_prop = ttk.Label(master=self.input_frame, text="Properties: ")
+        lbl_weap_prop.grid(row=1, column=3, sticky='w')
+        prop_frame = ttk.Frame(master=self.input_frame)
+        prop_frame.grid(row=1, column=4, rowspan=6)
+        self.weap_props = []
+        row_pos = 0
+        col_pos = 0
+        for i in range(12):
+            self.weap_props.append(tk.IntVar())
+            cbn_prop = ttk.Checkbutton(
+                master=prop_frame,
+                text=self.prop_list[i],
+                variable=self.weap_props[i]
+            )
+            cbn_prop.grid(row=row_pos, column=col_pos, sticky='w', padx=5, pady=5)
+            col_pos += 1
+            if col_pos >= 4:
+                col_pos = 0
+                row_pos += 1
+        lbl_dmg_weap_type = ttk.Label(master=self.input_frame, text="Damage Type: ")
+        lbl_dmg_weap_type.grid(row=7, column=0, sticky='w')
+        self.dmg_weap_type = tk.StringVar()
+        self.rbn_bludg = ttk.Radiobutton(master=self.input_frame, text="Bludgeoning", variable=self.dmg_weap_type, value='b')
+        self.rbn_bludg.grid(row=7, column=1, sticky='w')
+        self.rbn_pierc = ttk.Radiobutton(master=self.input_frame, text="Piercing", variable=self.dmg_weap_type, value='p')
+        self.rbn_pierc.grid(row=8, column=1, sticky='w')
+        self.rbn_slash = ttk.Radiobutton(master=self.input_frame, text="Slashing", variable=self.dmg_weap_type, value='s')
+        self.rbn_slash.grid(row=9, column=1, sticky='w')
+        self.dmg_weap_type.set('b')
+        btn_send = ttk.Button(master=self.send_it_frame, text="Send", command=self.send_weap)
+        btn_send.grid(row=0, column=0, pady=15)
 
     def on_off_switch(self):
         if self.mean_mode:
@@ -1269,12 +1394,99 @@ class TemplateBuilder():
             with open(self.bkgd_loc, 'w') as bkgd_file:
                 json.dump(bkgd_info, bkgd_file, indent=4)
 
+    def send_weap(self):
+        weap_name = self.ent_name_weap.get()
+        if weap_name == "":
+            messagebox.showwarning("Forge", "Name cannot be empty.")
+            return
+        weap_name = weap_name.title()
+        weap_catg = self.catg_weap.get()
+        weap_range = self.range.get()
+        if weap_range == 'm':
+            weap_dist = 5 + (5 * self.reach.get())
+        else:
+            try:
+                norm_range = int(self.ent_range_norm.get())
+                dis_range = int(self.ent_range_dis.get())
+            except ValueError:
+                messagebox.showwarning("Forge", "Range values must be whole numbers.")
+                return
+            weap_dist = (norm_range, dis_range)
+        try:
+            dmg_dice_num = int(self.ent_dmg_num.get())
+            dmg_dice = int(self.ent_dmg_die.get())
+            if dmg_dice != 1 or dmg_dice != 4 or dmg_dice != 6 or dmg_dice != 8 or dmg_dice != 10 or dmg_dice != 12 or dmg_dice != 20 or dmg_dice != 100:
+                messagebox.showwarning("Forge", "Damage die size must be a valid option.")
+                return
+            weap_dmg = (dmg_dice_num, dmg_dice)
+        except ValueError:
+            if self.no_dmg.get() == 1:
+                weap_dmg = None
+            else:
+                messagebox.showwarning("Forge", "Damage dice number and size must be whole numbers.")
+                return
+        prop_array = []
+        dmg_type = self.dmg_weap_type.get()
+        for prop in self.weap_props:
+            prop_array.append(prop.get())
+
+        if prop_array[2] == 1 and prop_array[3] == 1:
+            messagebox.showwarning("Forge", "Weapons cannot be both heavy and light.")
+            return
+
+        if prop_array[7] == 1 and prop_array[8] == 1:
+            messagebox.showwarning("Forge", "Weapons cannot be both two-handed and versatile.")
+
+        weap_dict = {
+            weap_name: {
+                "distance": weap_dist,
+                "damage": weap_dmg,
+                "type": dmg_type,
+                "properties": prop_array
+            }
+        }
+
+        if os.path.exists(self.weap_loc) == False:
+            with open(self.weap_loc, 'w') as weap_file:
+                json.dump({
+                        "simple":{
+                            "melee":{},
+                            "ranged":{}
+                        },
+                        "martial":{
+                            "melee":{},
+                            "ranged":{}
+                        }
+                    },
+                    weap_file,
+                    indent=4
+                    )
+
+        with open(self.weap_loc, 'r') as weap_file:
+            weap_info = json.load(weap_file)
+        if weap_catg == 's':
+            if weap_range == 'm':
+                weap_info['simple']['melee'].update(weap_dict)
+            else:
+                weap_info['simple']['ranged'].update(weap_dict)
+        else:
+            if weap_range == 'm':
+                weap_info['martial']['melee'].update(weap_dict)
+            else:
+                weap_info['martial']['ranged'].update(weap_dict)
+        with open(self.weap_loc, 'w') as weap_file:
+            json.dump(weap_info, weap_file, indent=4)
+
     def wipe_off(self):
         try:
             old_widg = self.input_frame.grid_slaves()
             if old_widg is not None:
                 for widg in old_widg:
                     widg.destroy()
+            send_btn = self.send_it_frame.grid_slaves()
+            if send_btn is not None:
+                for btn in send_btn:
+                    btn.destroy()
         except AttributeError:
             pass
 
@@ -1304,6 +1516,47 @@ class TemplateBuilder():
                     self.cbn_1[i].state(['disabled'])
                 else:
                     self.cbn_2[i].state(['disabled'])
+
+    def _toggle_stats(self):
+        if self.stat_inc.get() == 1:
+            state = '!disabled'
+        else:
+            state = 'disabled'
+        for stat in self.stat_cbns:
+            stat.state([state])
+
+    def _toggle_weap(self):
+        pass
+
+    def _toggle_range(self):
+        if self.range.get() == 'm':
+            self.cbn_reach.state(['!disabled'])
+            self.ent_range_norm.delete(0, 'end')
+            self.ent_range_norm.state(['disabled'])
+            self.ent_range_dis.delete(0, 'end')
+            self.ent_range_dis.state(['disabled'])
+        else:
+            self.cbn_reach.state(['disabled', '!selected'])
+            self.ent_range_norm.state(['!disabled'])
+            self.ent_range_dis.state(['!disabled'])
+
+    def _toggle_no_dmg(self):
+        if self.no_dmg.get() == 1:
+            self.dmg_weap_type.set('')
+            self.rbn_bludg.state(['disabled'])
+            self.rbn_pierc.state(['disabled'])
+            self.rbn_slash.state(['disabled'])
+            self.ent_dmg_num.delete(0, 'end')
+            self.ent_dmg_num.state(['disabled'])
+            self.ent_dmg_die.delete(0, 'end')
+            self.ent_dmg_die.state(['disabled'])
+        else:
+            self.dmg_weap_type.set('b')
+            self.rbn_bludg.state(['!disabled'])
+            self.rbn_pierc.state(['!disabled'])
+            self.rbn_slash.state(['!disabled'])
+            self.ent_dmg_num.state(['!disabled'])
+            self.ent_dmg_die.state(['!disabled'])
 
 if __name__ == '__main__':
     root = tk.Tk()
