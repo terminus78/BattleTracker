@@ -37,7 +37,7 @@ To Do List:
 	# Add weapon input functionality to template creator
 	T# Input scrubbing
 	T# Collisions
-	- Add feat input functionality to template creator
+	T# Add feat input functionality to template creator
 	- Add class input functionality to template creator
 	- Delete and modify options for template creator
 	- Integrate template usage to build tokens
