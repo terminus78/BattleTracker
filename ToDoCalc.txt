@@ -35,10 +35,11 @@ To Do List:
 	# Add race input functionality to template creator
 	# Add subrace input functionality to template creator
 	# Add weapon input functionality to template creator
+	# Add feat input functionality to template creator
 	T# Input scrubbing
 	T# Collisions
-	T# Add feat input functionality to template creator
-	- Add class input functionality to template creator
+	T# Add class input functionality to template creator
+	- Add spell input functionality to template creator
 	- Delete and modify options for template creator
 	- Integrate template usage to build tokens
 	- Initiative picture on player window
@@ -67,5 +68,5 @@ To Do List:
 		- Vehicles
 		- Non-standard creature sizing
 		- Rule-sets
-		? Spell compendium
+		- Spell compendium
 	? Version for Mac and Linux

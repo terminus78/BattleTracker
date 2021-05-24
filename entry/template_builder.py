@@ -25,6 +25,7 @@ class TemplateBuilder():
         self.weap_loc = 'entry\\bin\\weapon_lib.json'
         self.prop_list = ["Ammunition", "Finesse", "Heavy", "Light", "Loading", "Special", "Thrown", "Two-Handed", "Versatile", "Improvised", "Silvered", "Magical"]
         self.skill_list = ['athletics', 'acrobatics', 'sleight_of_hand', 'stealth', 'arcana', 'history', 'investigation', 'nature', 'religion', 'animal_handling', 'insight', 'medicine', 'perception', 'survival', 'deception', 'intimidation', 'performance', 'persuasion', 'choice']
+        self.stat_list = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
         lbl_title = ttk.Label(master=self.root, text="What would you like to build?")
         lbl_title.grid(row=0, column=0)
         self.underline_font = font.Font(lbl_title, lbl_title.cget("font"))
@@ -45,9 +46,9 @@ class TemplateBuilder():
         btn_race.grid(row=0, column=2, sticky='w', padx=5, pady=10)
         btn_subrace = ttk.Button(master=catg_frame, command=self.build_subrace, text="Subrace")
         btn_subrace.grid(row=0, column=3, sticky='w', padx=5, pady=10)
-        btn_class = ttk.Button(master=catg_frame, command=lambda: self.build_class('c'), text="Class")
+        btn_class = ttk.Button(master=catg_frame, command=self.build_class, text="Class")
         btn_class.grid(row=0, column=4, sticky='w', padx=5, pady=10)
-        btn_archtype = ttk.Button(master=catg_frame, command=lambda: self.build_class('a'), text="Arch Type")
+        btn_archtype = ttk.Button(master=catg_frame, command=self.build_arch, text="Archetype")
         btn_archtype.grid(row=0, column=5, sticky='w', padx=5, pady=10)
         btn_feat = ttk.Button(master=catg_frame, command=self.build_feat, text="Feat")
         btn_feat.grid(row=0, column=6, sticky='w', padx=5, pady=10)
@@ -607,13 +608,116 @@ class TemplateBuilder():
         btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_subrace, text="Send", width=20)
         btn_send_it.grid(row=0, column=0, pady=15)
 
-    def build_class(self, layer):
+    def build_class(self):
         self.wipe_off()
-        if layer == 'c':
-            mode = "Class"
+        lbl_mode = ttk.Label(master=self.input_frame, text="Class", font=self.underline_font)
+        lbl_mode.grid(row=0, column=0, sticky='w')
+
+        if os.path.exists(self.weap_loc) == False:
+            messagebox.showwarning("Forge", "Must build base races before subraces.")
+            return
         else:
-            mode = "Arch Type"
-        lbl_mode = ttk.Label(master=self.input_frame, text=mode, font=self.underline_font)
+            with open(self.weap_loc, 'r') as weap_file:
+                self.weap_info = json.load(weap_file)
+            if len(self.weap_info) == 0:
+                messagebox.showwarning("Forge", "Must build weapons before classes.")
+                return
+            weap_list = []
+            for weap in self.weap_info['simple']['melee'].keys():
+                weap_list.append(weap)
+            for weap in self.weap_info['simple']['ranged'].keys():
+                weap_list.append(weap)
+            for weap in self.weap_info['martial']['melee'].keys():
+                weap_list.append(weap)
+            for weap in self.weap_info['martial']['ranged'].keys():
+                weap_list.append(weap)
+
+        lbl_name = ttk.Label(master=self.input_frame, text="Name: ")
+        lbl_name.grid(row=1, column=0, sticky='w')
+        self.ent_name_class = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_name_class.grid(row=1, column=1, sticky='w')
+        lbl_hit_dice = ttk.Label(master=self.input_frame, text="Hit Dice: ")
+        lbl_hit_dice.grid(row=2, column=0, sticky='w')
+        self.hit_die = tk.IntVar()
+        self.past = 4
+        self.sldr_hit_dice = tk.Scale(master=self.input_frame, from_=4, to=12, variable=self.hit_die, orient=tk.HORIZONTAL, tickinterval=2, bg='gray28', fg='gray70', highlightbackground='gray28', highlightcolor='gray28', activebackground='gray28', troughcolor='gray28', length=125, command=self.make_even)
+        self.sldr_hit_dice.grid(row=2, column=1, sticky='w')
+        lbl_hp_stat = ttk.Label(master=self.input_frame, text="HP Modifier: ")
+        lbl_hp_stat.grid(row=3, column=0, sticky='w')
+        self.cbx_hp_stat = ttk.Combobox(master=self.input_frame, width=20, values=self.stat_list, state='readonly')
+        self.cbx_hp_stat.grid(row=3, column=1, sticky='w')
+        lbl_prof_armor = ttk.Label(master=self.input_frame, text="Armor Proficiencies: ")
+        lbl_prof_armor.grid(row=4, column=0, sticky='nw', pady=5)
+        self.txt_class_armor = tk.Text(master=self.input_frame, height=4, width=48, bg='gray28', fg='white')
+        self.txt_class_armor.grid(row=4, column=1, sticky='nw', pady=5)
+        lbl_prof_tools = ttk.Label(master=self.input_frame, text="Tool Proficiencies: ")
+        lbl_prof_tools.grid(row=5, column=0, sticky='nw', pady=5)
+        self.txt_class_tools = tk.Text(master=self.input_frame, height=4, width=48, bg='gray28', fg='white')
+        self.txt_class_tools.grid(row=5, column=1, sticky='nw', pady=5)
+        lbl_prof_weap = ttk.Label(master=self.input_frame, text="Weapon Proficiencies: ")
+        lbl_prof_weap.grid(row=6, column=0, sticky='w')
+        weap_type_frame = ttk.Frame(master=self.input_frame)
+        weap_type_frame.grid(row=6, column=1, sticky='w')
+        self.class_simple = tk.IntVar()
+        self.class_martial = tk.IntVar()
+        self.class_limited = tk.IntVar()
+        self.cbn_class_simple = ttk.Checkbutton(master=weap_type_frame, text="Simple", variable=self.class_simple)
+        self.cbn_class_simple.grid(row=0, column=0, sticky='w')
+        self.cbn_class_martial = ttk.Checkbutton(master=weap_type_frame, text="Martial", variable=self.class_martial)
+        self.cbn_class_martial.grid(row=0, column=1, sticky='w')
+        self.cbn_class_limited = ttk.Checkbutton(master=weap_type_frame, text="Limited", variable=self.class_limited, command=lambda: self._toggle_limited('c'))
+        self.cbn_class_limited.grid(row=0, column=2, sticky='w')
+        limited_lframe = ttk.Labelframe(master=self.input_frame, text="Limited Weapon Proficiency Selection")
+        limited_lframe.grid(row=7, column=1, sticky='w', pady=10)
+        from_frame = ttk.Frame(master=limited_lframe)
+        from_frame.grid(row=0, column=0, rowspan=2, sticky='w', padx=10, pady=10)
+        self.opt_weap_list = tk.Listbox(master=from_frame, selectmode='multiple', bg='gray28', fg='white', highlightthickness=0)
+        self.opt_weap_list.grid(row=0, column=0, sticky='w')
+        scr_from_lst = ttk.Scrollbar(master=from_frame, orient='vertical')
+        scr_from_lst.config(command=self.opt_weap_list.yview)
+        scr_from_lst.grid(row=0, column=1, sticky='w')
+        self.opt_weap_list.config(yscrollcommand=scr_from_lst.set)
+        for item in weap_list:
+            self.opt_weap_list.insert('end', item)
+        self.opt_weap_list.config(state='disabled')
+        self.opt_weap_list.bind('<Enter>', lambda e: self._on_enter_canvas(event=e, lst='f', orig='c'))
+        self.opt_weap_list.bind('<Leave>', lambda e: self._on_leave_canvas(event=e, lst='f', orig='c'))
+        self.btn_move_to_char = ttk.Button(master=limited_lframe, text="=>", width=5, command=lambda: self.move_box('to', 'c'))
+        self.btn_move_to_char.grid(row=0, column=1, padx=15)
+        self.btn_move_to_char.state(['disabled'])
+        self.btn_move_from_char = ttk.Button(master=limited_lframe, text="<=", width=5, command=lambda: self.move_box('from', 'c'))
+        self.btn_move_from_char.grid(row=1, column=1, padx=15)
+        self.btn_move_from_char.state(['disabled'])
+        to_frame = ttk.Frame(master=limited_lframe)
+        to_frame.grid(row=0, column=2, rowspan=2, sticky='w', padx=10, pady=10)
+        self.has_weap_list = tk.Listbox(master=to_frame, selectmode='multiple', bg='gray28', fg='white', highlightthickness=0)
+        self.has_weap_list.grid(row=0, column=0, sticky='w')
+        scr_to_lst = ttk.Scrollbar(master=to_frame, orient='vertical')
+        scr_to_lst.config(command=self.has_weap_list.yview)
+        scr_to_lst.grid(row=0, column=1, sticky='w')
+        self.has_weap_list.config(yscrollcommand=scr_to_lst.set)
+        self.has_weap_list.config(state='disabled')
+        self.has_weap_list.bind('<Enter>', lambda e: self._on_enter_canvas(event=e, lst='t', orig='c'))
+        self.has_weap_list.bind('<Leave>', lambda e: self._on_leave_canvas(event=e, lst='t', orig='c'))
+        lbl_saves = ttk.Label(master=self.input_frame, text="Saving Throws: ")
+        lbl_saves.grid(row=8, column=0, sticky='w')
+        save_frame = ttk.Frame(master=self.input_frame)
+        save_frame.grid(row=8, column=1, sticky='w')
+        self.class_saves = []
+        row_num = 0
+        col_num = 0
+        for i in range(6):
+            self.class_saves.append(tk.IntVar())
+            cbn_save = ttk.Checkbutton(master=save_frame, text=self.stat_list[i], variable=self.class_saves[i])
+            cbn_save.grid(row=row_num, column=col_num, sticky='w')
+            col_num += 1
+            if col_num >= 3:
+                col_num = 0
+                row_num += 1
+
+    def build_arch(self):
+        self.wipe_off()
+        lbl_mode = ttk.Label(master=self.input_frame, text="Archetype", font=self.underline_font)
         lbl_mode.grid(row=0, column=0, sticky='w')
 
     def build_feat(self):
@@ -628,7 +732,7 @@ class TemplateBuilder():
             with open(self.weap_loc, 'r') as weap_file:
                 self.weap_info = json.load(weap_file)
             if len(self.weap_info) == 0:
-                messagebox.showwarning("Forge", "Must build base races before subraces.")
+                messagebox.showwarning("Forge", "Must build weapons before feats.")
                 return
             weap_list = []
             for weap in self.weap_info['simple']['melee'].keys():
@@ -644,7 +748,6 @@ class TemplateBuilder():
         lbl_name.grid(row=1, column=0, sticky='w')
         self.ent_name_feat = ttk.Entry(master=self.input_frame, width=20)
         self.ent_name_feat.grid(row=1, column=1, sticky='w')
-        stat_list = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
         self.stat_inc = tk.IntVar()
         cbn_stat_inc = ttk.Checkbutton(master=self.input_frame, variable=self.stat_inc, command=self._toggle_stats)
         cbn_stat_inc.grid(row=2, column=0, sticky='nw')
@@ -659,7 +762,7 @@ class TemplateBuilder():
         for i in range(6):
             self.stat_vars.append(tk.IntVar())
             self.stat_cbns.append(
-                ttk.Checkbutton(master=stat_pick_frame, text=stat_list[i], variable=self.stat_vars[i])
+                ttk.Checkbutton(master=stat_pick_frame, text=self.stat_list[i], variable=self.stat_vars[i])
             )
             self.stat_cbns[i].grid(row=row_pos, column=col_pos, sticky='w')
             self.stat_cbns[i].state(['disabled'])
@@ -670,7 +773,7 @@ class TemplateBuilder():
         self.prof_weap = tk.IntVar()
         cbn_prof_weap = ttk.Checkbutton(master=self.input_frame, variable=self.prof_weap, command=self._toggle_weap)
         cbn_prof_weap.grid(row=3, column=0, sticky='w')
-        lbl_prof_weap = ttk.Label(master=self.input_frame, text="Weapon Proficiency: ")
+        lbl_prof_weap = ttk.Label(master=self.input_frame, text="Weapon Proficiencies: ")
         lbl_prof_weap.grid(row=3, column=1, sticky='w')
         weap_type_frame = ttk.Frame(master=self.input_frame)
         weap_type_frame.grid(row=3, column=2, sticky='w')
@@ -683,7 +786,7 @@ class TemplateBuilder():
         self.cbn_feat_martial = ttk.Checkbutton(master=weap_type_frame, text="Martial", variable=self.feat_martial)
         self.cbn_feat_martial.grid(row=0, column=1, sticky='w')
         self.cbn_feat_martial.state(['disabled'])
-        self.cbn_feat_limited = ttk.Checkbutton(master=weap_type_frame, text="Limited", variable=self.feat_limited, command=self._toggle_limited)
+        self.cbn_feat_limited = ttk.Checkbutton(master=weap_type_frame, text="Limited", variable=self.feat_limited, command=lambda: self._toggle_limited('f'))
         self.cbn_feat_limited.grid(row=0, column=2, sticky='w')
         self.cbn_feat_limited.state(['disabled'])
         limited_lframe = ttk.Labelframe(master=self.input_frame, text="Limited Weapon Proficiency Selection")
@@ -699,12 +802,12 @@ class TemplateBuilder():
         for item in weap_list:
             self.from_weap_list.insert('end', item)
         self.from_weap_list.config(state='disabled')
-        self.from_weap_list.bind('<Enter>', lambda e: self._on_enter_canvas(event=e, lst='f'))
-        self.from_weap_list.bind('<Leave>', lambda e: self._on_leave_canvas(event=e, lst='f'))
-        self.btn_move_to_you = ttk.Button(master=limited_lframe, text="=>", width=5, command=lambda: self.move_box('to'))
+        self.from_weap_list.bind('<Enter>', lambda e: self._on_enter_canvas(event=e, lst='f', orig='f'))
+        self.from_weap_list.bind('<Leave>', lambda e: self._on_leave_canvas(event=e, lst='f', orig='f'))
+        self.btn_move_to_you = ttk.Button(master=limited_lframe, text="=>", width=5, command=lambda: self.move_box('to', 'f'))
         self.btn_move_to_you.grid(row=0, column=1, padx=15)
         self.btn_move_to_you.state(['disabled'])
-        self.btn_move_from_you = ttk.Button(master=limited_lframe, text="<=", width=5, command=lambda: self.move_box('from'))
+        self.btn_move_from_you = ttk.Button(master=limited_lframe, text="<=", width=5, command=lambda: self.move_box('from', 'f'))
         self.btn_move_from_you.grid(row=1, column=1, padx=15)
         self.btn_move_from_you.state(['disabled'])
         to_frame = ttk.Frame(master=limited_lframe)
@@ -716,12 +819,12 @@ class TemplateBuilder():
         scr_to_lst.grid(row=0, column=1, sticky='w')
         self.char_weap_list.config(yscrollcommand=scr_to_lst.set)
         self.char_weap_list.config(state='disabled')
-        self.char_weap_list.bind('<Enter>', lambda e: self._on_enter_canvas(event=e, lst='t'))
-        self.char_weap_list.bind('<Leave>', lambda e: self._on_leave_canvas(event=e, lst='t'))
+        self.char_weap_list.bind('<Enter>', lambda e: self._on_enter_canvas(event=e, lst='t', orig='f'))
+        self.char_weap_list.bind('<Leave>', lambda e: self._on_leave_canvas(event=e, lst='t', orig='f'))
         self.stat_prof = tk.IntVar()
         cbn_prof_stat = ttk.Checkbutton(master=self.input_frame, variable=self.stat_prof, command=self._toggle_prof_stat)
         cbn_prof_stat.grid(row=5, column=0, sticky='w')
-        lbl_prof_stat = ttk.Label(master=self.input_frame, text="Stat Proficiency: ")
+        lbl_prof_stat = ttk.Label(master=self.input_frame, text="Stat Proficiencies: ")
         lbl_prof_stat.grid(row=5, column=1, sticky='w')
         skill_frame = ttk.Frame(master=self.input_frame)
         skill_frame.grid(row=6, column=1, columnspan=2, sticky='w')
@@ -745,21 +848,34 @@ class TemplateBuilder():
             if row_num >= 5:
                 row_num = 0
                 col_num += 1
+        lbl_skill_choice = ttk.Label(master=self.input_frame, text="Number of Choices: ")
+        lbl_skill_choice.grid(row=7, column=1, sticky='e')
+        self.ent_skill_choices = ttk.Entry(master=self.input_frame, width=10)
+        self.ent_skill_choices.grid(row=7, column=2, sticky='w')
+        self.ent_skill_choices.state(['disabled'])
         self.prof_tool = tk.IntVar()
         cbn_prof_tool = ttk.Checkbutton(master=self.input_frame, variable=self.prof_tool, command=self._toggle_prof_tool)
         cbn_prof_tool.grid(row=1, column=3, sticky='w')
-        lbl_prof_tool = ttk.Label(master=self.input_frame, text="Tool Proficiency: ")
+        lbl_prof_tool = ttk.Label(master=self.input_frame, text="Tool Proficiencies: ")
         lbl_prof_tool.grid(row=1, column=4, sticky='w')
         self.txt_feat_tools = tk.Text(master=self.input_frame, height=4, width=70, bg='gray28', fg='white')
         self.txt_feat_tools.grid(row=2, column=4, columnspan=2, sticky='w')
         self.txt_feat_tools.config(state='disabled')
+        self.feat_armor = tk.IntVar()
+        cbn_feat_armor = ttk.Checkbutton(master=self.input_frame, variable=self.feat_armor, command=self._toggle_feat_armor)
+        cbn_feat_armor.grid(row=3, column=3, sticky='w')
+        lbl_feat_armor = ttk.Label(master=self.input_frame, text="Armor Proficiencies: ")
+        lbl_feat_armor.grid(row=3, column=4, sticky='w')
+        self.txt_feat_armor = tk.Text(master=self.input_frame, height=4, width=70, bg='gray28', fg='white')
+        self.txt_feat_armor.grid(row=4, column=4, columnspan=2)
+        self.txt_feat_armor.config(state='disabled')
         self.feat_lang = tk.IntVar()
         cbn_feat_lang = ttk.Checkbutton(master=self.input_frame, variable=self.feat_lang, command=self._toggle_feat_lang)
-        cbn_feat_lang.grid(row=3, column=3, sticky='w')
+        cbn_feat_lang.grid(row=5, column=3, sticky='w')
         lbl_feat_lang = ttk.Label(master=self.input_frame, text="Languages: ")
-        lbl_feat_lang.grid(row=3, column=4, sticky='w')
+        lbl_feat_lang.grid(row=5, column=4, sticky='w')
         lang_frame = ttk.Frame(master=self.input_frame)
-        lang_frame.grid(row=4, column=4, columnspan=2, sticky='w')
+        lang_frame.grid(row=6, column=4, columnspan=2, sticky='w')
         lbl_l1 = ttk.Label(master=lang_frame, text="1: ")
         lbl_l1.grid(row=0, column=0)
         self.ent_flang_1 = ttk.Entry(master=lang_frame, width=20)
@@ -782,11 +898,11 @@ class TemplateBuilder():
         self.ent_flang_4.state(['disabled'])
         self.feat_feats = tk.IntVar()
         cbn_features = ttk.Checkbutton(master=self.input_frame, variable=self.feat_feats, command=self._toggle_feat_feats)
-        cbn_features.grid(row=5, column=3, sticky='w')
+        cbn_features.grid(row=7, column=3, sticky='w')
         lbl_features = ttk.Label(master=self.input_frame, text="Features: ")
-        lbl_features.grid(row=5, column=4, sticky='w')
+        lbl_features.grid(row=7, column=4, sticky='w')
         self.txt_feat_feats = tk.Text(master=self.input_frame, height=8, width=70, bg='gray28', fg='white')
-        self.txt_feat_feats.grid(row=6, column=4, columnspan=2, sticky='w')
+        self.txt_feat_feats.grid(row=8, column=4, columnspan=2, sticky='w')
         self.txt_feat_feats.config(state='disabled')
         btn_send_it = ttk.Button(master=self.send_it_frame, command=self.send_feat, text="Send", width=20)
         btn_send_it.grid(row=0, column=0, pady=15)
@@ -1120,9 +1236,9 @@ class TemplateBuilder():
         else:
             cr_prof_mod = math.ceil(1 + (get_cr / 4))
 
-        stat_list = [get_str, get_dex, get_con, get_int, get_wis, get_cha]
+        stat_array = [get_str, get_dex, get_con, get_int, get_wis, get_cha]
         stat_matrix = []
-        for stat in stat_list:
+        for stat in stat_array:
             stat = math.floor((stat - 10) / 2)
             stat_matrix.append(stat)
 
@@ -1468,7 +1584,144 @@ class TemplateBuilder():
             json.dump(race_info, race_file, indent=4)
 
     def send_feat(self):
-        pass
+        feat_name = self.ent_name_feat.get()
+        feat_has_stat = self.stat_inc.get()
+        feat_has_weap = self.prof_weap.get()
+        feat_has_skill = self.stat_prof.get()
+        feat_has_tool = self.prof_tool.get()
+        feat_has_armor = self.feat_armor.get()
+        feat_has_lang = self.feat_lang.get()
+        feat_has_feat = self.feat_feats.get()
+
+        if feat_name == "":
+            messagebox.showwarning("Forge", "Enter a name for the feat.")
+            return
+        feat_name = feat_name.title()
+
+        if feat_has_stat == 1:
+            inc_stat_choice = []
+            for i in range(6):
+                inc_stat_choice.append(self.stat_vars[i].get())
+            if 1 not in inc_stat_choice:
+                messagebox.showwarning("Forge", "Select possible stat increase choices.")
+                return
+        else:
+            inc_stat_choice = None
+        
+        if feat_has_weap == 1:
+            limited_opt = None
+            if self.feat_limited.get() == 1:
+                weap_list = []
+                for wp in self.char_weap_list.curselection():
+                    weap_list.append(wp)
+                if len(wp) < 1:
+                    messagebox.showwarning("Forge", "Add limited weapon proficiencies.")
+                    return
+                limited_opt = weap_list
+                simple_opt = False
+                martial_opt = False
+            else:
+                simple_opt = self.feat_simple.get() == 1
+                martial_opt = self.feat_martial.get() == 1
+                if simple_opt == False and martial_opt == False:
+                    messagebox.showwarning("Forge", "Select weapon proficiencies.")
+                    return
+            weap_options = {
+                "simple": simple_opt,
+                "martial": martial_opt,
+                "limited": limited_opt
+            }
+        else:
+            weap_options = None
+        
+        if feat_has_skill == 1:
+            skill_profs = {}
+            for i in range(18):
+                skill_profs[self.skill_list[i]] = self.skill_prof[i].get()
+            if 1 not in skill_profs.values():
+                messagebox.showwarning("Forge", "Select skill proficiencies.")
+                return
+            skill_choices = self.ent_skill_choices.get()
+            if skill_choices == "":
+                skill_choices = 0
+            else:
+                try:
+                    skill_choices = int(skill_choices)
+                    if skill_choices < 0:
+                        messagebox.showwarning("Forge", "Skill proficiency choices must be a positive whole number.")
+                        return
+                    elif skill_choices > 18:
+                        messagebox.showwarning("Forge", "Number of skill proficiency choices out of range.")
+                        return
+                except ValueError:
+                    messagebox.showwarning("Forge", "Skill proficiency choices must be a positive whole number.")
+                    return
+        else:
+            skill_profs = None
+            skill_choices = 0
+
+        if feat_has_tool == 1:
+            tool_profs = self.txt_feat_tools.get(1.0, 'end-1c')
+            if tool_profs == "":
+                messagebox.showwarning("Forge", "Enter at least one tool proficiency.")
+                return
+        else:
+            tool_profs = None
+
+        if feat_has_armor == 1:
+            armor_profs = self.txt_feat_armor.get(1.0, 'end-1c')
+            if armor_profs == "":
+                messagebox.showwarning("Forge", "Enter at least one armor proficiency.")
+                return
+        else:
+            armor_profs = None
+
+        if feat_has_lang == 1:
+            lang_profs = [
+                self.ent_flang_1.get(),
+                self.ent_flang_2.get(),
+                self.ent_flang_3.get(),
+                self.ent_flang_4.get()
+            ]
+            if lang_profs == ["", "", "", ""]:
+                messagebox.showwarning("Forge", "Enter at least one language.")
+                return
+        else:
+            lang_profs = None
+
+        if feat_has_feat == 1:
+            features = self.txt_feat_feats.get(1.0, 'end-1c')
+            if features == "":
+                messagebox.showwarning("Forge", "Enter at least one feature.")
+                return
+        else:
+            features = None
+
+        if feat_has_stat == 0 and feat_has_weap == 0 and feat_has_skill == 0 and feat_has_tool == 0 and feat_has_lang == 0 and feat_has_feat == 0:
+            messagebox.showwarning("Forge", "Cannot enter a feat with only a name.")
+            return
+
+        feat_dict = {
+            feat_name: {
+                "stat_inc": inc_stat_choice,
+                "weap_prof": weap_options,
+                "skill_prof": (skill_profs, skill_choices),
+                "tool_prof": tool_profs,
+                "armor_prof": armor_profs,
+                "lang_prof": lang_profs,
+                "features": features
+            }
+        }
+
+        if os.path.exists(self.feat_loc) == False:
+            with open(self.feat_loc, 'w') as feat_file:
+                json.dump(feat_dict, feat_file, indent=4)
+        else:
+            with open(self.feat_loc, 'r') as feat_file:
+                feat_info = json.load(feat_file)
+            feat_info.update(feat_dict)
+            with open(self.feat_loc, 'w') as feat_file:
+                json.dump(feat_info, feat_file, indent=4)
 
     def send_bkgd(self):
         bkgd_name = self.ent_name_bkgd.get()
@@ -1632,15 +1885,31 @@ class TemplateBuilder():
         except AttributeError:
             pass
 
-    def move_box(self, dir):
-        if dir == 'to':
-            for i in self.from_weap_list.curselection():
-                self.char_weap_list.insert('end', self.from_weap_list.get(i))
-                self.from_weap_list.delete(i)
-        else:
-            for i in self.char_weap_list.curselection():
-                self.from_weap_list.insert('end', self.char_weap_list.get(i))
-                self.char_weap_list.delete(i)
+    def move_box(self, dir, orig):
+        if orig == 'f':
+            if dir == 'to':
+                for i in self.from_weap_list.curselection():
+                    self.char_weap_list.insert('end', self.from_weap_list.get(i))
+                    self.from_weap_list.delete(i)
+            else:
+                for i in self.char_weap_list.curselection():
+                    self.from_weap_list.insert('end', self.char_weap_list.get(i))
+                    self.char_weap_list.delete(i)
+        if orig == 'c':
+            if dir == 'to':
+                for i in self.opt_weap_list.curselection():
+                    self.has_weap_list.insert('end', self.opt_weap_list.get(i))
+                    self.opt_weap_list.delete(i)
+            else:
+                for i in self.has_weap_list.curselection():
+                    self.opt_weap_list.insert('end', self.has_weap_list.get(i))
+                    self.has_weap_list.delete(i)
+
+    def make_even(self, value):
+        value = int(value)
+        if value % 2:
+            self.sldr_hit_dice.set(value+1 if value > self.past else value-1)
+            self.past = self.sldr_hit_dice.get()
 
     def _on_select_race(self, event):
         mod_ent_list = [self.ent_str_mod_sub, self.ent_dex_mod_sub, self.ent_con_mod_sub, self.ent_int_mod_sub, self.ent_wis_mod_sub, self.ent_cha_mod_sub]
@@ -1669,25 +1938,45 @@ class TemplateBuilder():
                 else:
                     self.cbn_2[i].state(['disabled'])
 
-    def _on_enter_canvas(self, event, lst):
-        if self.feat_limited.get() == 1:
-            if lst == 'f':
-                self.from_weap_list.bind_all('<MouseWheel>', lambda e: self._on_mousewheel(e, lst))
-            else:
-                self.char_weap_list.bind_all('<MouseWheel>', lambda e: self._on_mousewheel(e, lst))
+    def _on_enter_canvas(self, event, lst, orig):
+        if orig == 'f':
+            if self.feat_limited.get() == 1:
+                if lst == 'f':
+                    self.from_weap_list.bind_all('<MouseWheel>', lambda e: self._on_mousewheel(e, lst))
+                else:
+                    self.char_weap_list.bind_all('<MouseWheel>', lambda e: self._on_mousewheel(e, lst))
+        elif orig == 'c':
+            if self.class_limited.get() == 1:
+                if lst == 'f':
+                    self.opt_weap_list.bind_all('<MouseWheel>', lambda e: self._on_mousewheel(e, lst))
+                else:
+                    self.has_weap_list.bind_all('<MouseWheel>', lambda e: self._on_mousewheel(e, lst))
     
-    def _on_leave_canvas(self, event, lst):
-        if self.feat_limited.get() == 1:
-            if lst == 'f':
-                self.from_weap_list.unbind_all('<MouseWheel>')
-            else:
-                self.char_weap_list.unbind_all('<MouseWheel>')
+    def _on_leave_canvas(self, event, lst, orig):
+        if orig == 'f':
+            if self.feat_limited.get() == 1:
+                if lst == 'f':
+                    self.from_weap_list.unbind_all('<MouseWheel>')
+                else:
+                    self.char_weap_list.unbind_all('<MouseWheel>')
+        elif orig == 'c':
+            if self.class_limited.get() == 1:
+                if lst == 'f':
+                    self.opt_weap_list.unbind_all('<MouseWheel>')
+                else:
+                    self.has_weap_list.unbind_all('<MouseWheel>')
 
-    def _on_mousewheel(self, event, lst):
-        if lst == 'f':
-            self.from_weap_list.yview_scroll(int(-1*(event.delta/120)), 'units')
-        else:
-            self.char_weap_list.yview_scroll(int(-1*(event.delta/120)), 'units')
+    def _on_mousewheel(self, event, lst, orig):
+        if orig == 'f':
+            if lst == 'f':
+                self.from_weap_list.yview_scroll(int(-1*(event.delta/120)), 'units')
+            else:
+                self.char_weap_list.yview_scroll(int(-1*(event.delta/120)), 'units')
+        elif orig == 'c':
+            if lst == 'f':
+                self.opt_weap_list.yview_scroll(int(-1*(event.delta/120)), 'units')
+            else:
+                self.has_weap_list.yview_scroll(int(-1*(event.delta/120)), 'units')
 
     def _toggle_stats(self):
         if self.stat_inc.get() == 1:
@@ -1711,21 +2000,37 @@ class TemplateBuilder():
             self.btn_move_to_you.state(['disabled'])
             self.btn_move_from_you.state(['disabled'])
 
-    def _toggle_limited(self):
-        if self.feat_limited.get() == 1:
-            self.cbn_feat_simple.state(['!selected', 'disabled'])
-            self.cbn_feat_martial.state(['!selected', 'disabled'])
-            self.from_weap_list.config(state='normal')
-            self.char_weap_list.config(state='normal')
-            self.btn_move_to_you.state(['!disabled'])
-            self.btn_move_from_you.state(['!disabled'])
-        else:
-            self.cbn_feat_simple.state(['!disabled'])
-            self.cbn_feat_martial.state(['!disabled'])
-            self.from_weap_list.config(state='disabled')
-            self.char_weap_list.config(state='disabled')
-            self.btn_move_to_you.state(['disabled'])
-            self.btn_move_from_you.state(['disabled'])
+    def _toggle_limited(self, orig):
+        if orig == 'f':
+            if self.feat_limited.get() == 1:
+                self.cbn_feat_simple.state(['!selected', 'disabled'])
+                self.cbn_feat_martial.state(['!selected', 'disabled'])
+                self.from_weap_list.config(state='normal')
+                self.char_weap_list.config(state='normal')
+                self.btn_move_to_you.state(['!disabled'])
+                self.btn_move_from_you.state(['!disabled'])
+            else:
+                self.cbn_feat_simple.state(['!disabled'])
+                self.cbn_feat_martial.state(['!disabled'])
+                self.from_weap_list.config(state='disabled')
+                self.char_weap_list.config(state='disabled')
+                self.btn_move_to_you.state(['disabled'])
+                self.btn_move_from_you.state(['disabled'])
+        elif orig == 'c':
+            if self.class_limited.get() == 1:
+                self.cbn_class_simple.state(['!selected', 'disabled'])
+                self.cbn_class_martial.state(['!selected', 'disabled'])
+                self.opt_weap_list.config(state='normal')
+                self.has_weap_list.config(state='normal')
+                self.btn_move_to_char.state(['!disabled'])
+                self.btn_move_from_char.state(['!disabled'])
+            else:
+                self.cbn_class_simple.state(['!disabled'])
+                self.cbn_class_martial.state(['!disabled'])
+                self.opt_weap_list.config(state='disabled')
+                self.has_weap_list.config(state='disabled')
+                self.btn_move_to_char.state(['disabled'])
+                self.btn_move_from_char.state(['disabled'])
 
     def _toggle_range(self):
         if self.range.get() == 'm':
@@ -1763,6 +2068,11 @@ class TemplateBuilder():
                 self.cbn_prof[i].state(['!disabled'])
             else:
                 self.cbn_prof[i].state(['!selected','disabled'])
+        if self.stat_prof.get() == 1:
+            self.ent_skill_choices.state(['!disabled'])
+        else:
+            self.ent_skill_choices.delete(0, 'end')
+            self.ent_skill_choices.state(['disabled'])
 
     def _toggle_prof_tool(self):
         if self.prof_tool.get() == 1:
@@ -1770,6 +2080,13 @@ class TemplateBuilder():
         else:
             self.txt_feat_tools.delete(1.0, 'end')
             self.txt_feat_tools.config(state='disabled')
+
+    def _toggle_feat_armor(self):
+        if self.feat_armor.get() == 1:
+            self.txt_feat_armor.config(state='normal')
+        else:
+            self.txt_feat_armor.delete(1.0, 'end')
+            self.txt_feat_armor.config(state='disabled')
 
     def _toggle_feat_lang(self):
         if self.feat_lang.get() == 1:
