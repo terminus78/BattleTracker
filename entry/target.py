@@ -43,8 +43,7 @@ class Target():
         lbl_top_info.grid(row=0, column=0)
         self.drop_targets = ttk.Combobox(master=self.select_frame, width=27, values=self.names, state='readonly')
         self.drop_targets.grid(row=0, column=0, sticky='w')
-        btn_select = ttk.Button(master=self.select_frame, command=self.select_target, text="Select")
-        btn_select.grid(row=0, column=1, sticky='w')
+        self.drop_targets.bind("<<ComboboxSelected>>", self.select_target)
 
         lbl_static_name = ttk.Label(self.stat_frame, text="Name: ", font=self.reg_font)
         lbl_static_name.grid(row=0, column=0, sticky='nw')
@@ -56,18 +55,20 @@ class Target():
         lbl_static_HP.grid(row=3, column=0, sticky='nw')
         lbl_static_type = ttk.Label(self.stat_frame, text="Type: ", font=self.reg_font)
         lbl_static_type.grid(row=4, column=0, sticky='nw')
-        lbl_static_height = ttk.Label(self.stat_frame, text="Height: ", font=self.reg_font)
-        lbl_static_height.grid(row=5, column=0, sticky='nw')
+        lbl_static_ac = ttk.Label(self.stat_frame, text="AC: ", font=self.reg_font)
+        lbl_static_ac.grid(row=5, column=0, sticky='nw')
+        lbl_static_speed = ttk.Label(master=self.stat_frame, text="Speed: ", font=self.reg_font)
+        lbl_static_speed.grid(row=6, column=0, sticky='nw')
         lbl_static_size = ttk.Label(self.stat_frame, text="Size: ", font=self.reg_font)
-        lbl_static_size.grid(row=6, column=0, sticky='nw')
+        lbl_static_size.grid(row=7, column=0, sticky='nw')
         lbl_static_coord = ttk.Label(self.stat_frame, text="Coordinate: ", font=self.reg_font)
-        lbl_static_coord.grid(row=7, column=0, sticky='nw')
+        lbl_static_coord.grid(row=8, column=0, sticky='nw')
         lbl_static_init = ttk.Label(self.stat_frame, text="Initiative: ", font=self.reg_font)
-        lbl_static_init.grid(row=8, column=0, sticky='nw')
+        lbl_static_init.grid(row=9, column=0, sticky='nw')
         lbl_static_condition = ttk.Label(self.stat_frame, text="Condition: ", font=self.reg_font)
-        lbl_static_condition.grid(row=9, column=0, sticky='nw')
+        lbl_static_condition.grid(row=10, column=0, sticky='nw')
         lbl_static_notes = ttk.Label(self.stat_frame, text="Notes: ", font=self.reg_font)
-        lbl_static_notes.grid(row=10, column=0, sticky='nw')
+        lbl_static_notes.grid(row=11, column=0, sticky='nw')
 
         self.lbl_act_name = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
         self.lbl_act_name.grid(row=0, column=1, sticky='nw')
@@ -79,18 +80,20 @@ class Target():
         self.lbl_act_HP.grid(row=3, column=1, sticky='nw')
         self.lbl_act_type = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
         self.lbl_act_type.grid(row=4, column=1, sticky='nw')
-        self.lbl_act_height = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
-        self.lbl_act_height.grid(row=5, column=1, sticky='nw')
+        self.lbl_act_ac = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
+        self.lbl_act_ac.grid(row=5, column=1, sticky='nw')
+        self.lbl_act_speed = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
+        self.lbl_act_speed.grid(row=6, column=1, sticky='nw')
         self.lbl_act_size = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
-        self.lbl_act_size.grid(row=6, column=1, sticky='nw')
+        self.lbl_act_size.grid(row=7, column=1, sticky='nw')
         self.lbl_act_coord = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
-        self.lbl_act_coord.grid(row=7, column=1, sticky='nw')
+        self.lbl_act_coord.grid(row=8, column=1, sticky='nw')
         self.lbl_act_init = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
-        self.lbl_act_init.grid(row=8, column=1, sticky='nw')
+        self.lbl_act_init.grid(row=9, column=1, sticky='nw')
         self.lbl_act_condition = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
-        self.lbl_act_condition.grid(row=9, column=1, sticky='nw')
+        self.lbl_act_condition.grid(row=10, column=1, sticky='nw')
         self.lbl_act_notes = ttk.Label(self.stat_frame, text=" ", font=self.reg_font)
-        self.lbl_act_notes.grid(row=10, column=1, sticky='nw')
+        self.lbl_act_notes.grid(row=11, column=1, sticky='nw')
 
         lbl_change_name = ttk.Label(master=self.action_frame, text="Change Name", font=self.reg_font)
         lbl_change_name.grid(row=0, column=0, sticky='nw')
@@ -132,15 +135,25 @@ class Target():
         self.rbn_dead = ttk.Radiobutton(master=self.action_frame, text="Dead", variable= self.type, value="dead")
         self.rbn_dead.grid(row=5, column=3, sticky='nw')
 
+        lbl_change_ac = ttk.Label(master=self.action_frame, text="Change AC", font=self.reg_font)
+        lbl_change_ac.grid(row=6, column=0, sticky='w')
+        self.ent_change_ac = ttk.Entry(master=self.action_frame, width=27)
+        self.ent_change_ac.grid(row=6, column=1, sticky='w'),
+
+        lbl_change_speed = ttk.Label(master=self.action_frame, text="Change Speed", font=self.reg_font)
+        lbl_change_speed.grid(row=7, column=0, sticky='w')
+        self.ent_change_speed = ttk.Entry(master=self.action_frame, width=27)
+        self.ent_change_speed.grid(row=7, column=1, sticky='w')
+
         lbl_change_init = ttk.Label(master=self.action_frame, text="Change Initiative", font=self.reg_font)
-        lbl_change_init.grid(row=6, column=0, sticky='nw')
+        lbl_change_init.grid(row=8, column=0, sticky='nw')
         self.ent_initiative = ttk.Entry(master=self.action_frame, width=27)
-        self.ent_initiative.grid(row=6, column=1, sticky='nw')
+        self.ent_initiative.grid(row=8, column=1, sticky='nw')
         btn_roll_init = ttk.Button(master=self.action_frame, text="Roll", command=self.roll_init, width=20)
-        btn_roll_init.grid(row=6, column=2, columnspan=2, sticky='nw')
+        btn_roll_init.grid(row=8, column=2, columnspan=2, sticky='nw')
 
         lbl_change_condition = ttk.Label(master=self.action_frame, text="Change Condition", font=self.reg_font)
-        lbl_change_condition.grid(row=7, column=0, sticky='nw')
+        lbl_change_condition.grid(row=9, column=0, sticky='nw')
         self.cond_normal = tk.IntVar()
         self.cond_blind = tk.IntVar()
         self.cond_charmed = tk.IntVar()
@@ -157,49 +170,49 @@ class Target():
         self.cond_stunned = tk.IntVar()
         self.cond_unconscious = tk.IntVar()
         self.cbn_normal = ttk.Checkbutton(master=self.action_frame, text="Normal", variable=self.cond_normal, command=self.on_off_buttons)
-        self.cbn_normal.grid(row=7, column=2, columnspan=2,sticky='nw')
+        self.cbn_normal.grid(row=9, column=2, columnspan=2,sticky='nw')
         self.cbn_blind = ttk.Checkbutton(master=self.action_frame, text="Blinded", variable=self.cond_blind)
-        self.cbn_blind.grid(row=8, column=2, sticky='nw')
+        self.cbn_blind.grid(row=10, column=2, sticky='nw')
         self.cbn_charmed = ttk.Checkbutton(master=self.action_frame, text="Charmed", variable=self.cond_charmed)
-        self.cbn_charmed.grid(row=8, column=3, sticky='nw')
+        self.cbn_charmed.grid(row=10, column=3, sticky='nw')
         self.cbn_deaf = ttk.Checkbutton(master=self.action_frame, text="Deafened", variable=self.cond_deaf)
-        self.cbn_deaf.grid(row=9, column=2, sticky='nw')
+        self.cbn_deaf.grid(row=11, column=2, sticky='nw')
         self.cbn_fright = ttk.Checkbutton(master=self.action_frame, text="Frightened", variable=self.cond_fright)
-        self.cbn_fright.grid(row=9, column=3, sticky='nw')
+        self.cbn_fright.grid(row=11, column=3, sticky='nw')
         self.cbn_grappled = ttk.Checkbutton(master=self.action_frame, text="Grappled", variable=self.cond_grappled)
-        self.cbn_grappled.grid(row=10, column=2, sticky='nw')
+        self.cbn_grappled.grid(row=12, column=2, sticky='nw')
         self.cbn_incapacitated = ttk.Checkbutton(master=self.action_frame, text="Incapacitated", variable=self.cond_incapacitated, command=self.connected_cond)
-        self.cbn_incapacitated.grid(row=10, column=3, sticky='nw')
+        self.cbn_incapacitated.grid(row=12, column=3, sticky='nw')
         self.cbn_invisible = ttk.Checkbutton(master=self.action_frame, text="Invisible", variable=self.cond_invisible)
-        self.cbn_invisible.grid(row=11, column=2, sticky='nw')
+        self.cbn_invisible.grid(row=13, column=2, sticky='nw')
         self.cbn_paralyzed = ttk.Checkbutton(master=self.action_frame, text="Paralyzed", variable=self.cond_paralyzed, command=self.connected_cond)
-        self.cbn_paralyzed.grid(row=11, column=3, sticky='nw')
+        self.cbn_paralyzed.grid(row=13, column=3, sticky='nw')
         self.cbn_petrified = ttk.Checkbutton(master=self.action_frame, text="Petrified", variable=self.cond_petrified, command=self.connected_cond)
-        self.cbn_petrified.grid(row=12, column=2, sticky='nw')
+        self.cbn_petrified.grid(row=14, column=2, sticky='nw')
         self.cbn_poisoned = ttk.Checkbutton(master=self.action_frame, text="Poisoned", variable=self.cond_poisoned)
-        self.cbn_poisoned.grid(row=12, column=3, sticky='nw')
+        self.cbn_poisoned.grid(row=14, column=3, sticky='nw')
         self.cbn_prone = ttk.Checkbutton(master=self.action_frame, text="Prone", variable=self.cond_prone)
-        self.cbn_prone.grid(row=13, column=2, sticky='nw')
+        self.cbn_prone.grid(row=15, column=2, sticky='nw')
         self.cbn_restrained = ttk.Checkbutton(master=self.action_frame, text="Restrained", variable=self.cond_restrained)
-        self.cbn_restrained.grid(row=13, column=3, sticky='nw')
+        self.cbn_restrained.grid(row=15, column=3, sticky='nw')
         self.cbn_stunned = ttk.Checkbutton(master=self.action_frame, text="Stunned", variable=self.cond_stunned, command=self.connected_cond)
-        self.cbn_stunned.grid(row=14, column=2, sticky='nw')
+        self.cbn_stunned.grid(row=16, column=2, sticky='nw')
         self.cbn_unconscious = ttk.Checkbutton(master=self.action_frame, text="Unconscious", variable=self.cond_unconscious, command=self.connected_cond)
-        self.cbn_unconscious.grid(row=14, column=3, sticky='nw')
+        self.cbn_unconscious.grid(row=16, column=3, sticky='nw')
         lbl_exhaustion = ttk.Label(master=self.action_frame, text="Exhaustion", font=self.reg_font)
-        lbl_exhaustion.grid(row=15, column=2, columnspan=2)
+        lbl_exhaustion.grid(row=17, column=2, columnspan=2)
         self.exhaustion_level = tk.IntVar()
         self.sldr_exhaustion = tk.Scale(master=self.action_frame, from_=0, to=6, variable=self.exhaustion_level, orient=tk.HORIZONTAL, tickinterval=1, bg='gray28', fg='gray70', font=self.small_font, highlightbackground='gray28', highlightcolor='gray28')
-        self.sldr_exhaustion.grid(row=16, column=2, columnspan=2)
+        self.sldr_exhaustion.grid(row=18, column=2, columnspan=2)
 
         lbl_change_notes = ttk.Label(master=self.action_frame, text="Change Notes", font=self.reg_font)
-        lbl_change_notes.grid(row=17, column=0, sticky='nw')
+        lbl_change_notes.grid(row=19, column=0, sticky='nw')
         self.check_delete = tk.IntVar()
         cbn_delete_notes = ttk.Checkbutton(master=self.action_frame, text="Delete Notes", variable=self.check_delete)
-        cbn_delete_notes.grid(row=17, column=1, sticky='ne')
+        cbn_delete_notes.grid(row=19, column=1, sticky='ne')
         self.txt_change_notes = tk.Text(master=self.action_frame, height=5, width=52)
         self.txt_change_notes.configure(font=self.small_font)
-        self.txt_change_notes.grid(row=18, column=0, columnspan=4)
+        self.txt_change_notes.grid(row=20, column=0, columnspan=4)
 
         self.btn_submit = ttk.Button(master=self.submit_frame, text="Submit", width=20)#, command=self.on_submit)
         self.btn_submit.grid(row=0, column=0, sticky='e')
@@ -207,16 +220,16 @@ class Target():
         self.btn_delete_target.grid(row=0, column=1, sticky='w')
         self.lbl_close_window = ttk.Label(master=self.submit_frame, text="Please close this window to finalize.", font=self.reg_font)
 
-    def select_target(self):
+    def select_target(self, event):
         selected_target = self.drop_targets.get()
         index = self.names.index(selected_target)
         object_target = self.root.token_list[index]
         self.lbl_act_name.config(text=object_target['name'])
-        self.lbl_act_max_HP.config(text=object_target['maxHP'])
-        self.lbl_act_temp_HP.config(text=object_target['tempHP'])
-        self.lbl_act_HP.config(text=object_target['currentHP'])
+        self.lbl_act_max_HP.config(text=object_target['max_HP'])
+        self.lbl_act_temp_HP.config(text=object_target['temp_HP'])
+        self.lbl_act_HP.config(text=object_target['current_HP'])
         self.lbl_act_type.config(text=object_target['type'])
-        self.lbl_act_height.config(text=object_target['height'])
+        self.lbl_act_ac.config(text=object_target['ac'])
         self.lbl_act_size.config(text=object_target['size'])
         if object_target['coordinate'][0] != "" and object_target['coordinate'][1] != "" and object_target['coordinate'][2] != "":
             row = int(object_target['coordinate'][0]) + 1
@@ -294,7 +307,7 @@ class Target():
 
         test_max_HP = self.ent_new_max_HP.get()
         if test_max_HP == "":
-            new_max_HP = object_target['maxHP']
+            new_max_HP = object_target['max_HP']
         else:
             try:
                 new_max_HP = int(test_max_HP)
@@ -310,7 +323,7 @@ class Target():
         test_temp_HP = self.ent_set_temp_HP.get()
         setting_HP = self.set_temp_HP.get()
         if test_temp_HP == "":
-            new_temp_HP = object_target['tempHP']
+            new_temp_HP = object_target['temp_HP']
         elif setting_HP == 'remove':
             new_temp_HP = 0
         elif setting_HP == 'set':
@@ -335,15 +348,31 @@ class Target():
         except TypeError:
             delta_HP = 0
         if self.heal_hurt.get() == 'heal':
-            new_curr_HP = delta_HP + object_target['currentHP']
+            new_curr_HP = delta_HP + object_target['current_HP']
             if new_curr_HP > new_max_HP:
                 new_curr_HP = new_max_HP
         elif self.heal_hurt.get() == 'damage':
-            new_curr_HP = object_target['currentHP'] - delta_HP
+            new_curr_HP = object_target['current_HP'] - delta_HP
             if new_curr_HP < new_max_HP * -1:
                 new_type = 'dead'
         else:
-            new_curr_HP = object_target['currentHP']
+            new_curr_HP = object_target['current_HP']
+
+        new_ac = self.ent_change_ac.get()
+        if new_ac == "":
+            new_ac = object_target['ac']
+        else:
+            try:
+                new_ac = int(new_ac)
+                if new_ac < 0:
+                    messagebox.showwarning("Target Creature", "AC value must be a positive whole number.")
+                    return False
+            except ValueError:
+                messagebox.showwarning("Target Creature", "AC value must be a positive whole number.")
+                return False
+            except TypeError:
+                messagebox.showwarning("Target Creature", "AC value must be a positive whole number.")
+                return False
 
         new_init = self.ent_initiative.get()
         if new_init == "":
@@ -437,7 +466,7 @@ class Target():
             "temp_HP": new_temp_HP,
             "current_HP": new_curr_HP,
             "type": new_type,
-            "height": object_target['height'],
+            "ac": object_target['ac'],
             "size": object_target['size'],
             "coordinate": object_target['coordinate'],
             "condition": new_condition,

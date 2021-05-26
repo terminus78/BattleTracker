@@ -67,8 +67,7 @@ class EventManager():
         self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=names, state='readonly')
         self.drop_selection.grid(row=0, column=1, sticky='w')
         self.drop_selection.current()
-        self.btn_current_coord = ttk.Button(master=self.selection_frame, text="Show Current Coordinate", command=lambda arg=[names, coordinates]: self.show_coord(arg))
-        self.btn_current_coord.grid(row=1, column=0, sticky='w')
+        self.drop_selection.bind("<<ComboboxSelected>>", lambda e: self.show_coord(event=e, arg=[names, coordinates]))
         self.lbl_act_coord = ttk.Label(master=self.selection_frame, text=" ", font=self.font)
         self.lbl_act_coord.grid(row=1, column=1, sticky='w', columnspan=2)
         #lbl_init_title = ttk.Label(master=self.selection_frame, text="Change Initiative", font=self.font)
@@ -91,35 +90,22 @@ class EventManager():
         self.ent_z_coord.grid(row=0, column=2, sticky='w')
 
         self.lbl_or_this = ttk.Label(master=self.move_to_frame, text="or move a number of spaces", font=self.font)
-        #self.lbl_or_this.grid(row=1, column=0, columnspan=4)
 
         self.lbl_fwd_back = ttk.Label(master=self.move_to_frame, text="Forward/Back", font=self.font)
-        #self.lbl_fwd_back.grid(row=2, column=0, sticky='w')
         self.ent_row_delta = ttk.Entry(master=self.move_to_frame, width=5)
-        #self.ent_row_delta.grid(row=2, column=1, sticky='w')
         self.fwd_or_back = tk.StringVar()
         self.rbn_move_fwd = ttk.Radiobutton(master=self.move_to_frame, text="Forward", variable=self.fwd_or_back, value='forward')
-        #self.rbn_move_fwd.grid(row=2, column=2)
         self.rbn_move_back = ttk.Radiobutton(master=self.move_to_frame, text="Back", variable=self.fwd_or_back, value='back')
-        #self.rbn_move_back.grid(row=2, column=3)
         self.lbl_left_right = ttk.Label(master=self.move_to_frame, text="Left/Right", font=self.font)
-        #self.lbl_left_right.grid(row=3, column=0, sticky='w')
         self.ent_col_delta = ttk.Entry(master=self.move_to_frame, width=5)
-        #self.ent_col_delta.grid(row=3, column=1, sticky='w')
         self.left_or_right = tk.StringVar()
         self.rbn_move_left = ttk.Radiobutton(master=self.move_to_frame, text="Left", variable=self.left_or_right, value='left')
-        #self.rbn_move_left.grid(row=3, column=2)
         self.rbn_move_right = ttk.Radiobutton(master=self.move_to_frame, text="Right", variable=self.left_or_right, value='right')
-        #self.rbn_move_right.grid(row=3, column=3)
         self.lbl_up_down = ttk.Label(master=self.move_to_frame, text="Up/Down", font=self.font)
-        #self.lbl_up_down.grid(row=4, column=0, sticky='w')
         self.ent_z_delta = ttk.Entry(master=self.move_to_frame, width=5)
-        #self.ent_z_delta.grid(row=4, column=1, sticky='w')
         self.up_or_down = tk.StringVar()
         self.rbn_move_up = ttk.Radiobutton(master=self.move_to_frame, text="Up", variable=self.up_or_down, value='up')
-        #self.rbn_move_up.grid(row=4, column=2)
         self.rbn_move_down = ttk.Radiobutton(master=self.move_to_frame, text="Down", variable=self.up_or_down, value='down')
-        #self.rbn_move_down.grid(row=4, column=3)
 
         self.btn_set = ttk.Button(master=self.move_finish_frame, text="Set Position")#, command=lambda arg=[False]: self.set_new_coord(arg))
         self.btn_set.grid(row=0, column=0, sticky='w')
@@ -128,7 +114,7 @@ class EventManager():
         self.lbl_set_finished = ttk.Label(master=self.move_finish_frame, text=" ", font=self.font)
         self.lbl_set_finished.grid(row=0, column=2, sticky='w')
 
-    def show_coord(self, arg):
+    def show_coord(self, arg, event):
         selected_option = self.drop_selection.get()
         names = arg[0]
         coordinates = arg[1]
@@ -150,6 +136,8 @@ class EventManager():
             self.ent_z_delta.grid(row=4, column=1, sticky='w')
             self.rbn_move_up.grid(row=4, column=2, sticky='w')
             self.rbn_move_down.grid(row=4, column=3, sticky='w')
+            z = coordinates[index][2]
+            self.lbl_act_coord.config(text="{0}: {1}: {2}".format(row, col, z))
 
         else:
             row = coordinates[index][0]
@@ -168,9 +156,7 @@ class EventManager():
                 self.ent_z_delta.grid_forget()
                 self.rbn_move_up.grid_forget()
                 self.rbn_move_down.grid_forget()
-
-        z = coordinates[index][2]
-        self.lbl_act_coord.config(text="{0}: {1}: {2}".format(row, col, z))
+            self.lbl_act_coord.config(text="Off Map")
 
     def set_new_coord(self):
         #removing_token = arg[0]

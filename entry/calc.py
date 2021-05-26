@@ -42,9 +42,7 @@ class Calculator():
         lbl_creature_start.grid(row=0, column=1)
         self.drop_origin = ttk.Combobox(self.from_frame, width=27, values=names, state='readonly')
         self.drop_origin.grid(row=1, column=1, sticky='w')
-        btn_clear_orig = ttk.Button(master=self.from_frame, text="Clear Selected")
-        btn_select_orig = ttk.Button(master=self.from_frame, text="Show Origin", command=lambda arg=[names, coordinates]: self.show_origin(arg))
-        btn_select_orig.grid(row=2, column=0, sticky='w')
+        self.drop_origin.bind("<<ComboboxSelected>>", lambda e: self.show_origin(event=e, arg=[names, coordinates]))
         self.lbl_orig_coord = ttk.Label(master=self.from_frame, text=" ", font=self.font)
         self.lbl_orig_coord.grid(row=2, column=1, sticky='w')
         lbl_space_start = ttk.Label(master=self.from_frame, text="Coordinate", font=self.font)
@@ -64,8 +62,7 @@ class Calculator():
         lbl_creature_end.grid(row=0, column=1)
         self.drop_destination = ttk.Combobox(self.to_frame, width=27, values=names, state='readonly')
         self.drop_destination.grid(row=1, column=1, sticky='w')
-        btn_select_dest = ttk.Button(master=self.to_frame, text="Show Destination", command=lambda arg=[names, coordinates]: self.show_destination(arg))
-        btn_select_dest.grid(row=2, column=0, sticky='w')
+        self.drop_destination.bind("<<ComboboxSelected>>", lambda e: self.show_destination(event=e, arg=[names, coordinates]))
         self.lbl_dest_coord = ttk.Label(master=self.to_frame, text=" ", font=self.font)
         self.lbl_dest_coord.grid(row=2, column=1, sticky='w')
         lbl_space_end = ttk.Label(master=self.to_frame, text="Coordinate", font=self.font)
@@ -98,7 +95,7 @@ class Calculator():
         self.lbl_calc_info_4 = ttk.Label(master=self.info_frame, text="For most situations, relative distance follows the rules of D&D more closely.", font=self.font_small)
         self.lbl_calc_info_4.grid(row=3, column=0)
 
-    def show_origin(self, arg):
+    def show_origin(self, arg, event):
         select_origin = self.drop_origin.get()
         names = arg[0]
         coordinates = arg[1]
@@ -106,13 +103,12 @@ class Calculator():
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
+            z = coordinates[index][2]
+            self.lbl_orig_coord.config(text="{0}: {1}: {2}".format(row, col, z))
         else:
-            row = coordinates[index][0]
-            col = coordinates[index][1]
-        z = coordinates[index][2]
-        self.lbl_orig_coord.config(text="{0}: {1}: {2}".format(row, col, z))
+            self.lbl_orig_coord.config(text="Off Map")
 
-    def show_destination(self, arg):
+    def show_destination(self, arg, event):
         select_destination = self.drop_destination.get()
         names = arg[0]
         coordinates = arg[1]
@@ -120,11 +116,10 @@ class Calculator():
         if coordinates[index][0] != "" and coordinates[index][1] != "":
             row = int(coordinates[index][0]) + 1
             col = int(coordinates[index][1]) + 1
+            z = coordinates[index][2]
+            self.lbl_dest_coord.config(text="{0}: {1}: {2}".format(row, col, z))
         else:
-            row = coordinates[index][0]
-            col = coordinates[index][1]
-        z = coordinates[index][2]
-        self.lbl_dest_coord.config(text="{0}: {1}: {2}".format(row, col, z))
+            self.lbl_dest_coord.config(text="Off Map")
     
     def dist_btn(self, arg):
         origin_creat = self.drop_origin.get()
@@ -139,11 +134,21 @@ class Calculator():
         coord_dest = None
         index_creat_origin = None
         index_creat_dest = None
+        if origin_creat != "" or destination_creat != "":
+            names = arg[0]
+            coordinates = arg[1]
+            if origin_creat != "":
+                index_creat_origin = names.index(origin_creat)
+                coord_origin = coordinates[index_creat_origin]
+                print(coord_origin)
+            if destination_creat != "":
+                index_creat_dest = names.index(destination_creat)
+                coord_dest = coordinates[index_creat_dest]
         if (origin_row != "" and origin_col != "" and origin_z != "") or (dest_row != "" and dest_col != "" and dest_z != ""):
             if origin_row != "" and origin_col != "" and origin_z != "":
                 try:
-                    origin_row_int = int(origin_row)
-                    origin_col_int = int(origin_col)
+                    origin_row_int = int(origin_row) - 1
+                    origin_col_int = int(origin_col) - 1
                     origin_z_int = int(origin_z)
                 except ValueError:
                     messagebox.showwarning("Input Error", "Origin coordinates must be whole numbers.")
@@ -151,22 +156,14 @@ class Calculator():
                 coord_origin = [origin_row_int, origin_col_int, origin_z_int]
             if dest_row != "" and dest_col != "" and dest_z != "":
                 try:
-                    dest_row_int = int(dest_row)
-                    dest_col_int = int(dest_col)
+                    dest_row_int = int(dest_row) - 1
+                    dest_col_int = int(dest_col) - 1
                     dest_z_int = int(dest_z)
                 except ValueError:
                     messagebox.showwarning("Input Error", "Destination coordinates must be whole numbers.")
                     return
                 coord_dest = [dest_row_int, dest_col_int, dest_z_int]
-        if origin_creat != "" or destination_creat != "":
-            names = arg[0]
-            coordinates = arg[1]
-            if origin_creat != "":
-                index_creat_origin = names.index(origin_creat)
-                coord_origin = coordinates[index_creat_origin]
-            if destination_creat != "":
-                index_creat_dest = names.index(destination_creat)
-                coord_dest = coordinates[index_creat_dest]
+                print(coord_dest)
         if coord_origin is None or coord_dest is None:
             messagebox.showwarning("Input Error", "Please select or input an origin and a destination.")
             return

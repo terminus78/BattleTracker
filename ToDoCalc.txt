@@ -31,16 +31,16 @@ To Do List:
 	# Convert file maker/open window to a top level and map to root
 	# Undo/Redo for actions
 	# Battlefield scroll and grid enlargement
-	# Add background input functionality to template creator
-	# Add race input functionality to template creator
-	# Add subrace input functionality to template creator
-	# Add weapon input functionality to template creator
-	# Add feat input functionality to template creator
+	#R Add background input functionality to template creator
+	#R Add race input functionality to template creator
+	#R Add subrace input functionality to template creator
+	#R Add weapon input functionality to template creator
+	#R Add feat input functionality to template creator
 	T# Input scrubbing
 	T# Collisions
-	T# Add class input functionality to template creator
-	- Add spell input functionality to template creator
-	- Delete and modify options for template creator
+	T#R Add class input functionality to template creator
+	R Add spell input functionality to template creator
+	R Delete and modify options for template creator
 	- Integrate template usage to build tokens
 	- Initiative picture on player window
 	- Multiple images for all token types and options
@@ -54,11 +54,11 @@ To Do List:
 	- Objects
 	- Libraries
 		- Creature Template Library
-		- Race Library
-		- Class Library
-		- Background Library
-		- Feat Library
-		- Spell Library
+		R Race Library
+		R Class Library
+		R Background Library
+		R Feat Library
+		R Spell Library
 	- PC/Full NPC Creation
 	- TV Pixel resolution differences
 	- Beautification of all aspects
@@ -68,5 +68,5 @@ To Do List:
 		- Vehicles
 		- Non-standard creature sizing
 		- Rule-sets
-		- Spell compendium
+		R Spell compendium
 	? Version for Mac and Linux

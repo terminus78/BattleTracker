@@ -4,7 +4,7 @@ import os
 import math
 import copy
 from tkinter.constants import S
-from typing import Sized
+from typing import Sized, cast
 from zipfile import ZipFile
 
 import tkinter as tk
@@ -714,6 +714,78 @@ class TemplateBuilder():
             if col_num >= 3:
                 col_num = 0
                 row_num += 1
+        lbl_prof_stat = ttk.Label(master=self.input_frame, text="Possible Stat Proficiencies: ")
+        lbl_prof_stat.grid(row=9, column=0, sticky='w')
+        skill_frame = ttk.Frame(master=self.input_frame)
+        skill_frame.grid(row=10, column=1, sticky='w')
+        skill_titles = []
+        for item in self.skill_list:
+            if "_" in item:
+                item = item.split("_")
+                item = " ".join(item)
+            skill_titles.append(item.title())
+        self.class_skills = []
+        row_num = 0
+        col_num = 0
+        for i in range(18):
+            self.class_skills.append(tk.IntVar())
+            cbn_skill = ttk.Checkbutton(master=skill_frame, text=skill_titles[i], variable=self.class_skills[i])
+            cbn_skill.grid(row=row_num, column=col_num, sticky='w')
+            row_num += 1
+            if row_num >= 5:
+                row_num = 0
+                col_num += 1
+        lbl_skill_choice = ttk.Label(master=self.input_frame, text="Number of Choices: ")
+        lbl_skill_choice.grid(row=11, column=0, sticky='w')
+        self.ent_skill_choices = ttk.Entry(master=self.input_frame, width=10)
+        self.ent_skill_choices.grid(row=11, column=1, sticky='w')
+        lbl_equipment = ttk.Label(master=self.input_frame, text="Equipment: ")
+        lbl_equipment.grid(row=0, column=2, sticky='nw', pady=5)
+        self.txt_class_equip = tk.Text(master=self.input_frame, height=4, width=48, bg='gray28', fg='white')
+        self.txt_class_equip.grid(row=0, column=3, sticky='w', pady=5)
+        lbl_magic = ttk.Label(master=self.input_frame, text="Magical Affinity: ")
+        lbl_magic.grid(row=1, column=2, sticky='w')
+        caster_frame = ttk.Frame(master=self.input_frame)
+        caster_frame.grid(row=1, column=3, sticky='w')
+        self.class_magic = tk.StringVar()
+        rbn_full_caster = ttk.Radiobutton(master=caster_frame, text="Full Caster", variable=self.class_magic, value='full')
+        rbn_full_caster.grid(row=0, column=0, sticky='w', padx=5)
+        rbn_half_caster = ttk.Radiobutton(master=caster_frame, text="Half Caster", variable=self.class_magic, value='half')
+        rbn_half_caster.grid(row=0, column=1, sticky='w', padx=5)
+        rbn_pact_magic = ttk.Radiobutton(master=caster_frame, text="Pact Magic")
+        rbn_pact_magic.grid(row=0, column=2, sticky='w', padx=5)
+        lbl_cast_stat = ttk.Label(master=self.input_frame, text="Casting Stat: ")
+        lbl_cast_stat.grid(row=2, column=2, sticky='w')
+        self.ent_cast_stat = ttk.Entry(master=self.input_frame, width=20)
+        self.ent_cast_stat.grid(row=2, column=3, sticky='w')
+        lbl_rituals = ttk.Label(master=self.input_frame, text="Ritual Caster: ")
+        lbl_rituals.grid(row=3, column=2, sticky='w')
+        self.ritual_caster = tk.IntVar()
+        cbn_rituals = ttk.Checkbutton(master=self.input_frame, variable=self.ritual_caster)
+        cbn_rituals.grid(row=3, column=3, sticky='w')
+        self.ritual_caster.set(0)
+        lbl_abil_improv = ttk.Label(master=self.input_frame, text="Ability Score Improvements: ")
+        lbl_abil_improv.grid(row=4, column=2, sticky='w')
+        improv_frame = ttk.Frame(master=self.input_frame)
+        improv_frame.grid(row=4, column=3, sticky='w')
+        self.improv_ents = []
+        next_row = 0
+        next_col = 0
+        for i in range(7):
+            lbl_at_lvl = ttk.Label(master=improv_frame, text="Level: ")
+            lbl_at_lvl.grid(row=next_row, column=next_col, sticky='w')
+            ent_improv = ttk.Entry(master=improv_frame, width=5)
+            ent_improv.grid(row=next_row, column=next_col+1, sticky='w')
+            ent_improv.state(['disabled'])
+            self.improv_ents.append(ent_improv)
+            next_row += 1
+            if next_row >= 4:
+                next_row = 0
+                next_col += 2
+        lbl_improv_info = ttk.Label(master=improv_frame, text="Leave unnecessary improvement fields empty.", font=self.small_font)
+        lbl_improv_info.grid(row=4, column=0, columnspan=4, sticky='w')
+        btn_add_improv = ttk.Button(master=improv_frame, text="Add Improvement", command=self.add_improv)
+        btn_add_improv.grid(row=0, column=4, rowspan=4)
 
     def build_arch(self):
         self.wipe_off()
@@ -1910,6 +1982,17 @@ class TemplateBuilder():
         if value % 2:
             self.sldr_hit_dice.set(value+1 if value > self.past else value-1)
             self.past = self.sldr_hit_dice.get()
+
+    def add_improv(self):
+        enabled = True
+        index = 0
+        while enabled:
+            if len(self.improv_ents[index].state()) > 0:
+                self.improv_ents[index].state(['!disabled'])
+                enabled = False
+            elif index == 6:
+                enabled = False
+            index += 1
 
     def _on_select_race(self, event):
         mod_ent_list = [self.ent_str_mod_sub, self.ent_dex_mod_sub, self.ent_con_mod_sub, self.ent_int_mod_sub, self.ent_wis_mod_sub, self.ent_cha_mod_sub]

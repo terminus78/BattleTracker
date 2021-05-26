@@ -92,10 +92,15 @@ class StatCollector():
         rbn_bystander.grid(row=0, column=2, sticky="w")
         rbn_dead.grid(row=0, column=3, sticky="w")
 
-        lbl_height = ttk.Label(master=frame2_2, text="Height (Feet)", font=papyrus_font)
-        self.ent_height = ttk.Entry(master=frame2_2, width=8)
-        lbl_height.grid(row=0, column=0, sticky="w")
-        self.ent_height.grid(row=0, column=1, sticky="e")
+        lbl_ac = ttk.Label(master=frame2_2, text="AC", font=papyrus_font)
+        self.ent_ac = ttk.Entry(master=frame2_2, width=8)
+        lbl_ac.grid(row=0, column=0, sticky="w", pady=5)
+        self.ent_ac.grid(row=0, column=1, sticky="e", padx=5, pady=5)
+
+        lbl_speed = ttk.Label(master=frame2_2, text="Speed", font=papyrus_font)
+        lbl_speed.grid(row=1, column=0, sticky='w', pady=5)
+        self.ent_speed = ttk.Entry(master=frame2_2, width=8)
+        self.ent_speed.grid(row=1, column=1, sticky='w', padx=5, pady=5)
 
         frame_size_left = ttk.Frame(master=frame3_1)
         frame_size_right = ttk.Frame(master=frame3_1)
@@ -140,7 +145,8 @@ class StatCollector():
         max_HP_get = self.ent_HP.get()
         temp_HP_get = self.ent_temp_HP.get()
         foe_friend_get = self.rad_foe_friend.get()
-        height_get = self.ent_height.get()
+        ac_get = self.ent_ac.get()
+        speed_get = self.ent_speed.get()
         size_get = self.rad_size.get()
         init_get = self.ent_init.get()
         notes_get = self.txt_notes.get(1.0, 'end-1c')
@@ -225,18 +231,32 @@ class StatCollector():
             messagebox.showwarning("Character Input", "Max HP must be a positive whole number. If entered, Temp HP must be a positive whole number or zero.")
             return False
         try:
-            if height_get == "":
-                messagebox.showwarning("Character Input", "Height cannot be undefined.")
+            if ac_get == "":
+                messagebox.showwarning("Character Input", "AC cannot be undefined.")
                 return False
-            height_flt = float(height_get)
-            if height_flt < 0:
-                messagebox.showinfo("Character Input", "Height must be a positive number or zero.")
+            ac_int = int(ac_get)
+            if ac_int < 0:
+                messagebox.showinfo("Character Input", "AC must be a positive whole number.")
                 return False
         except ValueError:
-            messagebox.showwarning("Character Input", "Height must be a positive number or zero.")
+            messagebox.showwarning("Character Input", "AC must be a positive whole number.")
             return False
         except TypeError:
-            messagebox.showwarning("Character Input", "Height must be a positive number or zero.")
+            messagebox.showwarning("Character Input", "AC must be a positive whole number.")
+            return False
+        try:
+            if speed_get == "":
+                messagebox.showwarning("Character Input", "Speed cannot be undefined.")
+                return False
+            speed_int = int(speed_get)
+            if speed_int < 0:
+                messagebox.showinfo("Character Input", "Speed must be a positive whole number.")
+                return False
+        except ValueError:
+            messagebox.showwarning("Character Input", "Speed must be a positive whole number.")
+            return False
+        except TypeError:
+            messagebox.showwarning("Character Input", "Speed must be a positive whole number.")
             return False
 
         self.stats = {
@@ -245,7 +265,8 @@ class StatCollector():
             "temp_HP": temp_HP_int,
             "current_HP": max_HP_int,
             "type": foe_friend_get,
-            "height": height_flt,
+            "ac": ac_int,
+            "speed": speed_int,
             "size": size_get,
             "coordinate": ["", "", ""],
             "condition": ["normal"],
