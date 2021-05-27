@@ -68,6 +68,17 @@ class StatCollector():
         lbl_name.grid(row=0, column=0, sticky="w")
         self.ent_name.grid(row=0, column=1, sticky="e")
 
+        self.pc_npc_m = tk.StringVar()
+        status_frame = ttk.Frame(master=frame1_1)
+        status_frame.grid(row=1, column=0, columnspan=2, pady=5)
+        rbn_pc = ttk.Radiobutton(master=status_frame, text="PC", variable=self.pc_npc_m, value='PC')
+        rbn_pc.grid(row=0, column=0, sticky='w')
+        rbn_npc = ttk.Radiobutton(master=status_frame, text="NPC", variable=self.pc_npc_m, value='NPC')
+        rbn_npc.grid(row=0, column=1, sticky='w')
+        rbn_monster = ttk.Radiobutton(master=status_frame, text="Monster", variable=self.pc_npc_m, value='Monster')
+        rbn_monster.grid(row=0, column=2, sticky='w')
+        self.pc_npc_m.set('NPC')
+
         lbl_HP = ttk.Label(master=frame1_2, text="Max HP", font=papyrus_font)
         self.ent_HP = ttk.Entry(master=frame1_2, width=8)
         lbl_HP.grid(row=0, column=0, sticky="w")
@@ -142,6 +153,7 @@ class StatCollector():
     def submit(self):
         special_char = ['[','@','_','!','#','$','%','^','&','*','(',')','<','>','?','/','\\','|','}','{','~',':',']']
         name_get = self.ent_name.get()
+        status_get = self.pc_npc_m.get()
         max_HP_get = self.ent_HP.get()
         temp_HP_get = self.ent_temp_HP.get()
         foe_friend_get = self.rad_foe_friend.get()
@@ -261,6 +273,7 @@ class StatCollector():
 
         self.stats = {
             "name": name_get,
+            "status": status_get,
             "max_HP": max_HP_int,
             "temp_HP": temp_HP_int,
             "current_HP": max_HP_int,

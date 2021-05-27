@@ -31,12 +31,15 @@ class PlayerWin():
         self.play_window.columnconfigure(0, minsize=100)
         self.play_window.columnconfigure(1, weight=1, minsize=700)
         self.play_window.rowconfigure(0, weight=1, minsize=200)
-        self.play_window.rowconfigure(1, weight=1, minsize=700)
+        self.play_window.rowconfigure(2, weight=1, minsize=700)
         lbl_title = ttk.Label(master=self.play_window, text=self.title, font=self.big_font)
         lbl_title.grid(row=0, column=0, columnspan=2)
+        self.lbl_turn = tk.Label(master=self.play_window, text="", bg='gray28', fg='gray70')
+        self.lbl_turn.grid(row=1, column=1, sticky='e', padx=30, pady=20)
+        self.lbl_turn.config(font=self.big_font)
 
         self.side_board = ttk.Frame(master=self.play_window)
-        self.side_board.grid(row=1, column=0, padx=5, pady=10, sticky="nw")
+        self.side_board.grid(row=2, column=0, padx=5, pady=10, sticky="nw")
         self.side_count = 0
         #grid_frame = ttk.Frame(master=self.play_window, borderwidth=2, relief='ridge')
         #grid_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
@@ -45,11 +48,11 @@ class PlayerWin():
         grid_scroll_vert = ttk.Scrollbar(master=canvas_frame, command=self.grid_canvas.yview)
         grid_scroll_horz = ttk.Scrollbar(master=self.play_window, orient='horizontal', command=self.grid_canvas.xview)
         self.grid_frame = ttk.Frame(master=self.grid_canvas)
-        canvas_frame.grid(row=1, column=1, sticky="nsew")
+        canvas_frame.grid(row=2, column=1, sticky="nsew")
         self.grid_canvas.pack(side='left', fill='both', expand=True)
         self.grid_canvas.config(yscrollcommand=grid_scroll_vert.set, xscrollcommand=grid_scroll_horz.set)
         grid_scroll_vert.pack(side='right', fill='y')
-        grid_scroll_horz.grid(row=2, column=1, sticky='ew')
+        grid_scroll_horz.grid(row=3, column=1, sticky='ew')
         self.grid_canvas.create_window((4,4), window=self.grid_frame, anchor='nw', tags='self.grid_frame')
         self.grid_frame.bind("<Configure>", self._on_config)
         self.grid_canvas.bind('<Enter>', self._on_enter_canvas)
@@ -90,7 +93,7 @@ class PlayerWin():
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.map_frames[i].append(self.space)
 
-        self.set_board()
+        #self.set_board()
 
     def _on_config(self, event):
         self.grid_canvas.configure(scrollregion=self.grid_canvas.bbox('all'))
@@ -177,6 +180,13 @@ class PlayerWin():
 
             else:
                 self.unused_tokens(being, token_img)
+
+    def set_turn_lbl(self, name):
+        self.lbl_turn.config(text=name)
+        if name != 'X':
+            self.lbl_turn.config(fg='green3')
+        else:
+            self.lbl_turn.config(fg='gray70')
 
     def unused_tokens(self, creature, token_img):
         next_row = int(self.side_count / 2)

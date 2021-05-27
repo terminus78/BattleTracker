@@ -70,7 +70,7 @@ class BattleMap():
     
     def main_window(self):
         self.root.overrideredirect(0)
-        self.root.deiconify()
+        #self.root.deiconify()
         '''
         window_width = self.root.winfo_reqwidth()
         window_height = self.root.winfo_reqheight()
@@ -96,20 +96,28 @@ class BattleMap():
             self.round = battle_obj['round']
             self.turn = battle_obj['turn']
 
+        # self.root.rowconfigure(2, weight=1)
+        # self.root.columnconfigure(0, weight=1)
         self.top_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
         self.top_frame.pack(side='top', fill='both')
+        #self.top_frame.grid(row=0, column=0)
         self.top_frame.columnconfigure(1, weight=1)
         self.top_frame.rowconfigure(0, minsize=100, weight=1)
         self.quote_frame = ttk.Frame(master=self.root)
-        self.quote_frame.pack(side='top', fill='x', expand=True)
+        self.quote_frame.pack(side='top', fill='x')#, expand=True)
+        #self.quote_frame.grid(row=1, column=0)
         self.quote_frame.columnconfigure(0, minsize=20)
         self.bottom_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
         self.bottom_frame.pack(side='top', fill='both', expand=True)
+        #self.bottom_frame.grid(row=2, column=0)
         self.bottom_frame.columnconfigure(0, minsize=100)
-        self.bottom_frame.columnconfigure(1, weight=1, minsize=700)
+        self.bottom_frame.columnconfigure(1, weight=1, minsize=500)
         self.bottom_frame.columnconfigure(2, minsize=150)
         self.bottom_frame.columnconfigure(3, minsize=50)
-        self.bottom_frame.rowconfigure(0, weight=1, minsize=700)
+        self.bottom_frame.rowconfigure(0, weight=1, minsize=350)
+        self.controller_frame = ttk.Frame(master=self.root)
+        self.controller_frame.pack(side='top', fill='x')#, expand=True)
+        #self.controller_frame.grid(row=3, column=0)
 
         self.em = EventManager(self.root)
         self.calculator = Calculator(self.root)
@@ -124,7 +132,7 @@ class BattleMap():
         # Board Setup
         lbl_map = ttk.Label(master=self.top_frame, text=game_title, font=('Papyrus', '16'))
         lbl_map.grid(row=0, column=1)
-        btn_player_win = ttk.Button(master=self.top_frame, command=self.copy_win.start_win, text="Player Window")
+        btn_player_win = ttk.Button(master=self.top_frame, command=self.open_for_players, text="Player Window")
         btn_player_win.grid(row=0, column=2, sticky='se')
         btn_save = ttk.Button(master=self.top_frame, command=self.save_game, text="Save")
         btn_save.grid(row=0, column=3, sticky='se')
@@ -147,7 +155,7 @@ class BattleMap():
         self.side_count = 0
 
         canvas_frame = ttk.Frame(master=self.bottom_frame, borderwidth=2, relief='ridge')
-        self.grid_canvas = tk.Canvas(master=canvas_frame, bg='gray28', borderwidth=0)
+        self.grid_canvas = tk.Canvas(master=canvas_frame, bg='gray28', bd=0, highlightthickness=0)
         grid_scroll_vert = ttk.Scrollbar(master=canvas_frame, command=self.grid_canvas.yview)
         grid_scroll_horz = ttk.Scrollbar(master=self.bottom_frame, orient='horizontal', command=self.grid_canvas.xview)
         self.grid_frame = ttk.Frame(master=self.grid_canvas)
@@ -195,6 +203,23 @@ class BattleMap():
         self.bystander_img = ImageTk.PhotoImage(image=PIL.Image.open(bystander_path).resize((15,15)))
         dead_path = "entry\\bin\\dead_token.png"
         self.dead_img = ImageTk.PhotoImage(image=PIL.Image.open(dead_path).resize((15,15)))
+
+        up_btn_path = "entry\\bin\\up_button.png"
+        down_btn_path = "entry\\bin\\down_button.png"
+        left_btn_path = "entry\\bin\\left_button.png"
+        right_btn_path = "entry\\bin\\right_button.png"
+        nw_btn_path = "entry\\bin\\nw_button.png"
+        ne_btn_path = "entry\\bin\\ne_button.png"
+        sw_btn_path = "entry\\bin\\sw_button.png"
+        se_btn_path = "entry\\bin\\se_button.png"
+        self.up_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(up_btn_path).resize((40,40)))
+        self.down_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(down_btn_path).resize((40,40)))
+        self.left_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(left_btn_path).resize((40,40)))
+        self.right_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(right_btn_path).resize((40,40)))
+        self.nw_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(nw_btn_path).resize((40,40)))
+        self.ne_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(ne_btn_path).resize((40,40)))
+        self.sw_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(sw_btn_path).resize((40,40)))
+        self.se_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(se_btn_path).resize((40,40)))
         
         self.map_frames = []
         self.root.token_list = []
@@ -281,7 +306,49 @@ class BattleMap():
         self.btn_dice_roller.image = d20_icon
         CreateToolTip(self.btn_dice_roller, text="Dice Roller", left_disp=True)
 
+        #Controller Pane
+        self.controller_frame.columnconfigure(0, weight=1)
+        dpad_frame = ttk.Frame(master=self.controller_frame)
+        dpad_frame.grid(row=0, column=0, rowspan=4, padx=20)
+        btn_nw = tk.Button(master=dpad_frame, image=self.nw_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_nw.grid(row=0, column=0)
+        btn_nw.image = self.nw_btn_img
+        btn_up = tk.Button(master=dpad_frame, image=self.up_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_up.grid(row=0, column=1)
+        btn_up.image = self.up_btn_img
+        btn_ne = tk.Button(master=dpad_frame, image=self.ne_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_ne.grid(row=0, column=2)
+        btn_ne.image = self.ne_btn_img
+        btn_left = tk.Button(master=dpad_frame, image=self.left_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_left.grid(row=1, column=0)
+        btn_left.image = self.left_btn_img
+        btn_right = tk.Button(master=dpad_frame, image=self.right_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_right.grid(row=1, column=2)
+        btn_right.image = self.right_btn_img
+        btn_sw = tk.Button(master=dpad_frame, image=self.sw_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_sw.grid(row=2, column=0)
+        btn_sw.image = self.sw_btn_img
+        btn_down = tk.Button(master=dpad_frame, image=self.down_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_down.grid(row=2, column=1)
+        btn_down.image = self.down_btn_img
+        btn_se = tk.Button(master=dpad_frame, image=self.se_btn_img, bg='gray28', bd=0, activebackground='gray28')
+        btn_se.grid(row=2, column=2)
+        btn_se.image = self.se_btn_img
+        lbl_title_turn = ttk.Label(master=self.controller_frame, text="Current Turn", font=self.big_font)
+        lbl_title_turn.grid(row=0, column=1, sticky='e', padx=20)
+        self.lbl_current_turn = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
+        self.lbl_current_turn.grid(row=1, column=1, sticky='e', padx=20)
+        lbl_max_move_title = ttk.Label(master=self.controller_frame, text="Movement Speed", font=self.big_font)
+        lbl_max_move_title.grid(row=0, column=2, sticky='e', padx=20)
+        self.lbl_max_move = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
+        self.lbl_max_move.grid(row=1, column=2, sticky='e', padx=20)
+        lbl_amount_move_title = ttk.Label(master=self.controller_frame, text="Feet Moved", font=self.big_font)
+        lbl_amount_move_title.grid(row=2, column=2, sticky='e', padx=20)
+        self.lbl_amount_moved = tk.Label(master=self.controller_frame, text="0", font=self.reg_font, bg='gray28', fg='gray70')
+        self.lbl_amount_moved.grid(row=3, column=2, sticky='e', padx=20)
+
         self.place_tokens()
+        self.root.deiconify()
 
     def _on_config(self, event):
         self.grid_canvas.configure(scrollregion=self.grid_canvas.bbox('all'))
@@ -343,8 +410,8 @@ class BattleMap():
                     lbl_unit.pack(fill='both', expand=True)
                     lbl_unit.bind("<Button-3>", self.em.right_click_menu)
                     CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
-                    if being['initiative'] != -math.inf:
-                        self.initiative_holder[being['name']] = (being['initiative'], being['type'])
+                    if being['initiative'] != math.inf:
+                        self.initiative_holder[being['name']] = being
                     if being["size"] == "large" or being["size"] == "huge" or being["size"] == "gargantuan":
                         if being["size"] == "large":
                             space_need = 4
@@ -378,7 +445,7 @@ class BattleMap():
 
             else:
                 self.unused_tokens(being, token_img)
-            self.refresh_initiatives()
+        self.refresh_initiatives()
     
     def unused_tokens(self, creature, token_img):
         next_row = int(self.side_count / 2)
@@ -391,18 +458,31 @@ class BattleMap():
         self.side_count += 1
     
     def post_initiatives(self):
-        init_dict_in_order = {k:v for k, v in sorted(self.initiative_holder.items(), key= lambda item: item[1][0], reverse=True)}
+        init_dict_in_order = {k:v for k, v in sorted(self.initiative_holder.items(), key= lambda item: item[1]['initiative'], reverse=True)}
         order_count = 0
         lbl_turn_img = tk.Label(master=self.initiative_frame, image=self.turn_icon, bg="gray28", borderwidth=0)
         lbl_turn_img.grid(row=self.turn, column=0, sticky='w')
         lbl_turn_img.image = self.turn_icon
 
         for next_up in init_dict_in_order.items():
-            if next_up[1][0] != math.inf and next_up[1][1] != 'dead':
+            if next_up[1]['initiative'] != math.inf and next_up[1]['type'] != 'dead':
                 lbl_your_turn = ttk.Label(master=self.initiative_frame, text=f"{next_up[0]}: ", font=self.small_font)
                 lbl_your_turn.grid(row=order_count, column=1, sticky='w')
-                lbl_your_init = ttk.Label(master=self.initiative_frame, text=next_up[1][0], font=self.small_font)
+                lbl_your_init = ttk.Label(master=self.initiative_frame, text=next_up[1]['initiative'], font=self.small_font)
                 lbl_your_init.grid(row=order_count, column=2, sticky='e')
+                if order_count == self.turn:
+                    self.lbl_current_turn.config(text=next_up[0])
+                    self.lbl_max_move.config(text=next_up[1]['speed'])
+                    if next_up[1]['status'] == 'PC':
+                        self.lbl_current_turn.config(fg='green3')
+                    else:
+                        self.lbl_current_turn.config(fg='gray70')
+
+                    if self.root.copy_win_open:
+                        if next_up[1]['status'] != 'PC':
+                            self.copy_win.set_turn_lbl("X")
+                        else:
+                            self.copy_win.set_turn_lbl(next_up[0])
                 order_count += 1
 
     def refresh_initiatives(self):
@@ -467,11 +547,14 @@ class BattleMap():
 
         if reset:
             self.initialize_tokens()
-
-        self.refresh_initiatives()
         self.place_tokens()
         if self.root.copy_win_open:
             self.copy_win.update_players()
+        self.refresh_initiatives()
+
+    def open_for_players(self):
+        self.copy_win.start_win()
+        self.refresh_map()
 
     def save_game(self):
         new_token_dict = {}
