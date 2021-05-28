@@ -55,6 +55,7 @@ class BattleMap():
             self.start_win.btn_cancel.config(command=lambda: self.new_game_btns('cancel'))
         elif opt == 'open':
             open_complete = self.start_win.open_file()
+            print(open_complete)
             if open_complete:
                 self.start_win.win_start.destroy()
                 self.main_window()
@@ -309,7 +310,7 @@ class BattleMap():
         #Controller Pane
         self.controller_frame.columnconfigure(0, weight=1)
         dpad_frame = ttk.Frame(master=self.controller_frame)
-        dpad_frame.grid(row=0, column=0, rowspan=4, padx=20)
+        dpad_frame.grid(row=0, column=0, rowspan=4, sticky='w', padx=100)
         btn_nw = tk.Button(master=dpad_frame, image=self.nw_btn_img, bg='gray28', bd=0, activebackground='gray28')
         btn_nw.grid(row=0, column=0)
         btn_nw.image = self.nw_btn_img
@@ -336,7 +337,7 @@ class BattleMap():
         btn_se.image = self.se_btn_img
         lbl_title_turn = ttk.Label(master=self.controller_frame, text="Current Turn", font=self.big_font)
         lbl_title_turn.grid(row=0, column=1, sticky='e', padx=20)
-        self.lbl_current_turn = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
+        self.lbl_current_turn = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28')
         self.lbl_current_turn.grid(row=1, column=1, sticky='e', padx=20)
         lbl_max_move_title = ttk.Label(master=self.controller_frame, text="Movement Speed", font=self.big_font)
         lbl_max_move_title.grid(row=0, column=2, sticky='e', padx=20)
@@ -475,8 +476,10 @@ class BattleMap():
                     self.lbl_max_move.config(text=next_up[1]['speed'])
                     if next_up[1]['status'] == 'PC':
                         self.lbl_current_turn.config(fg='green3')
+                    elif next_up[1]['status'] == 'Monster':
+                        self.lbl_current_turn.config(fg='orange3')
                     else:
-                        self.lbl_current_turn.config(fg='gray70')
+                        self.lbl_current_turn.config(fg='DodgerBlue2')
 
                     if self.root.copy_win_open:
                         if next_up[1]['status'] != 'PC':

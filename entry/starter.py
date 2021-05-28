@@ -168,4 +168,6 @@ class StartWindow():
                     json.dump(self.cache_info, cache_file, indent=4)
             game_file = os.path.split(self.master.filename)[-1]
             self.master.game_name = game_file.split('.')[0]
+        else:
+            return False
         return True

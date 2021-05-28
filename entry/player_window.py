@@ -44,7 +44,7 @@ class PlayerWin():
         #grid_frame = ttk.Frame(master=self.play_window, borderwidth=2, relief='ridge')
         #grid_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
         canvas_frame = ttk.Frame(master=self.play_window, borderwidth=2, relief='ridge')
-        self.grid_canvas = tk.Canvas(master=canvas_frame, bg='gray28', borderwidth=0)
+        self.grid_canvas = tk.Canvas(master=canvas_frame, bg='gray28', borderwidth=0, highlightthickness=0)
         grid_scroll_vert = ttk.Scrollbar(master=canvas_frame, command=self.grid_canvas.yview)
         grid_scroll_horz = ttk.Scrollbar(master=self.play_window, orient='horizontal', command=self.grid_canvas.xview)
         self.grid_frame = ttk.Frame(master=self.grid_canvas)

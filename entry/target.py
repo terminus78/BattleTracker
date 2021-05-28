@@ -235,6 +235,7 @@ class Target():
         self.lbl_act_HP.config(text=object_target['current_HP'])
         self.lbl_act_type.config(text=object_target['type'])
         self.lbl_act_ac.config(text=object_target['ac'])
+        self.lbl_act_speed.config(text=object_target['speed'])
         self.lbl_act_size.config(text=object_target['size'])
         if object_target['coordinate'][0] != "" and object_target['coordinate'][1] != "" and object_target['coordinate'][2] != "":
             row = int(object_target['coordinate'][0]) + 1
@@ -379,6 +380,22 @@ class Target():
                 messagebox.showwarning("Target Creature", "AC value must be a positive whole number.")
                 return False
 
+        new_speed = self.ent_change_speed.get()
+        if new_speed == "":
+            new_speed = object_target['speed']
+        else:
+            try:
+                new_speed = int(new_speed)
+                if new_speed < 0:
+                    messagebox.showwarning("Target Creature", "Speed value must be a positive whole number.")
+                    return False
+            except ValueError:
+                messagebox.showwarning("Target Creature", "Speed value must be a positive whole number.")
+                return False
+            except TypeError:
+                messagebox.showwarning("Target Creature", "Speed value must be a positive whole number.")
+                return False
+
         new_init = self.ent_initiative.get()
         if new_init == "":
             new_init = object_target['initiative']
@@ -473,6 +490,7 @@ class Target():
             "current_HP": new_curr_HP,
             "type": new_type,
             "ac": object_target['ac'],
+            "speed": new_speed,
             "size": object_target['size'],
             "coordinate": object_target['coordinate'],
             "condition": new_condition,
