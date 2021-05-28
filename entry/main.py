@@ -55,7 +55,6 @@ class BattleMap():
             self.start_win.btn_cancel.config(command=lambda: self.new_game_btns('cancel'))
         elif opt == 'open':
             open_complete = self.start_win.open_file()
-            print(open_complete)
             if open_complete:
                 self.start_win.win_start.destroy()
                 self.main_window()
