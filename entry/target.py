@@ -415,7 +415,7 @@ class Target():
                             while not_resolved:
                                 multiplier *= 0.1
                                 sub_offset *= 0.1
-                                roll_new_guy = self.dice.roll(dieSize=100)[0]
+                                roll_new_guy = self.dice.roll(die_size=100)[0]
                                 new_init = round(new_init + (roll_new_guy * multiplier - sub_offset), 8)
                                 if new_init != being['initiative']:
                                     not_resolved = False

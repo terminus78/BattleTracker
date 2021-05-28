@@ -52,6 +52,7 @@ To Do List:
 		R Spell Library
 	- TV Pixel resolution differences
 	- Beautification of all aspects
+	- Mobile App Character Controller
 	-- Advanced Version Possibilities
 		- Terrain mapping
 		- Object movement

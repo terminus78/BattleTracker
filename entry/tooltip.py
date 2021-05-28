@@ -1,3 +1,4 @@
+import json
 from tkinter import *
 
 
@@ -27,7 +28,7 @@ class ToolTip(object):
         tw.wm_geometry("+%d+%d" % (x, y))
         label = Label(tw, text=self.text, justify=LEFT,
                       background="#ffffe0", relief=SOLID, borderwidth=1,
-                      font=("Papyrus", "8", "normal"))
+                      font=("Papyrus", "10", "normal"))
         label.pack(ipadx=1)
         self.tipwindow.attributes("-alpha", 0.0)
         self.fade_in()

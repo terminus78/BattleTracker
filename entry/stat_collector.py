@@ -193,7 +193,7 @@ class StatCollector():
                             while not_resolved:
                                 multiplyer *= 0.1
                                 sub_offset *= 0.1
-                                roll_new_guy = self.dice.roll(dieSize=100)[0]
+                                roll_new_guy = self.dice.roll(die_size=100)[0]
                                 init_flt = init_flt + (roll_new_guy * multiplyer - sub_offset)
                                 if init_flt != being['initiative']:
                                     not_resolved = False
