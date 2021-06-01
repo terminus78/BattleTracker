@@ -213,6 +213,7 @@ class BattleMap():
         sw_btn_path = "entry\\bin\\sw_button.png"
         se_btn_path = "entry\\bin\\se_button.png"
         z_up_btn_path = "entry\\bin\\z_up.png"
+        undo_move_path = "entry\\bin\\undo_move.png"
         z_down_btn_path = "entry\\bin\\z_down.png"
         self.up_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(up_btn_path).resize((40,40)))
         self.down_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(down_btn_path).resize((40,40)))
@@ -223,6 +224,7 @@ class BattleMap():
         self.sw_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(sw_btn_path).resize((40,40)))
         self.se_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(se_btn_path).resize((40,40)))
         self.z_up_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(z_up_btn_path).resize((40,40)))
+        self.undo_move_img = ImageTk.PhotoImage(image=PIL.Image.open(undo_move_path).resize((40,40)))
         self.z_down_btn_img = ImageTk.PhotoImage(image=PIL.Image.open(z_down_btn_path).resize((40,40)))
         
         self.map_frames = []
@@ -344,28 +346,58 @@ class BattleMap():
         btn_z_up = tk.Button(master=dpad_frame, image=self.z_up_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.zpad('+'))
         btn_z_up.grid(row=0, column=3, padx=10)
         btn_z_up.image = self.z_up_btn_img
+        btn_undo_move = tk.Button(master=dpad_frame, image=self.undo_move_img, bg='gray28', bd=0, activebackground='gray28', command=self.undo_move)
+        btn_undo_move.grid(row=1, column=3, padx=10)
+        btn_undo_move.image = self.undo_move_img
         btn_z_down = tk.Button(master=dpad_frame, image=self.z_down_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.zpad('-'))
         btn_z_down.grid(row=2, column=3, padx=10)
         btn_z_down.image = self.z_down_btn_img
         self.z_frame = tk.Frame(master=dpad_frame, bg='gray28')
         self.z_frame.grid(row=1, column=1, sticky='nsew')
 
+        cont_btn_frame = ttk.Frame(master=self.controller_frame)
+        cont_btn_frame.grid(row=0, column=1, rowspan=4, sticky='e', padx=20)
+        btn_turn_complete = ttk.Button(master=cont_btn_frame, text="Turn Complete", command=self.next_turn, width=19)
+        btn_turn_complete.grid(row=0, column=0, columnspan=2)
+        self.cont_targets = ttk.Combobox(master=cont_btn_frame, width=18, state='readonly')
+        self.cont_targets.grid(row=1, column=0, columnspan=2)
+        self.cont_targets.bind("<<ComboboxSelected>>", self._on_select_target)
+        self.target_names = []
+        self.ent_target_delta = ttk.Entry(master=cont_btn_frame, width=20)
+        self.ent_target_delta.grid(row=2, column=0, columnspan=2, pady=5)
+        self.ent_target_delta.insert(0, '0')
+        btn_heal = ttk.Button(master=cont_btn_frame, text='Heal', command=lambda: self.target_hp('heal'), width=8)
+        btn_heal.grid(row=3, column=0, padx=5, pady=5)
+        btn_dmg = ttk.Button(master=cont_btn_frame, text='Damage', command=lambda: self.target_hp('dmg'), width=8)
+        btn_dmg.grid(row=3, column=1, padx=5, pady=5)
+        lbl_ac = ttk.Label(master=cont_btn_frame, text="AC: ", font=self.reg_font)
+        lbl_ac.grid(row=1, column=2, sticky='w', pady=5)
+        lbl_max_hp = ttk.Label(master=cont_btn_frame, text="Max HP: ", font=self.reg_font)
+        lbl_max_hp.grid(row=2, column=2, sticky='w', pady=5)
+        lbl_curr_hp = ttk.Label(master=cont_btn_frame, text="Current HP: ", font=self.reg_font)
+        lbl_curr_hp.grid(row=3, column=2, sticky='w', pady=5)
+        self.lbl_target_ac = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
+        self.lbl_target_ac.grid(row=1, column=3, sticky='w', padx=5, pady=5)
+        self.lbl_target_max_hp = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
+        self.lbl_target_max_hp.grid(row=2, column=3, sticky='w', padx=5, pady=5)
+        self.lbl_target_hp = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
+        self.lbl_target_hp.grid(row=3, column=3, sticky='w', padx=5, pady=5)
         lbl_title_turn = ttk.Label(master=self.controller_frame, text="Current Turn", font=self.big_font)
-        lbl_title_turn.grid(row=0, column=1, sticky='e', padx=20)
+        lbl_title_turn.grid(row=0, column=2, sticky='e', padx=20)
         self.lbl_current_turn = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28')
-        self.lbl_current_turn.grid(row=1, column=1, sticky='e', padx=20)
+        self.lbl_current_turn.grid(row=1, column=2, sticky='e', padx=20)
         lbl_title_pos = ttk.Label(master=self.controller_frame, text="Position", font=self.big_font)
-        lbl_title_pos.grid(row=2, column=1, sticky='e', padx=20)
+        lbl_title_pos.grid(row=2, column=2, sticky='e', padx=20)
         self.lbl_position = ttk.Label(master=self.controller_frame, text="", font=self.reg_font)
-        self.lbl_position.grid(row=3, column=1, sticky='e', padx=20)
+        self.lbl_position.grid(row=3, column=2, sticky='e', padx=20)
         lbl_max_move_title = ttk.Label(master=self.controller_frame, text="Movement Speed", font=self.big_font)
-        lbl_max_move_title.grid(row=0, column=2, sticky='e', padx=20)
+        lbl_max_move_title.grid(row=0, column=3, sticky='e', padx=20)
         self.lbl_max_move = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
-        self.lbl_max_move.grid(row=1, column=2, sticky='e', padx=20)
+        self.lbl_max_move.grid(row=1, column=3, sticky='e', padx=20)
         lbl_amount_move_title = ttk.Label(master=self.controller_frame, text="Feet Moved", font=self.big_font)
-        lbl_amount_move_title.grid(row=2, column=2, sticky='e', padx=20)
+        lbl_amount_move_title.grid(row=2, column=3, sticky='e', padx=20)
         self.lbl_amount_moved = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
-        self.lbl_amount_moved.grid(row=3, column=2, sticky='e', padx=20)
+        self.lbl_amount_moved.grid(row=3, column=3, sticky='e', padx=20)
 
         self.z_delta = 0
 
@@ -388,6 +420,14 @@ class BattleMap():
 
     def _on_shift_mousewheel(self, event):
         self.grid_canvas.xview_scroll(int(-1*(event.delta/120)), 'units')
+
+    def _on_select_target(self, event):
+        for being in self.root.token_list:
+            if being['name'] == self.cont_targets.get():
+                sel_obj = being
+        self.lbl_target_ac.config(text=sel_obj['ac'])
+        self.lbl_target_max_hp.config(text=sel_obj['max_HP'])
+        self.lbl_target_hp.config(text=sel_obj['current_HP'])
 
     def initialize_tokens(self):
         self.root.token_list = []
@@ -418,6 +458,7 @@ class BattleMap():
             if being["coordinate"][0] != "" and being["coordinate"][1] != "":
                 row_pos = int(being["coordinate"][1])
                 col_pos = int(being["coordinate"][0])
+                self.target_names.append(being['name'])
                 for space_tuple in spaces_taken:
                     if space_tuple[0] == row_pos and space_tuple[1] == col_pos and space_tuple[2] == int(being["coordinate"][2]):
                         occupied = True
@@ -469,6 +510,7 @@ class BattleMap():
 
             else:
                 self.unused_tokens(being, token_img)
+        self.cont_targets.config(values=self.target_names)
         self.refresh_initiatives()
     
     def unused_tokens(self, creature, token_img):
@@ -715,6 +757,25 @@ class BattleMap():
         self.z_frame.config(bg='green3')
         self.z_frame.bind("<Button-1>", lambda e: self.dpad_move(dir))
 
+    def target_hp(self, type):
+        sel_target = self.cont_targets.get()
+        tgt_delta = self.ent_target_delta.get()
+        try:
+            tgt_delta = int(tgt_delta)
+            if type == 'dmg':
+                tgt_delta *= -1
+        except ValueError:
+            messagebox.showwarning("BattleTracker", "HP difference must be a whole number.")
+            return
+        for being in self.root.token_list:
+            if being['name'] == sel_target:
+                being['current_HP'] += tgt_delta
+                if being['current_HP'] > being['max_HP']:
+                    being['current_HP'] = being['max_HP']
+                elif being['current_HP'] <= 0:
+                    being['type'] = 'dead'
+        self._on_select_target(None)
+
     def input_creature_window(self):
         self.in_win = StatCollector(self.root, self.map_size, self.round, self.turn)
         self.in_win.btn_submit.configure(command=lambda arg=['in_win', 'submit']: self.change_token_list(arg))
@@ -863,6 +924,48 @@ class BattleMap():
         elif action_name == 'list':
                 self.root.token_list = copy.deepcopy(hist_action['restore'])
                 self.refresh_map()
+
+    def undo_move(self):
+        if len(self.move_path) > 1:
+            last_move = self.move_path.pop()
+        else:
+            return
+        if self.turn_obj['size'] == 'large':
+            space_need = 4
+        elif self.turn_obj['size'] == 'huge':
+            space_need = 9
+        elif self.turn_obj['size'] == 'gargantuan':
+            space_need = 16
+        else:
+            space_need = 1
+        next_row_num = math.sqrt(space_need)
+        row_offset = 0
+        col_offset = 0
+
+        for i in range(space_need):
+            self.map_frames[last_move[0] + col_offset][last_move[1] + row_offset].config(bg='gray28')
+            col_offset += 1
+            if col_offset == next_row_num:
+                col_offset = 0
+                row_offset += 1
+
+        feet_moved = int(self.lbl_amount_moved.cget('text'))
+        feet_moved -= 5
+        self.lbl_amount_moved.config(text=feet_moved)
+        if feet_moved > int(self.lbl_max_move.cget('text')):
+            self.lbl_amount_moved.config(bg='red4')
+        else:
+            self.lbl_amount_moved.config(bg='gray28')
+        new_curr_move = self.move_path[-1]
+        self.lbl_position.config(text=f"{new_curr_move[0]+1}: {new_curr_move[1]+1}: {new_curr_move[2]}")
+        row_offset = 0
+        col_offset = 0
+        for i in range(space_need):
+            self.map_frames[new_curr_move[0] + col_offset][new_curr_move[1] + row_offset].config(bg='orange3')
+            col_offset += 1
+            if col_offset == next_row_num:
+                col_offset = 0
+                row_offset += 1
 
     def log_action(self, origin, restore_data=None):
         if self.btn_undo['state'] == 'disabled':
