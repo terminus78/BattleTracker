@@ -31,6 +31,8 @@ To Do List:
 	# Convert file maker/open window to a top level and map to root
 	# Undo/Redo for actions
 	# Battlefield scroll and grid enlargement
+	# Controller pane
+	# Movement
 	T# Input scrubbing
 	T# Collisions
 	T# Initiative picture on player window (label currently)
@@ -38,10 +40,8 @@ To Do List:
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
 	- Buff/Debuff conditions
-	- Field highlighting
+	- Field highlighting(spell)
 	- Minion generator
-	- Controller pane
-	- Movement
 	- Objects
 	- Libraries
 		- Creature Template Library

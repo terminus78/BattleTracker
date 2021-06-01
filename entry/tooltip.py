@@ -1,4 +1,3 @@
-import json
 from tkinter import *
 
 
@@ -7,11 +6,9 @@ class ToolTip(object):
     def __init__(self, widget):
         self.widget = widget
         self.tipwindow = None
-        self.id = None
-        self.x = self.y = 0
 
     def showtip(self, text, left_disp):
-        "Display text in tooltip window"
+        # Display text in tooltip window
         self.text = text
         x_offset = 17
         y_offset = 7

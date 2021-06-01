@@ -30,8 +30,8 @@ class StatCollector():
         self.dice = DiceRoller()
         self.forge = Press(self.master)
 
-        btn_forge = ttk.Button(master=self.range_win, command=self.forge.init_press, text="Use Forge")
-        btn_forge.grid(row=0, column=0)
+        # btn_forge = ttk.Button(master=self.range_win, command=self.forge.init_press, text="Use Forge")
+        # btn_forge.grid(row=0, column=0)
 
         upper_frame = ttk.Frame(master=self.range_win)
         lower_frame = ttk.Frame(master=self.range_win)
@@ -46,9 +46,9 @@ class StatCollector():
 
         frame_list = [frame1_1, frame1_2, frame2_1, frame2_2, frame3_1, frame3_2]
 
-        upper_frame.grid(row=1, column=0, sticky="w")
-        lower_frame.grid(row=2, column=0, sticky="w")
-        under_frame.grid(row=3, column=0, pady=8)
+        upper_frame.grid(row=1, column=0)#, sticky="w")
+        lower_frame.grid(row=2, column=0)#, sticky="w")
+        under_frame.grid(row=3, column=0)#, pady=8)
 
         fr_row = 0
         fr_col = 0
@@ -68,9 +68,11 @@ class StatCollector():
         lbl_name.grid(row=0, column=0, sticky="w")
         self.ent_name.grid(row=0, column=1, sticky="e")
 
+        lbl_status = ttk.Label(master=frame1_1, text="Type", font=papyrus_font)
+        lbl_status.grid(row=1, column=0, sticky='w', pady=5)
         self.pc_npc_m = tk.StringVar()
         status_frame = ttk.Frame(master=frame1_1)
-        status_frame.grid(row=1, column=0, columnspan=2, pady=5)
+        status_frame.grid(row=2, column=0, columnspan=2, pady=5)
         rbn_pc = ttk.Radiobutton(master=status_frame, text="PC", variable=self.pc_npc_m, value='PC')
         rbn_pc.grid(row=0, column=0, sticky='w')
         rbn_npc = ttk.Radiobutton(master=status_frame, text="NPC", variable=self.pc_npc_m, value='NPC')
@@ -230,7 +232,7 @@ class StatCollector():
                 messagebox.showinfo("Character Input", "Max HP cannot be undefined.")
                 return False
             if temp_HP_get != "":
-                temp_HP_int = int(max_HP_get)
+                temp_HP_int = int(temp_HP_get)
                 if temp_HP_int < 0:
                     messagebox.showinfo("Character Input", "Temp HP must be a positive whole number or zero.")
                     return False

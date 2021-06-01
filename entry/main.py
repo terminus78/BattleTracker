@@ -194,15 +194,17 @@ class BattleMap():
         self.turn_icon = ImageTk.PhotoImage(image=PIL.Image.open(turn_icon_path).resize((20,20)))
         d20_icon_path = "entry\\bin\\red_role-playing.png"
         d20_icon = ImageTk.PhotoImage(image=PIL.Image.open(d20_icon_path).resize((20,20)))
+        highlight_path = "entry\\bin\\highlight.png"
+        highlight_img = ImageTk.PhotoImage(image=PIL.Image.open(highlight_path).resize((20,20)))
 
         ally_path = "entry\\bin\\ally_token.png"
-        self.ally_img = ImageTk.PhotoImage(image=PIL.Image.open(ally_path).resize((15,15)))
+        self.ally_img = ImageTk.PhotoImage(image=PIL.Image.open(ally_path).resize((30,30)))
         enemy_path = "entry\\bin\\enemy_token.png"
-        self.enemy_img = ImageTk.PhotoImage(image=PIL.Image.open(enemy_path).resize((15,15)))
+        self.enemy_img = ImageTk.PhotoImage(image=PIL.Image.open(enemy_path).resize((30,30)))
         bystander_path = "entry\\bin\\bystander_token.png"
-        self.bystander_img = ImageTk.PhotoImage(image=PIL.Image.open(bystander_path).resize((15,15)))
+        self.bystander_img = ImageTk.PhotoImage(image=PIL.Image.open(bystander_path).resize((30,30)))
         dead_path = "entry\\bin\\dead_token.png"
-        self.dead_img = ImageTk.PhotoImage(image=PIL.Image.open(dead_path).resize((15,15)))
+        self.dead_img = ImageTk.PhotoImage(image=PIL.Image.open(dead_path).resize((30,30)))
 
         up_btn_path = "entry\\bin\\up_button.png"
         down_btn_path = "entry\\bin\\down_button.png"
@@ -230,6 +232,7 @@ class BattleMap():
         self.map_frames = []
         self.root.token_list = []
         self.root.copy_win_open = False
+        self.root.light_params = {}
 
         # Grid labels
         for col_spot in range(self.map_size[1]):
@@ -253,6 +256,7 @@ class BattleMap():
             for j in range(self.map_size[1]):
                 self.space = tk.Frame(master=self.grid_frame, relief=tk.RAISED, borderwidth=1, bg='gray28')
                 self.space.grid(row=i+1, column=j+1, sticky='nsew')
+                self.space.coord = (i, j)
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.map_frames[i].append(self.space)
                 self.token_labels[i].append(None)
@@ -315,6 +319,11 @@ class BattleMap():
         self.btn_dice_roller.image = d20_icon
         CreateToolTip(self.btn_dice_roller, text="Dice Roller", left_disp=True)
 
+        self.btn_field_light = ttk.Button(master=self.tool_bar, command=self.field_light, image=highlight_img)
+        self.btn_field_light.grid(row=5, column=0, sticky='n')
+        self.btn_field_light.image = highlight_img
+        CreateToolTip(self.btn_field_light, text="Field Highlight", left_disp=True)
+
         #Controller Pane
         self.controller_frame.columnconfigure(0, weight=1)
         dpad_frame = ttk.Frame(master=self.controller_frame)
@@ -322,38 +331,48 @@ class BattleMap():
         btn_nw = tk.Button(master=dpad_frame, image=self.nw_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('nw'))
         btn_nw.grid(row=0, column=0)
         btn_nw.image = self.nw_btn_img
+        btn_nw.name = 'nw'
         btn_up = tk.Button(master=dpad_frame, image=self.up_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('n'))
         btn_up.grid(row=0, column=1)
         btn_up.image = self.up_btn_img
+        btn_up.name = 'up'
         btn_ne = tk.Button(master=dpad_frame, image=self.ne_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('ne'))
         btn_ne.grid(row=0, column=2)
         btn_ne.image = self.ne_btn_img
+        btn_ne.name = 'ne'
         btn_left = tk.Button(master=dpad_frame, image=self.left_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('w'))
         btn_left.grid(row=1, column=0)
         btn_left.image = self.left_btn_img
+        btn_left.name = 'w'
         btn_right = tk.Button(master=dpad_frame, image=self.right_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('e'))
         btn_right.grid(row=1, column=2)
         btn_right.image = self.right_btn_img
+        btn_right.name = 'e'
         btn_sw = tk.Button(master=dpad_frame, image=self.sw_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('sw'))
         btn_sw.grid(row=2, column=0)
         btn_sw.image = self.sw_btn_img
+        btn_sw.name = 'sw'
         btn_down = tk.Button(master=dpad_frame, image=self.down_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('s'))
         btn_down.grid(row=2, column=1)
         btn_down.image = self.down_btn_img
+        btn_down.name = 's'
         btn_se = tk.Button(master=dpad_frame, image=self.se_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.dpad_move('se'))
         btn_se.grid(row=2, column=2)
         btn_se.image = self.se_btn_img
+        btn_se.name = 'se'
         btn_z_up = tk.Button(master=dpad_frame, image=self.z_up_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.zpad('+'))
         btn_z_up.grid(row=0, column=3, padx=10)
         btn_z_up.image = self.z_up_btn_img
         btn_undo_move = tk.Button(master=dpad_frame, image=self.undo_move_img, bg='gray28', bd=0, activebackground='gray28', command=self.undo_move)
         btn_undo_move.grid(row=1, column=3, padx=10)
         btn_undo_move.image = self.undo_move_img
+        btn_undo_move.name = 'undom'
         btn_z_down = tk.Button(master=dpad_frame, image=self.z_down_btn_img, bg='gray28', bd=0, activebackground='gray28', command=lambda: self.zpad('-'))
         btn_z_down.grid(row=2, column=3, padx=10)
         btn_z_down.image = self.z_down_btn_img
         self.z_frame = tk.Frame(master=dpad_frame, bg='gray28')
         self.z_frame.grid(row=1, column=1, sticky='nsew')
+        self.z_frame.name = 'zf'
 
         cont_btn_frame = ttk.Frame(master=self.controller_frame)
         cont_btn_frame.grid(row=0, column=1, rowspan=4, sticky='e', padx=20)
@@ -366,22 +385,29 @@ class BattleMap():
         self.ent_target_delta = ttk.Entry(master=cont_btn_frame, width=20)
         self.ent_target_delta.grid(row=2, column=0, columnspan=2, pady=5)
         self.ent_target_delta.insert(0, '0')
+        self.ent_target_delta.bind("<FocusIn>", lambda e: self._on_delta_focus(event=e, typ='in'))
+        self.ent_target_delta.bind("<FocusOut>", lambda e: self._on_delta_focus(event=e, typ='out'))
         btn_heal = ttk.Button(master=cont_btn_frame, text='Heal', command=lambda: self.target_hp('heal'), width=8)
         btn_heal.grid(row=3, column=0, padx=5, pady=5)
         btn_dmg = ttk.Button(master=cont_btn_frame, text='Damage', command=lambda: self.target_hp('dmg'), width=8)
         btn_dmg.grid(row=3, column=1, padx=5, pady=5)
         lbl_ac = ttk.Label(master=cont_btn_frame, text="AC: ", font=self.reg_font)
-        lbl_ac.grid(row=1, column=2, sticky='w', pady=5)
+        lbl_ac.grid(row=0, column=2, sticky='w', pady=5)
         lbl_max_hp = ttk.Label(master=cont_btn_frame, text="Max HP: ", font=self.reg_font)
-        lbl_max_hp.grid(row=2, column=2, sticky='w', pady=5)
+        lbl_max_hp.grid(row=1, column=2, sticky='w', pady=5)
         lbl_curr_hp = ttk.Label(master=cont_btn_frame, text="Current HP: ", font=self.reg_font)
-        lbl_curr_hp.grid(row=3, column=2, sticky='w', pady=5)
+        lbl_curr_hp.grid(row=2, column=2, sticky='w', pady=5)
+        lbl_temp_hp = ttk.Label(master=cont_btn_frame, text="Temp HP: ", font=self.reg_font)
+        lbl_temp_hp.grid(row=3, column=2, sticky='w', pady=5)
         self.lbl_target_ac = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
-        self.lbl_target_ac.grid(row=1, column=3, sticky='w', padx=5, pady=5)
+        self.lbl_target_ac.grid(row=0, column=3, sticky='w', padx=5, pady=5)
         self.lbl_target_max_hp = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
-        self.lbl_target_max_hp.grid(row=2, column=3, sticky='w', padx=5, pady=5)
+        self.lbl_target_max_hp.grid(row=1, column=3, sticky='w', padx=5, pady=5)
         self.lbl_target_hp = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
-        self.lbl_target_hp.grid(row=3, column=3, sticky='w', padx=5, pady=5)
+        self.lbl_target_hp.grid(row=2, column=3, sticky='w', padx=5, pady=5)
+        self.lbl_target_temp_hp = ttk.Label(master=cont_btn_frame, text="", font=self.reg_font)
+        self.lbl_target_temp_hp.grid(row=3, column=3, sticky='w', padx=5, pady=5)
+
         lbl_title_turn = ttk.Label(master=self.controller_frame, text="Current Turn", font=self.big_font)
         lbl_title_turn.grid(row=0, column=2, sticky='e', padx=20)
         self.lbl_current_turn = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28')
@@ -400,6 +426,9 @@ class BattleMap():
         self.lbl_amount_moved.grid(row=3, column=3, sticky='e', padx=20)
 
         self.z_delta = 0
+
+        self.root.bind("<Key>", self._on_numpad_keys)
+        self.controller_frame.bind("<Button-1>", self._on_defocus)
 
         self.place_tokens()
         self.root.deiconify()
@@ -428,6 +457,53 @@ class BattleMap():
         self.lbl_target_ac.config(text=sel_obj['ac'])
         self.lbl_target_max_hp.config(text=sel_obj['max_HP'])
         self.lbl_target_hp.config(text=sel_obj['current_HP'])
+        self.lbl_target_temp_hp.config(text=sel_obj['temp_HP'])
+
+    def _on_numpad_keys(self, event):
+        # Controller movements
+        if event.keysym == '0' or event.keysym == 'Insert':
+            self.undo_move()
+        elif event.keysym == '1' or event.keysym == 'End':
+            self.dpad_move('sw')
+        elif event.keysym == '2' or event.keysym == 'Down':
+            self.dpad_move('s')
+        elif event.keysym == '3' or event.keysym == 'Next':
+            self.dpad_move('se')
+        elif event.keysym == '4' or event.keysym == 'Left':
+            self.dpad_move('w')
+        elif event.keysym == '5' or event.keysym == 'Clear':
+            if self.z_delta != 0:
+                if self.z_delta == 1:
+                    self.dpad_move('+')
+                elif self.z_delta == -1:
+                    self.dpad_move('-')
+        elif event.keysym == '6' or event.keysym == 'Right':
+            self.dpad_move('e')
+        elif event.keysym == '7' or event.keysym == 'Home':
+            self.dpad_move('nw')
+        elif event.keysym == '8' or event.keysym == 'Up':
+            self.dpad_move('n')
+        elif event.keysym == '9' or event.keysym == 'Prior':
+            self.dpad_move('ne')
+        elif event.keysym == 'minus':
+            self.zpad('-')
+        elif event.keysym == 'plus':
+            self.zpad('+')
+        elif event.keysym == 'Return':
+            self.next_turn()
+        
+        if self.z_delta == 0:
+            self.z_frame.config(bg='gray28')
+            self.root.unbind_all("<Button-1>")
+
+    def _on_delta_focus(self, event, typ):
+        if typ == 'in':
+            self.root.unbind("<Key>")
+        elif typ == 'out':
+            self.root.bind("<Key>", self._on_numpad_keys)
+
+    def _on_defocus(self, event):
+        event.widget.focus_set()
 
     def initialize_tokens(self):
         self.root.token_list = []
@@ -441,6 +517,7 @@ class BattleMap():
     def place_tokens(self):
         self.initiative_holder = {}
         spaces_taken = []
+        self.target_names = []
         for being in self.root.token_list:
             token_type = being["type"]
             if token_type == "ally":
@@ -466,12 +543,13 @@ class BattleMap():
                     spaces_taken.append((row_pos, col_pos, int(being["coordinate"][2])))
                     lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
                     lbl_unit.image = token_img
+                    lbl_unit.coord = (row_pos, col_pos)
                     #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
                     #row_count = int(space_count / 3)
                     #col_count = space_count % 3
                     #lbl_unit.grid(row=row_count, column=col_count, sticky='nsew')
                     lbl_unit.pack(fill='both', expand=True)
-                    lbl_unit.bind("<Button-3>", self.em.right_click_menu)
+                    #lbl_unit.bind("<Button-3>", self.em.right_click_menu)
                     self.token_labels[col_pos][row_pos] = lbl_unit
                     CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
                     if being['initiative'] != math.inf:
@@ -496,12 +574,13 @@ class BattleMap():
                                 col_pos = int(being["coordinate"][0]) + col_offset
                                 lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
                                 lbl_unit.image = token_img
+                                lbl_unit.coord = (row_pos, col_pos)
                                 #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
                                 #row_count = int(space_count / 3)
                                 #col_count = space_count % 3
                                 #lbl_unit.grid(row=row_count, column=col_count)
                                 lbl_unit.pack(fill='both', expand=True)
-                                lbl_unit.bind("<Button-3>", self.em.right_click_menu)
+                                #lbl_unit.bind("<Button-3>", self.em.right_click_menu)
                                 #self.token_labels[row_pos][col_pos] = lbl_unit
                                 CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
                 else:
@@ -571,6 +650,7 @@ class BattleMap():
         self.post_initiatives()
 
     def next_turn(self, not_from_redo=True):
+        self.lbl_amount_moved.config(bg='gray28')
         if not_from_redo:
             self.log_action('turn button')
         on_board_inits = self.initiative_holder
@@ -746,16 +826,26 @@ class BattleMap():
         else:
             self.lbl_amount_moved.config(bg='gray28')
 
-        self.z_frame.unbind("<Button-1>")
-        self.z_frame.config(bg='gray28')
-
     def zpad(self, dir):
         if dir == '+':
             self.z_delta = 1
         else:
             self.z_delta = -1
         self.z_frame.config(bg='green3')
-        self.z_frame.bind("<Button-1>", lambda e: self.dpad_move(dir))
+        self.root.bind_all("<Button-1>", self.green_handle)
+
+    def green_handle(self, event):
+        try:
+            name = event.widget.name
+            if name == 'zf':
+                if self.z_delta == 1:
+                    self.dpad_move('+')
+                elif self.z_delta == -1:
+                    self.dpad_move('-')
+        except:
+            pass
+        self.z_frame.config(bg='gray28')
+        self.root.unbind_all("<Button-1>")
 
     def target_hp(self, type):
         sel_target = self.cont_targets.get()
@@ -769,6 +859,12 @@ class BattleMap():
             return
         for being in self.root.token_list:
             if being['name'] == sel_target:
+                if type == 'dmg' and abs(tgt_delta) > being['temp_HP']:
+                    tgt_delta += being['temp_HP']
+                    being['temp_HP'] = 0
+                else:
+                    being['temp_HP'] += tgt_delta
+                    break
                 being['current_HP'] += tgt_delta
                 if being['current_HP'] > being['max_HP']:
                     being['current_HP'] = being['max_HP']
@@ -839,6 +935,9 @@ class BattleMap():
 
     def open_dice_roller(self):
         self.dice_roll.dice_pane()
+
+    def field_light(self):
+        pass
 
     def full_reset(self):
         empty_dict = {}
