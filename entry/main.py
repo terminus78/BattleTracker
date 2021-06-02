@@ -2,6 +2,7 @@ import math
 import random
 import json
 import copy
+from tkinter.constants import COMMAND
 
 from zipfile import ZipFile
 import PIL.Image
@@ -21,6 +22,7 @@ from dice import DiceRoller
 from player_window import PlayerWin
 from starter import *
 from undo_redo import ActionStack
+from light_menu import *
 
 
 map_win = tk.Tk()
@@ -256,7 +258,7 @@ class BattleMap():
             for j in range(self.map_size[1]):
                 self.space = tk.Frame(master=self.grid_frame, relief=tk.RAISED, borderwidth=1, bg='gray28')
                 self.space.grid(row=i+1, column=j+1, sticky='nsew')
-                self.space.coord = (i, j)
+                self.space.coord = (j, i)
                 CreateToolTip(self.space, text=f"{i+1}, {j+1}")
                 self.map_frames[i].append(self.space)
                 self.token_labels[i].append(None)
@@ -597,7 +599,7 @@ class BattleMap():
         next_col = self.side_count % 2
         lbl_side_unit = tk.Label(master=self.side_board, image=token_img, bg="gray28", borderwidth=0)
         lbl_side_unit.grid(row=next_row, column=next_col, padx=5, pady=5, sticky="ne")
-        lbl_side_unit.bind("<Button-3>", self.em.right_click_menu)
+        #lbl_side_unit.bind("<Button-3>", self.em.right_click_menu)
         lbl_side_unit.image = token_img
         CreateToolTip(lbl_side_unit, text=creature["name"])
         self.side_count += 1
@@ -937,7 +939,47 @@ class BattleMap():
         self.dice_roll.dice_pane()
 
     def field_light(self):
-        pass
+        try:
+            self.lighter.escape()
+        except AttributeError:
+            pass
+        self.lighter = GenLightWin(self.root, self.btn_field_light)
+        self.lighter.open_light_win()
+        self.lighter.btn_confirm.config(command=self.get_offsets)
+
+    def get_offsets(self):
+        self.light_list, self.light_shape = self.lighter.collect()
+        self.lighter.escape()
+        if len(self.light_list) == 0:
+            return
+        for sect in range(len(self.map_frames)):
+            for item in self.map_frames[sect]:
+                item.bind("<Button-1>", self.on_light)
+                pieces = item.pack_slaves()
+                for piece in pieces:
+                    piece.bind("<Button-1>", self.on_light)
+        
+    def on_light(self, event):
+        start = list(event.widget.coord)
+        self.map_frames[start[1]][start[0]].config(bg='SpringGreen3')
+        curr_pos = start
+        for i in range(len(self.light_list)):
+            curr_pos[0] += self.light_list[i][0]
+            curr_pos[1] += self.light_list[i][1]
+            self.map_frames[curr_pos[1]][curr_pos[0]].config(bg='SpringGreen3')
+        self.root.bind_all("<Escape>", self.clear_light)
+        self.root.bind_all("<Button-3>", self.clear_light)
+
+    def clear_light(self, event):
+        for sect in range(len(self.map_frames)):
+            for item in self.map_frames[sect]:
+                item.config(bg='gray28')
+                item.unbind("<Button-1>")
+                pieces = item.pack_slaves()
+                for piece in pieces:
+                    piece.unbind("<Button-1>")
+                self.root.unbind_all("<Escape>")
+                self.root.unbind_all("<Button-3>")
 
     def full_reset(self):
         empty_dict = {}
