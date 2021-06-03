@@ -98,42 +98,59 @@ class PickLight():
         if size == '':
             return
 
-        size = int(size)
-        block_size = size / 5
+        size = int(size) / 5
         if shape == 'Square':
-            col = 1
-            for i in range(1, int(block_size * block_size)):
-                if col < block_size:
-                    offset_array.append((1,0))
-                    col += 1
-                elif col == block_size:
-                    offset_array.append((-1 * (col-1), 1))
-                    col = 1
+            offset_array = self.fill_square(size)
+        elif shape == 'Circle':
+            points = self.fill_circle(size)
+            offset_array = self.points_to_offsets(points)
+        elif shape == 'Ring':
+            points = self.get_ring_8th(size)
+            offset_array = self.points_to_offsets(points)
         
         return offset_array, shape
 
-    def fill_circle(self, center, r):
-        top = int(math.floor(center[1] - r))
-        bottom = int(math.ceil(center[1] + r))
-        left = int(math.floor(center[0] - r))
-        right = int(math.floor(center[0] + r))
-        points = []
+    def points_to_offsets(self, points):
+        pos = [0,0]
+        offsets = []
+        for point in points:
+            dist = [point[0]-pos[0], point[1]-pos[1]]
+            offsets.append(dist)
+            pos = point
+        return offsets
 
-        y = top
-        x = left
-        for y in range(top, bottom):
-            for x in range(left, right):
-                if self.check_in_circ(center, [x, y], r):
-                    points.append([x,y])
+    def fill_square(self, size):
+        points = []
+        col = 1
+        area = int(math.sqrt(size))
+        for i in range(1, area):
+            if col < size:
+                points.append((1,0))
+                col += 1
+            elif col == size:
+                points.append((-1 * (col-1), 1))
+                col = 1
         return points
 
-    def check_in_circ(self, cent, tile, r):
-        dx = cent[0] - tile[0]
-        dy = cent[1] - tile[1]
-        dist_sqrd = dx*dx + dy*dy
-        return dist_sqrd <= (r * r)
+    def fill_circle(self, r, center=[0.5, 0.5]):
+        #r += 0.5
+        top = int(center[1] - r)
+        bottom = int(center[1] + r)
+        points = []
+
+        for y in range(top, bottom+1):
+            dy = y - center[1]
+            dx = math.sqrt(r*r - dy*dy)
+            left = math.ceil(center[0] - dx)
+            right = math.floor(center[0] + dx)
+            for x in range(left, right+1):
+                points.append([x,y])
+
+        return points
 
     def transform_ring_points(self, x, y):
+        x = int(x)
+        y = int(y)
         return [( x,  y),
                 ( y,  x),
                 (-x,  y),
@@ -149,7 +166,7 @@ class PickLight():
         y = -r
         F_M = 1 - r
         d_e = 3
-        d_ne = -(r << 1) + 5
+        d_ne = -(2 * r) + 5
         points.extend(self.transform_ring_points(x, y))
         while x < -y:
             if F_M <= 0:
@@ -162,6 +179,7 @@ class PickLight():
             d_ne += 2
             x += 1
             points.extend(self.transform_ring_points(x, y))
+        print(points)
         return points
 
     def escape(self):

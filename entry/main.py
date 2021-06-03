@@ -550,7 +550,7 @@ class BattleMap():
                     #row_count = int(space_count / 3)
                     #col_count = space_count % 3
                     #lbl_unit.grid(row=row_count, column=col_count, sticky='nsew')
-                    lbl_unit.pack(fill='both', expand=True)
+                    lbl_unit.pack(fill='both', expand=True, padx=2, pady=2)
                     #lbl_unit.bind("<Button-3>", self.em.right_click_menu)
                     self.token_labels[col_pos][row_pos] = lbl_unit
                     CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
@@ -961,12 +961,14 @@ class BattleMap():
         
     def on_light(self, event):
         start = list(event.widget.coord)
-        self.map_frames[start[1]][start[0]].config(bg='SpringGreen3')
+        if self.light_shape == 'Square':
+            self.map_frames[start[1]][start[0]].config(bg='SpringGreen3')
         curr_pos = start
         for i in range(len(self.light_list)):
             curr_pos[0] += self.light_list[i][0]
             curr_pos[1] += self.light_list[i][1]
-            self.map_frames[curr_pos[1]][curr_pos[0]].config(bg='SpringGreen3')
+            if curr_pos[0] < self.map_size[1] and curr_pos[1] < self.map_size[0] and curr_pos[0] >= 0 and curr_pos[1] >= 0:
+                self.map_frames[curr_pos[1]][curr_pos[0]].config(bg='SpringGreen3')
         self.root.bind_all("<Escape>", self.clear_light)
         self.root.bind_all("<Button-3>", self.clear_light)
 
