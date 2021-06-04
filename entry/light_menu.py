@@ -98,15 +98,16 @@ class PickLight():
         if size == '':
             return
 
-        size = int(size) / 5
+        size = int(int(size) / 5)
         if shape == 'Square':
             offset_array = self.fill_square(size)
         elif shape == 'Circle':
             points = self.fill_circle(size)
             offset_array = self.points_to_offsets(points)
         elif shape == 'Ring':
-            points = self.get_ring_8th(size)
-            offset_array = self.points_to_offsets(points)
+            #points = self.get_ring_8th(size)
+            #offset_array = self.points_to_offsets(points)
+            offset_array = self.brute_ring(size)
         
         return offset_array, shape
 
@@ -122,7 +123,7 @@ class PickLight():
     def fill_square(self, size):
         points = []
         col = 1
-        area = int(math.sqrt(size))
+        area = int(size**2)
         for i in range(1, area):
             if col < size:
                 points.append((1,0))
@@ -179,8 +180,42 @@ class PickLight():
             d_ne += 2
             x += 1
             points.extend(self.transform_ring_points(x, y))
-        print(points)
         return points
+
+    def brute_ring(self, r):
+        points = []
+        offsets = []
+        center = [0.5,0.5]
+        f = 1 - r
+        dx = 1
+        dy = -2 * r
+        x = center[0]
+        y = r
+        points.append([center[0], center[1] + r])
+        points.append([center[0], center[1] - r])
+        points.append([center[0] + r, center[1]])
+        points.append([center[0] - r, center[1]])
+        while x < y:
+            if f >= 0:
+                y -= 1
+                dy += 2
+                f += dy
+            x += 1
+            dx += 2
+            f += dx
+            points.append([center[0] + x, center[1] + y])
+            points.append([center[0] - x, center[1] + y])
+            points.append([center[0] + x, center[1] - y])
+            points.append([center[0] - x, center[1] - y])
+            points.append([center[0] + y, center[1] + x])
+            points.append([center[0] - y, center[1] + x])
+            points.append([center[0] + y, center[1] - x])
+            points.append([center[0] - y, center[1] - x])
+        for point in points:
+            offsets.append([int(math.floor(point[0])), int(math.ceil(point[1]))])
+
+        print(offsets)
+        return offsets
 
     def escape(self):
         self.light_win.destroy()
