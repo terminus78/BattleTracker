@@ -106,8 +106,8 @@ class PickLight():
             offset_array = self.points_to_offsets(points)
         elif shape == 'Ring':
             #points = self.get_ring_8th(size)
-            #offset_array = self.points_to_offsets(points)
-            offset_array = self.brute_ring(size)
+            points = self.brute_ring(size)
+            offset_array = self.points_to_offsets(points)
         
         return offset_array, shape
 
@@ -184,17 +184,17 @@ class PickLight():
 
     def brute_ring(self, r):
         points = []
-        offsets = []
-        center = [0.5,0.5]
+        center = [0.5, 0.5]
         f = 1 - r
         dx = 1
         dy = -2 * r
-        x = center[0]
+        x = 0
         y = r
-        points.append([center[0], center[1] + r])
-        points.append([center[0], center[1] - r])
-        points.append([center[0] + r, center[1]])
-        points.append([center[0] - r, center[1]])
+        # points.append([center[0], center[1] + r])
+        # points.append([center[0], center[1] + r])
+        # points.append([center[0], center[1] + r])
+        # points.append([center[0], center[1] + r])
+
         while x < y:
             if f >= 0:
                 y -= 1
@@ -211,11 +211,7 @@ class PickLight():
             points.append([center[0] - y, center[1] + x])
             points.append([center[0] + y, center[1] - x])
             points.append([center[0] - y, center[1] - x])
-        for point in points:
-            offsets.append([int(math.floor(point[0])), int(math.ceil(point[1]))])
-
-        print(offsets)
-        return offsets
+        return points
 
     def escape(self):
         self.light_win.destroy()
