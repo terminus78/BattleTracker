@@ -106,7 +106,8 @@ class PickLight():
             offset_array = self.points_to_offsets(points)
         elif shape == 'Ring':
             #points = self.get_ring_8th(size)
-            points = self.brute_ring(size)
+            #points = self.brute_ring(size)
+            points = self.no_fill_circle(size)
             offset_array = self.points_to_offsets(points)
         
         return offset_array, shape
@@ -134,7 +135,6 @@ class PickLight():
         return points
 
     def fill_circle(self, r, center=[0.5, 0.5]):
-        #r += 0.5
         top = int(center[1] - r)
         bottom = int(center[1] + r)
         points = []
@@ -149,69 +149,59 @@ class PickLight():
 
         return points
 
-    def transform_ring_points(self, x, y):
+    def no_fill_circle(self, r):
+        points = []
+        y = 1
+        x = r
+
+        while x > y:
+            dy = y - 0.5
+            dx = math.sqrt(r*r - dy*dy)
+            left = math.ceil(0.5 - dx)
+            right = math.floor(0.5 + dx)
+            points.extend(self.transform_no_fill(left, y))
+            points.extend(self.transform_no_fill(right, y))
+            y += 1
+
+        return points
+
+    def transform_no_fill(self, x, y):
         x = int(x)
         y = int(y)
-        return [( x,  y),
-                ( y,  x),
-                (-x,  y),
-                (-y,  x),
-                ( x, -y),
-                ( y, -x),
-                (-x, -y),
-                (-y, -x)]
+        return [
+            (  x,   y),
+            (1-y,   x),
+            (1-x, 1-y),
+            (  y, 1-x)
+        ]
 
-    def get_ring_8th(self, r):
-        points = []
-        x = 0
-        y = -r
-        F_M = 1 - r
-        d_e = 3
-        d_ne = -(2 * r) + 5
-        points.extend(self.transform_ring_points(x, y))
-        while x < -y:
-            if F_M <= 0:
-                F_M += d_e
-            else:
-                F_M += d_ne
-                d_ne += 2
-                y += 1
-            d_e += 2
-            d_ne += 2
-            x += 1
-            points.extend(self.transform_ring_points(x, y))
-        return points
+    def draw_line(self, x1, y1, x2, y2):
+        # undef is for a vertical line
+        undef = False
+        small_slope = True
+        if x1 > x2:
+            dx = x1 - x2
+            start_x = x2
+            start_y = y2
+            end_x = x1
+            end_y = y1
+            x1 = start_x
+            x2 = end_x
+            y1 = start_y
+            y2 = end_y
+        elif x1 == x2:
+            undef = True
 
-    def brute_ring(self, r):
-        points = []
-        center = [0.5, 0.5]
-        f = 1 - r
-        dx = 1
-        dy = -2 * r
-        x = 0
-        y = r
-        # points.append([center[0], center[1] + r])
-        # points.append([center[0], center[1] + r])
-        # points.append([center[0], center[1] + r])
-        # points.append([center[0], center[1] + r])
+        if not undef:
+            dx = x2 - x1
+            dy = y2 - y1
+            m = dy / dx
+            if m > 1 or m < -1:
+                small_slope = False
 
-        while x < y:
-            if f >= 0:
-                y -= 1
-                dy += 2
-                f += dy
-            x += 1
-            dx += 2
-            f += dx
-            points.append([center[0] + x, center[1] + y])
-            points.append([center[0] - x, center[1] + y])
-            points.append([center[0] + x, center[1] - y])
-            points.append([center[0] - x, center[1] - y])
-            points.append([center[0] + y, center[1] + x])
-            points.append([center[0] - y, center[1] + x])
-            points.append([center[0] + y, center[1] - x])
-            points.append([center[0] - y, center[1] - x])
-        return points
+            if small_slope:
+                if m >= 0:
+                    pass
 
     def escape(self):
         self.light_win.destroy()

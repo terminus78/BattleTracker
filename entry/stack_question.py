@@ -6,10 +6,10 @@ class Circle():
     def __init__(self, root):
         self.root = root
         self.map_frames = []
-        for i in range(15):
+        for i in range(14):
             self.map_frames.append([])
             self.root.rowconfigure(i, minsize=33)
-            for j in range(15):
+            for j in range(14):
                 self.root.columnconfigure(j, minsize=33)
                 space = tk.Frame(master=self.root, relief='raised', borderwidth=1, bg='gray28')
                 space.grid(row=i, column=j, sticky='nsew')
@@ -17,36 +17,29 @@ class Circle():
 
     def circle_points(self, radius):
         points = []
-        x = 0
-        y = -radius
-        F_M = 1 - radius
-        d_e = 3
-        d_ne = -(2 * radius) + 5
-        points.extend(self.transform_ring_points(x, y))
-        while x < -y:
-            if F_M <= 0:
-                F_M += d_e
-            else:
-                F_M += d_ne
-                d_ne += 2
-                y += 1
-            d_e += 2
-            d_ne += 2
-            x += 1
-            points.extend(self.transform_ring_points(x, y))
+        y = 1
+        x = radius
+
+        while x > y:
+            dy = y - 0.5
+            dx = math.sqrt(radius*radius - dy*dy)
+            left = math.ceil(0.5 - dx)
+            right = math.floor(0.5 + dx)
+            points.extend(self.transform_no_fill(left, y))
+            points.extend(self.transform_no_fill(right, y))
+            y += 1
+
         return points
 
-    def transform_ring_points(self, x, y):
+    def transform_no_fill(self, x, y):
         x = int(x)
         y = int(y)
-        return [( x,  y),
-                ( y,  x),
-                (-x,  y),
-                (-y,  x),
-                ( x, -y),
-                ( y, -x),
-                (-x, -y),
-                (-y, -x)]
+        return [
+            (  x,   y),
+            (1-y,   x),
+            (1-x, 1-y),
+            (  y, 1-x)
+        ]
 
     def points_to_offsets(self, points):
         pos = [0,0]
@@ -58,7 +51,7 @@ class Circle():
         return offsets
 
     def highlight(self, radius):
-        curr_pos = [7, 7]
+        curr_pos = [6, 6]
         points = self.circle_points(radius)
         offsets = self.points_to_offsets(points)
         
@@ -71,5 +64,5 @@ class Circle():
 if __name__ == '__main__':
     window = tk.Tk()
     circ = Circle(window)
-    circ.highlight(3)
+    circ.highlight(4)
     window.mainloop()
