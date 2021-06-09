@@ -969,6 +969,9 @@ class BattleMap():
             curr_pos[1] += self.light_list[i][1]
             if curr_pos[0] < self.map_size[1] and curr_pos[1] < self.map_size[0] and curr_pos[0] >= 0 and curr_pos[1] >= 0:
                 self.map_frames[curr_pos[1]][curr_pos[0]].config(bg='SpringGreen3')
+        start = list(event.widget.coord)
+        if self.light_shape == 'Line':
+            self.map_frames[start[1]][start[0]].config(bg='gray28')
         self.root.bind_all("<Escape>", self.clear_light)
         self.root.bind_all("<Button-3>", self.clear_light)
 
