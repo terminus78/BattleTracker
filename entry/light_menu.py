@@ -75,12 +75,20 @@ class PickLight():
         elif shape == 'Cone':
             for i in range(5, 105, 5):
                 len_list.append(i)
-            for i in range(0, 361, 45):
-                angle_list.append(i)
+            angle_list = [
+                'N',
+                'NE',
+                'E',
+                'SE',
+                'S',
+                'SW',
+                'W',
+                'NW'
+            ]
         elif shape == 'Line':
             for i in range(5, 305, 5):
                 len_list.append(i)
-            for i in range(0, 346, 15):
+            for i in range(0, 361, 15):
                 angle_list.append(i)
 
         self.cbx_light_size.config(values=len_list)
@@ -111,77 +119,85 @@ class PickLight():
             points = self.no_fill_circle(size)
             offset_array = self.points_to_offsets(points)
         elif shape == 'Line':
-            angle_diff = 0
-            octant = 1
-            if angle == '':
-                return
-            angle = int(angle)
-            if angle == 0:
-                octant = 0
-                end_x = size
-                end_y = 0
-            elif angle == 180:
-                octant = 0
-                end_x = -size
-                end_y = 0
-
-            if octant > 0:
-                if angle > 45 and angle < 90:
-                    angle_diff = 45
-                    octant = 2
-                elif angle >= 90 and angle < 135:
-                    angle_diff = 90
-                    octant = 3
-                elif angle >= 135 and angle < 180:
-                    angle_diff = 135
-                    octant = 4
-                elif angle >= 180 and angle < 225:
-                    angle_diff = 180
-                    octant = 5
-                elif angle >= 225 and angle < 270:
-                    angle_diff = 225
-                    octant = 6
-                elif angle >= 270 and angle < 315:
-                    angle_diff = 270
-                    octant = 7
-                elif angle >= 315 and angle < 360:
-                    angle_diff = 315
-                    octant = 8
-                angle -= angle_diff
-                # Flip odd octant angles to simplify math
-                if octant % 2 == 0:
-                    angle = abs(angle - 45)
-                short_leg = int((angle * size) / 45)
-                if octant == 1:
-                    end_x = size
-                    end_y = short_leg
-                elif octant == 2:
-                    end_x = short_leg
-                    end_y = size
-                elif octant == 3:
-                    end_x = -short_leg
-                    end_y = size
-                elif octant == 4:
-                    end_x = -size
-                    end_y = short_leg
-                elif octant == 5:
-                    end_x = -size
-                    end_y = -short_leg
-                elif octant == 6:
-                    end_x = -short_leg
-                    end_y = -size
-                elif octant == 7:
-                    end_x = short_leg
-                    end_y = -size
-                elif octant == 8:
-                    end_x = size
-                    end_y = -short_leg
+            end_x, end_y = self.find_endpoint(size, angle)
             points = self.draw_line(0, 0, end_x, end_y)
+            offset_array = self.points_to_offsets(points)
+        elif shape == 'Cone':
+            points = self.draw_cone(size, angle)
             offset_array = self.points_to_offsets(points)
         else:
             return
         
         return offset_array, shape
+
+    def find_endpoint(self, size, angle):
+        angle_diff = 0
+        octant = 1
+        if angle == '':
+            return
+        angle = int(angle)
+        if angle == 0 or angle == 360:
+            octant = 0
+            end_x = size
+            end_y = 0
+        elif angle == 180:
+            octant = 0
+            end_x = -size
+            end_y = 0
+
+        if octant > 0:
+            if angle > 45 and angle < 90:
+                angle_diff = 45
+                octant = 2
+            elif angle >= 90 and angle < 135:
+                angle_diff = 90
+                octant = 3
+            elif angle >= 135 and angle < 180:
+                angle_diff = 135
+                octant = 4
+            elif angle >= 180 and angle < 225:
+                angle_diff = 180
+                octant = 5
+            elif angle >= 225 and angle < 270:
+                angle_diff = 225
+                octant = 6
+            elif angle >= 270 and angle < 315:
+                angle_diff = 270
+                octant = 7
+            elif angle >= 315 and angle < 360:
+                angle_diff = 315
+                octant = 8
+            angle -= angle_diff
+            # Flip odd octant angles to simplify math
+            if octant % 2 == 0:
+                angle = abs(angle - 45)
+            short_leg = int((angle * size) / 45)
+            if octant == 1:
+                end_x = size
+                end_y = short_leg
+            elif octant == 2:
+                end_x = short_leg
+                end_y = size
+            elif octant == 3:
+                end_x = -short_leg
+                end_y = size
+            elif octant == 4:
+                end_x = -size
+                end_y = short_leg
+            elif octant == 5:
+                end_x = -size
+                end_y = -short_leg
+            elif octant == 6:
+                end_x = -short_leg
+                end_y = -size
+            elif octant == 7:
+                end_x = short_leg
+                end_y = -size
+            elif octant == 8:
+                end_x = size
+                end_y = -short_leg
+
+        return end_x, end_y
 
     def points_to_offsets(self, points):
         pos = [0,0]
@@ -328,6 +344,21 @@ class PickLight():
             x = x1
             for y in range(y1, y2+1):
                 points.append([x, y])
+
+        return points
+
+    def draw_cone(self, size, dir):
+        points = []
+        if dir == 'N':
+            dx = 1
+            for y in range(1, size+1):
+                if y % 2 == 1 and y > 1:
+                    dx += 1
+                ddx = int(math.ceil(dx / 2)) - dx
+                end_x = ddx + dx
+                print(ddx)
+                for x in range(ddx, end_x):
+                    points.append([x, y])
 
         return points
 
