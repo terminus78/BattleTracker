@@ -23,6 +23,7 @@ from player_window import PlayerWin
 from starter import *
 from undo_redo import ActionStack
 from light_menu import *
+from object_builder import ObjectBuilder
 
 
 map_win = tk.Tk()
@@ -140,14 +141,16 @@ class BattleMap():
         btn_save.grid(row=0, column=3, sticky='se')
         btn_clear = ttk.Button(master=self.top_frame, command=self.clear_map, text="Clear Map")
         btn_clear.grid(row=0, column=4, sticky='se')
-        btn_input = ttk.Button(master=self.top_frame, command=self.input_creature_window, text="Input Creature")
+        btn_input = ttk.Button(master=self.top_frame, command=self.input_creature_window, text="New Creature")
         btn_input.grid(row=0, column=5, sticky='se')
+        btn_obj = ttk.Button(master=self.top_frame, command=self.input_object_window, text="New Object")
+        btn_obj.grid(row=0, column=6, sticky='se')
         btn_reset = ttk.Button(master=self.top_frame, command=lambda: self.refresh_map(reset=True), text="Reset Map")
-        btn_reset.grid(row=0, column=6, sticky='se')
+        btn_reset.grid(row=0, column=7, sticky='se')
         btn_restart = ttk.Button(master=self.top_frame, command=self.full_reset, text="Reset Battle")
-        btn_restart.grid(row=0, column=7, sticky='se')
+        btn_restart.grid(row=0, column=8, sticky='se')
         btn_close_all = ttk.Button(master=self.top_frame, command=self.root.destroy, text="Close All")
-        btn_close_all.grid(row=0, column=8, sticky='se')
+        btn_close_all.grid(row=0, column=9, sticky='se')
         self.lbl_quote = ttk.Label(master=self.quote_frame, text="", font=self.reg_font)
         self.lbl_quote.grid(row=0, column=0, sticky='w', pady=5)
         self.find_quote()
@@ -233,6 +236,7 @@ class BattleMap():
         
         self.map_frames = []
         self.root.token_list = []
+        self.root.obj_list = []
         self.root.copy_win_open = False
         self.root.light_params = {}
 
@@ -263,7 +267,7 @@ class BattleMap():
                 self.map_frames[i].append(self.space)
                 self.token_labels[i].append(None)
         
-        self.initialize_tokens()
+        self.initialize()
 
         go_back_frame = ttk.Frame(master=self.top_frame)
         go_back_frame.grid(row=0, column=0, sticky='nw')
@@ -507,19 +511,34 @@ class BattleMap():
     def _on_defocus(self, event):
         event.widget.focus_set()
 
-    def initialize_tokens(self):
+    def initialize(self):
         self.root.token_list = []
+        self.root.obj_list = []
         with ZipFile(self.root.filename, "r") as savefile:
             creat_bytes = savefile.read('creatures.json')
             creat_str = creat_bytes.decode('utf-8')
             creatures = json.loads(creat_str)
+            # obj_bytes = savefile.read('objects.json')
+            # obj_str = obj_bytes.decode('utf-8')
+            # objects = json.loads(obj_str)
         for being in creatures.values():
             self.root.token_list.append(being)
-    
+        # for thing in objects.values():
+        #     self.root.obj_list.append(thing)
+
     def place_tokens(self):
         self.initiative_holder = {}
         spaces_taken = []
         self.target_names = []
+        for key in self.root.obj_list.keys():
+            for sub_key in self.root.obj_list[key].keys():
+                obj = self.root.obj_list[key][sub_key]
+                occupied = False
+                if obj["coordinate"][0] != "" and obj["coordinate"][1] != "":
+                    row_pos = int(obj["coordinate"][1])
+                    col_pos = int(obj["coordinate"][0])
+                    self.target_names.append(sub_key)
+
         for being in self.root.token_list:
             token_type = being["type"]
             if token_type == "ally":
@@ -715,7 +734,7 @@ class BattleMap():
         self.side_count = 0
 
         if reset:
-            self.initialize_tokens()
+            self.initialize()
         self.place_tokens()
         if self.root.copy_win_open:
             self.copy_win.update_players()
@@ -877,6 +896,16 @@ class BattleMap():
     def input_creature_window(self):
         self.in_win = StatCollector(self.root, self.map_size, self.round, self.turn)
         self.in_win.btn_submit.configure(command=lambda arg=['in_win', 'submit']: self.change_token_list(arg))
+
+    def input_object_window(self):
+        self.obj_win = ObjectBuilder(self.root)
+        self.obj_win.btn_submit.configure(command=self.change_obj_list)
+
+    def change_obj_list(self):
+        change_complete = self.obj_win.obj_win.submit()
+        if change_complete:
+            self.obj_win.obj_win.destroy()
+            self.refresh_map()
 
     def change_token_list(self, arg):
         origin = arg[0]

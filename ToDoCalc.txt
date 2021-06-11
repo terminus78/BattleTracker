@@ -33,6 +33,7 @@ To Do List:
 	# Battlefield scroll and grid enlargement
 	# Controller pane
 	# Movement
+	# Field highlighting(spell)
 	T# Input scrubbing
 	T# Collisions
 	T# Initiative picture on player window (label currently)
@@ -40,9 +41,10 @@ To Do List:
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
 	- Buff/Debuff conditions
-	- Field highlighting(spell)
+	- Line highlight canvas angle drawing
 	- Minion generator
 	- Objects
+	- Word-wrap notes
 	- Libraries
 		- Creature Template Library
 		R Race Library
