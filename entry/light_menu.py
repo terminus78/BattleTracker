@@ -349,16 +349,35 @@ class PickLight():
 
     def draw_cone(self, size, dir):
         points = []
-        if dir == 'N':
-            dx = 1
+        if len(dir) == 1:
+            xl1 = 0
+            xl2 = 1
             for y in range(1, size+1):
                 if y % 2 == 1 and y > 1:
-                    dx += 1
-                ddx = int(math.ceil(dx / 2)) - dx
-                end_x = ddx + dx
-                print(ddx)
-                for x in range(ddx, end_x):
-                    points.append([x, y])
+                    xl1 -= 1
+                    xl2 += 1
+                for x in range(xl1, xl2):
+                    if dir == 'N':
+                        points.append([x, -y])
+                    elif dir == 'S':
+                        points.append([x, y])
+                    elif dir == 'W':
+                        points.append([-y, x])
+                    elif dir == 'E':
+                        points.append([y, x])
+        else:
+            height = size
+            for x in range(1, size+1):
+                for y in range(1, height+1):
+                    if dir == 'NE':
+                        points.append([x, -y])
+                    elif dir == 'SE':
+                        points.append([x, y])
+                    elif dir == 'SW':
+                        points.append([-x, y])
+                    elif dir == 'NW':
+                        points.append([-x, -y])
+                height -= 1
 
         return points
 
