@@ -105,6 +105,8 @@ class ObjectBuilder():
         obj_mat = self.ent_material.get()
         obj_ac = self.ent_ac.get()
         obj_hp = self.ent_obj_hp.get()
+        obj_L = self.ent_L.get()
+        obj_W = self.ent_W.get()
 
         try:
             obj_row = int(obj_row)
@@ -112,8 +114,16 @@ class ObjectBuilder():
             obj_z = int(obj_z)
             obj_ac = int(obj_ac)
             obj_hp = int(obj_hp)
+            obj_L = int(obj_L)
+            obj_W = int(obj_W)
         except ValueError:
             messagebox.showwarning("Object Error", "All fields that accept a number value must be positive whole numbers.")
+            return False
+
+        obj_row -= 1
+        obj_col -= 1
+        if obj_row < 0 or obj_row > self.root.mapsize[0] - 1 or obj_col < 0 or obj_col > self.root.mapsize[1] - 1:
+            messagebox.showwarning("Object Error", "Coordinate out of range of map.")
             return False
 
         obj_dict = {
@@ -121,7 +131,9 @@ class ObjectBuilder():
             "coordinate": [obj_col, obj_row, obj_z],
             "material": obj_mat,
             "ac": obj_ac,
-            "hp": obj_hp
+            "hp": obj_hp,
+            "length": obj_L,
+            "width": obj_W
         }
 
         self.root.obj_list[obj_name][obj_sub_name] = obj_dict

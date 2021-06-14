@@ -41,16 +41,6 @@ class BattleMap():
         self.start_win.btn_open_existing.config(command=lambda: self.start_up_seq('open'))
         self.start_win.win_start.protocol('WM_DELETE_WINDOW', lambda: self.root.destroy())
         
-        '''
-        self.map_win = tk.Toplevel(self.master)
-        self.map_win.title(f"Battle Map | {game_title}")
-        style = ThemedStyle(self.map_win)
-        style.theme_use("equilux")
-        bg = style.lookup('TLabel', 'background')
-        fg = style.lookup('TLabel', 'foreground')
-        self.map_win.configure(bg=style.lookup('TLabel', 'background'))
-        '''
-
     def start_up_seq(self, opt):
         if opt == 'new':
             self.start_win.new_file()
@@ -73,14 +63,7 @@ class BattleMap():
     
     def main_window(self):
         self.root.overrideredirect(0)
-        #self.root.deiconify()
-        '''
-        window_width = self.root.winfo_reqwidth()
-        window_height = self.root.winfo_reqheight()
-        position_horizontal = int(self.root.winfo_screenwidth()/2 - window_width/2)
-        position_vertical = int(self.root.winfo_screenheight()/2 - window_height/2)
-        self.root.geometry("+{}+{}".format(position_horizontal, position_vertical))
-        '''
+
         game_title = self.root.game_name
         if len(game_title) > 32:
             game_title = game_title[0:32] + "..."
@@ -99,28 +82,22 @@ class BattleMap():
             self.round = battle_obj['round']
             self.turn = battle_obj['turn']
 
-        # self.root.rowconfigure(2, weight=1)
-        # self.root.columnconfigure(0, weight=1)
-        self.top_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
+        self.top_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')
         self.top_frame.pack(side='top', fill='both')
-        #self.top_frame.grid(row=0, column=0)
         self.top_frame.columnconfigure(1, weight=1)
         self.top_frame.rowconfigure(0, minsize=100, weight=1)
         self.quote_frame = ttk.Frame(master=self.root)
-        self.quote_frame.pack(side='top', fill='x')#, expand=True)
-        #self.quote_frame.grid(row=1, column=0)
+        self.quote_frame.pack(side='top', fill='x')
         self.quote_frame.columnconfigure(0, minsize=20)
-        self.bottom_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')#, bg='dark green')
+        self.bottom_frame = ttk.Frame(master=self.root, borderwidth=2, relief='ridge')
         self.bottom_frame.pack(side='top', fill='both', expand=True)
-        #self.bottom_frame.grid(row=2, column=0)
         self.bottom_frame.columnconfigure(0, minsize=100)
         self.bottom_frame.columnconfigure(1, weight=1, minsize=500)
         self.bottom_frame.columnconfigure(2, minsize=150)
         self.bottom_frame.columnconfigure(3, minsize=50)
         self.bottom_frame.rowconfigure(0, weight=1, minsize=350)
         self.controller_frame = ttk.Frame(master=self.root)
-        self.controller_frame.pack(side='top', fill='x')#, expand=True)
-        #self.controller_frame.grid(row=3, column=0)
+        self.controller_frame.pack(side='top', fill='x')
 
         self.em = EventManager(self.root)
         self.calculator = Calculator(self.root)
@@ -165,10 +142,8 @@ class BattleMap():
         grid_scroll_horz = ttk.Scrollbar(master=self.bottom_frame, orient='horizontal', command=self.grid_canvas.xview)
         self.grid_frame = ttk.Frame(master=self.grid_canvas)
         canvas_frame.grid(row=0, column=1, sticky="nsew")
-        #self.grid_canvas.grid(row=0, column=0, sticky='nsew')
         self.grid_canvas.pack(side='left', fill='both', expand=True)
         self.grid_canvas.config(yscrollcommand=grid_scroll_vert.set, xscrollcommand=grid_scroll_horz.set)
-        #grid_scroll_vert.grid(row=0, column=1, sticky='nse')
         grid_scroll_vert.pack(side='right', fill='y')
         grid_scroll_horz.grid(row=1, column=1, sticky='ew')
         self.grid_canvas.create_window((4,4), window=self.grid_frame, anchor='nw', tags='self.grid_frame')
@@ -518,26 +493,51 @@ class BattleMap():
             creat_bytes = savefile.read('creatures.json')
             creat_str = creat_bytes.decode('utf-8')
             creatures = json.loads(creat_str)
-            # obj_bytes = savefile.read('objects.json')
-            # obj_str = obj_bytes.decode('utf-8')
-            # objects = json.loads(obj_str)
+            obj_bytes = savefile.read('objects.json')
+            obj_str = obj_bytes.decode('utf-8')
+            objects = json.loads(obj_str)
         for being in creatures.values():
             self.root.token_list.append(being)
-        # for thing in objects.values():
-        #     self.root.obj_list.append(thing)
+        for thing in objects.values():
+            self.root.obj_list.append(thing)
 
     def place_tokens(self):
         self.initiative_holder = {}
         spaces_taken = []
         self.target_names = []
-        for key in self.root.obj_list.keys():
-            for sub_key in self.root.obj_list[key].keys():
-                obj = self.root.obj_list[key][sub_key]
+        for item in self.root.obj_list:
+            for key in item.keys():
+                obj = item[key]
                 occupied = False
                 if obj["coordinate"][0] != "" and obj["coordinate"][1] != "":
                     row_pos = int(obj["coordinate"][1])
                     col_pos = int(obj["coordinate"][0])
-                    self.target_names.append(sub_key)
+                    self.target_names.append(key)
+                    for space_tuple in spaces_taken:
+                        if space_tuple[0] == row_pos and space_tuple[1] == col_pos and space_tuple[2] == int(obj["coordinate"][2]):
+                            occupied = True
+                    if occupied == False:
+                        spaces_taken.append((row_pos, col_pos, int(obj["coordinate"][2])))
+                        o_length = obj["length"]
+                        o_width = obj["width"]
+                        f_len = 5 * round(o_length / 5)
+                        if f_len < 5:
+                            f_len = 5
+                        f_wid = 5 * round(o_width / 5)
+                        if f_wid < 5:
+                            f_wid = 5
+                        o_col = int(f_wid / 5)
+                        o_row = int(f_len / 5)
+                        for x in range(o_col):
+                            col_pos = obj["coordinate"][0] + x - 1
+                            for y in range(o_row):
+                                row_pos = obj["coordinate"][1] + y - 1
+                                obj_img = ImageTk.PhotoImage(image=PIL.Image.open(obj["img_ref"]).resize((30,30)))
+                                lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=obj_img, bg="gray28", borderwidth=0)
+                                lbl_unit.image = obj_img
+                                lbl_unit.coord = (row_pos, col_pos)
+                                lbl_unit.pack(fill='both', expand=True, padx=2, pady=2)
+                                CreateToolTip(lbl_unit, text=f"{key}: {row_pos}, {col_pos}", left_disp=True)
 
         for being in self.root.token_list:
             token_type = being["type"]

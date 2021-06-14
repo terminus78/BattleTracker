@@ -139,10 +139,57 @@ class StartWindow():
             "round": 0,
             "turn": 0
         }
+
+        # !!! REMOVE AFTER TESTING !!!
+
+        tmp_obj_dict = {
+            "chair": {
+                "chair_1": {
+                    "img_ref": "entry\\bin\\swords.png",
+                    "coordinate": [3, 3, 0],
+                    "material": "wood",
+                    "ac": 12,
+                    "hp": 10,
+                    "length": 4,
+                    "width": 6
+                },
+                "chair_2": {
+                    "img_ref": "entry\\bin\\swords.png",
+                    "coordinate": [6, 3, 0],
+                    "material": "wood",
+                    "ac": 12,
+                    "hp": 10,
+                    "length": 1,
+                    "width": 1
+                }
+            },
+            "box": {
+                "box_1": {
+                    "img_ref": "entry\\bin\\red-dice-twenty-faces-twenty.png",
+                    "coordinate": [6, 6, 0],
+                    "material": "metal",
+                    "ac": 16,
+                    "hp": 20,
+                    "length": 20,
+                    "width": 10
+                },
+                "box_2": {
+                    "img_ref": "entry\\bin\\red-dice-twenty-faces-twenty.png",
+                    "coordinate": [10, 6, 0],
+                    "material": "metal",
+                    "ac": 16,
+                    "hp": 20,
+                    "length": 4,
+                    "width": 30
+                }
+            }
+        }
         battleJSON = json.dumps(battle_dict, indent=4)
+        tmp_obj_JSON = json.dumps(tmp_obj_dict, indent=4)
         with ZipFile(self.master.filename, 'w') as brpg_file:
             brpg_file.writestr("battle_info.json", battleJSON)
             brpg_file.writestr("creatures.json", "{}")
+            brpg_file.writestr("objects.json", tmp_obj_JSON)
         save_dir = os.path.dirname(self.master.filename)
         if save_dir != self.cache_info['last_dir']:
             self.cache_info['last_dir'] = save_dir
