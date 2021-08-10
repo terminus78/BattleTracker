@@ -1,0 +1,32 @@
+{
+    "chair": {
+        "size": [1,1,1],
+        "hp": 5,
+        "ac": 10,
+        "img": "entry\\bin\\swords.png"
+    },
+    "table": {
+        "size": [3,1,1],
+        "hp": 5,
+        "ac": 10,
+        "img": "entry\\bin\\swords.png"
+    },
+    "barrel": {
+        "size": [1,1,1],
+        "hp": 5,
+        "ac": 10,
+        "img": "entry\\bin\\swords.png"
+    },
+    "hole": {
+        "size": [2,2,1],
+        "hp": 5,
+        "ac": 10,
+        "img": "entry\\bin\\swords.png"
+    },
+    "wall": {
+        "size": [1,1,1],
+        "hp": 5,
+        "ac": 10,
+        "img": "entry\\bin\\swords.png"
+    }
+}

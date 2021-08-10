@@ -899,7 +899,10 @@ class BattleMap():
 
     def input_object_window(self):
         self.obj_win = ObjectBuilder(self.root)
-        self.obj_win.btn_submit.configure(command=self.change_obj_list)
+        try:
+            self.obj_win.btn_submit.configure(command=lambda e: self.change_obj_list())
+        except AttributeError:
+            self.root.destroy()
 
     def change_obj_list(self):
         change_complete = self.obj_win.obj_win.submit()

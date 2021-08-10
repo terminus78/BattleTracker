@@ -318,7 +318,7 @@ class EventManager():
         self.root.token_list[index]['coordinate'] = new_coord
         return True
     
-    def removeToken(self):
+    def remove_token(self):
         selected_option = self.drop_selection.get()
         if selected_option == "":
             messagebox.showinfo("Info", "Must select a creature.")
