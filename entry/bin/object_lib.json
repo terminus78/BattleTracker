@@ -1,32 +1,60 @@
 {
     "chair": {
-        "size": [1,1,1],
-        "hp": 5,
-        "ac": 10,
-        "img": "entry\\bin\\swords.png"
-    },
-    "table": {
-        "size": [3,1,1],
-        "hp": 5,
-        "ac": 10,
-        "img": "entry\\bin\\swords.png"
+        "material": {
+            "wood": {
+                "size": {
+                    "small": {
+                        "dim": [1,1,1],
+                        "image": {
+                            "up": "entry\\bin\\swords.png",
+                            "down": "entry\\bin\\swords.png",
+                            "left": "entry\\bin\\swords.png",
+                            "right": "entry\\bin\\swords.png"
+                        }
+                    }
+                }
+            },
+            "stone": {
+                "size": {
+                    "small": {
+                        "dim": [1,1,1],
+                        "image": {
+                            "up": "entry\\bin\\swords.png",
+                            "down": "entry\\bin\\swords.png",
+                            "left": "entry\\bin\\swords.png",
+                            "right": "entry\\bin\\swords.png"
+                        }
+                    }
+                }
+            },
+            "metal": {
+                "size": {
+                    "small": {
+                        "dim": [1,1,1],
+                        "image": {
+                            "up": "entry\\bin\\swords.png",
+                            "down": "entry\\bin\\swords.png",
+                            "left": "entry\\bin\\swords.png",
+                            "right": "entry\\bin\\swords.png"
+                        }
+                    }
+                }
+            }
+        }
     },
     "barrel": {
-        "size": [1,1,1],
-        "hp": 5,
-        "ac": 10,
-        "img": "entry\\bin\\swords.png"
-    },
-    "hole": {
-        "size": [2,2,1],
-        "hp": 5,
-        "ac": 10,
-        "img": "entry\\bin\\swords.png"
-    },
-    "wall": {
-        "size": [1,1,1],
-        "hp": 5,
-        "ac": 10,
-        "img": "entry\\bin\\swords.png"
+        "material": {
+            "wood": {
+                "size": {
+                    "small": {
+                        "dim": [1,1,1],
+                        "image": {
+                            "up": "entry\\bin\\swords.png",
+                            "down": "entry\\bin\\swords.png"
+                        }
+                    }
+                }
+            }
+        }
     }
 }

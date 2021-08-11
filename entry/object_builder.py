@@ -1,7 +1,10 @@
+from copy import Error
 import json
 import math
 import os
 
+import PIL.Image
+from PIL import ImageTk
 from tkinter import font
 from tkinter.constants import S
 from typing import MutableSet
@@ -44,6 +47,7 @@ class ObjectBuilder():
             self.object_list.append(obj)
         self.cbx_object = ttk.Combobox(master=collect_frame, width=18, values=self.object_list, state='readonly')
         self.cbx_object.grid(row=0, column=1, sticky='e')
+        self.cbx_object.bind("<<ComboboxSelected>>", self._on_select_object)
 
         lbl_obj_coord = ttk.Label(master=collect_frame, text="Position: ", font=self.reg_font)
         lbl_obj_coord.grid(row=1, column=0, sticky='w')
@@ -58,38 +62,93 @@ class ObjectBuilder():
 
         lbl_material = ttk.Label(master=collect_frame, text="Material: ", font=self.reg_font)
         lbl_material.grid(row=2, column=0, sticky='w')
-        self.ent_material = ttk.Entry(master=collect_frame, width=18)
-        self.ent_material.grid(row=2, column=1, sticky='e')
+        self.cbx_material = ttk.Combobox(master=collect_frame, width=18, state='readonly')
+        self.cbx_material.grid(row=2, column=1, sticky='e')
+        self.cbx_material.bind("<<ComboboxSelected>>", self._on_select_mat)
 
-        lbl_ac = ttk.Label(master=collect_frame, text="AC: ", font=self.reg_font)
-        lbl_ac.grid(row=3, column=0, sticky='w')
-        self.ent_ac = ttk.Entry(master=collect_frame, width=18)
-        self.ent_ac.grid(row=3, column=1, sticky='e')
+        lbl_obj_size = ttk.Label(master=collect_frame, text="Size: ", font=self.reg_font)
+        lbl_obj_size.grid(row=3, column=0, sticky='w')
+        self.cbx_size = ttk.Combobox(master=collect_frame, width=18, state='readonly')
+        self.cbx_size.grid(row=3, column=1, sticky='w')
+        self.cbx_size.bind("<<ComboboxSelected>>", self._on_select_size)
 
-        lbl_obj_hp = ttk.Label(master=collect_frame, text="Object HP: ", font=self.reg_font)
-        lbl_obj_hp.grid(row=4, column=0, sticky='w')
-        self.ent_obj_hp = ttk.Entry(master=collect_frame, width=18)
-        self.ent_obj_hp.grid(row=4, column=1, sticky='e')
-
-        lbl_obj_dim = ttk.Label(master=collect_frame, text="Dimensions: ", font=self.reg_font)
-        lbl_obj_dim.grid(row=5, column=0, sticky='w')
-        dim_frame = ttk.Frame(master=collect_frame)
-        dim_frame.grid(row=5, column=1, sticky='ew')
-        dim_frame.columnconfigure(0, weight=1)
-        lbl_L = ttk.Label(master=dim_frame, text="L: ", font=self.small_font)
-        lbl_L.grid(row=0, column=0, sticky='w', padx=20)
-        self.ent_L = ttk.Entry(master=dim_frame, width=5, state='readonly')
-        self.ent_L.grid(row=0, column=1, sticky='e')
-        lbl_W = ttk.Label(master=dim_frame, text="W: ", font=self.small_font)
-        lbl_W.grid(row=1, column=0, sticky='w', padx=20)
-        self.ent_W = ttk.Entry(master=dim_frame, width=5, state='readonly')
-        self.ent_W.grid(row=1, column=1, sticky='e')
+        lbl_direction = ttk.Label(master=collect_frame, text="Direction: ", font=self.reg_font)
+        lbl_direction.grid(row=4, column=0, sticky='w')
+        self.cbx_direction = ttk.Combobox(master=collect_frame, width=18,  state='readonly')
+        self.cbx_direction.grid(row=4, column=1, sticky='w')
+        self.cbx_direction.bind("<<ComboboxSelected>>", self._on_select_direction)
 
         self.obj_canvas = tk.Canvas(master=show_frame, bg='gray28', width=200, height=200, highlightthickness=1)
         self.obj_canvas.grid(row=0, column=0)
 
         self.btn_submit = ttk.Button(master=sub_frame, text="Submit")
         self.btn_submit.grid(row=0, column=0)
+
+    def _on_select_object(self, event):
+        if self.cbx_material.get() != '' or self.cbx_size.get() != '' or self.cbx_direction.get() != '':
+            self.cbx_material.set('')
+            self.cbx_material.config(values=[])
+            self.cbx_size.set('')
+            self.cbx_size.config(values=[])
+            self.cbx_direction.set('')
+            self.cbx_direction.config(values=[])
+
+        self.sel_object = self.cbx_object.get()
+        mat_list = []
+        for mat in self.object_lib[self.sel_object]['material'].keys():
+            mat_list.append(mat)
+        self.cbx_material.config(values=mat_list)
+
+        try:
+            self.obj_canvas.delete('all')
+        except AttributeError:
+            print('excepted')
+
+    def _on_select_mat(self, event):
+        if self.cbx_size.get() != '' or self.cbx_direction.get() != '':
+            self.cbx_size.set('')
+            self.cbx_size.config(values=[])
+            self.cbx_direction.set('')
+            self.cbx_direction.config(values=[])
+
+        self.sel_material = self.cbx_material.get()
+        size_list = []
+        for size in self.object_lib[self.sel_object]['material'][self.sel_material]['size'].keys():
+            size_list.append(size)
+        self.cbx_size.config(values=size_list)
+
+        try:
+            self.obj_canvas.delete('all')
+        except AttributeError:
+            print('excepted')
+
+    def _on_select_size(self, event):
+        if self.cbx_direction.get() != '':
+            self.cbx_direction.set('')
+            self.cbx_direction.config(values=[])
+        
+        self.sel_size = self.cbx_size.get()
+        dir_list = []
+        for dir in self.object_lib[self.sel_object]['material'][self.sel_material]['size'][self.sel_size]['image'].keys():
+            dir_list.append(dir)
+        self.cbx_direction.config(values=dir_list)
+
+        try:
+            self.obj_canvas.delete('all')
+        except AttributeError:
+            print('excepted')
+
+    def _on_select_direction(self, event):
+        try:
+            self.obj_canvas.delete('all')
+        except AttributeError:
+            print('excepted')
+
+        sel_dir = self.cbx_direction.get()
+        obj_image_path = self.object_lib[self.sel_object]['material'][self.sel_material]['size'][self.sel_size]['image'][sel_dir]
+        object_image = ImageTk.PhotoImage(image=PIL.Image.open(obj_image_path).resize((150,150)))
+        self.canvas_image = self.obj_canvas.create_image(0, 5, anchor='nw', image=object_image)
+        self.canvas_image = object_image
 
     def submit(self):
         obj_name = self.cbx_object.get()
