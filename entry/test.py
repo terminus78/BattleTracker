@@ -309,7 +309,7 @@ def key(event):
 
 root.bind("<Key>", key)
 root.mainloop()
-'''
+
 
 import tkinter as tk
 
@@ -358,3 +358,22 @@ if __name__ == "__main__":
     root = tk.Tk()
     Example(root).pack (fill="both", expand=True)
     root.mainloop()
+'''
+
+nested_dict = {
+    "thing_1": {
+        "has_stuff": {
+            1: "ball",
+            2: "apple"
+        }
+    },
+    "thing_2": {
+        "has_stuff": {
+            1: "box",
+            2: "phone"
+        }
+    }
+}
+
+list_keys = [key for key in nested_dict.keys()][0]
+print(list_keys)

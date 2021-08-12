@@ -506,38 +506,36 @@ class BattleMap():
         spaces_taken = []
         self.target_names = []
         for item in self.root.obj_list:
-            for key in item.keys():
-                obj = item[key]
-                occupied = False
-                if obj["coordinate"][0] != "" and obj["coordinate"][1] != "":
-                    row_pos = int(obj["coordinate"][1])
-                    col_pos = int(obj["coordinate"][0])
-                    self.target_names.append(key)
-                    for space_tuple in spaces_taken:
-                        if space_tuple[0] == row_pos and space_tuple[1] == col_pos and space_tuple[2] == int(obj["coordinate"][2]):
-                            occupied = True
-                    if occupied == False:
-                        spaces_taken.append((row_pos, col_pos, int(obj["coordinate"][2])))
-                        o_length = obj["length"]
-                        o_width = obj["width"]
-                        f_len = 5 * round(o_length / 5)
-                        if f_len < 5:
-                            f_len = 5
-                        f_wid = 5 * round(o_width / 5)
-                        if f_wid < 5:
-                            f_wid = 5
-                        o_col = int(f_wid / 5)
-                        o_row = int(f_len / 5)
-                        for x in range(o_col):
-                            col_pos = obj["coordinate"][0] + x - 1
-                            for y in range(o_row):
-                                row_pos = obj["coordinate"][1] + y - 1
-                                obj_img = ImageTk.PhotoImage(image=PIL.Image.open(obj["img_ref"]).resize((30,30)))
-                                lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=obj_img, bg="gray28", borderwidth=0)
-                                lbl_unit.image = obj_img
-                                lbl_unit.coord = (row_pos, col_pos)
-                                lbl_unit.pack(fill='both', expand=True, padx=2, pady=2)
-                                CreateToolTip(lbl_unit, text=f"{key}: {row_pos}, {col_pos}", left_disp=True)
+            occupied = False
+            if item["coordinate"][0] != "" and item["coordinate"][1] != "":
+                row_pos = int(item["coordinate"][1])
+                col_pos = int(item["coordinate"][0])
+                self.target_names.append(item['name'])
+                for space_tuple in spaces_taken:
+                    if space_tuple[0] == row_pos and space_tuple[1] == col_pos and space_tuple[2] == int(item["coordinate"][2]):
+                        occupied = True
+                if occupied == False:
+                    spaces_taken.append((row_pos, col_pos, int(item["coordinate"][2])))
+                    o_length = item["length"]
+                    o_width = item["width"]
+                    f_len = 5 * round(o_length / 5)
+                    if f_len < 5:
+                        f_len = 5
+                    f_wid = 5 * round(o_width / 5)
+                    if f_wid < 5:
+                        f_wid = 5
+                    o_col = int(f_wid / 5)
+                    o_row = int(f_len / 5)
+                    for x in range(o_col):
+                        col_pos = item["coordinate"][0] + x - 1
+                        for y in range(o_row):
+                            row_pos = item["coordinate"][1] + y - 1
+                            obj_img = ImageTk.PhotoImage(image=PIL.Image.open(item["img_ref"]).resize((30,30)))
+                            lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=obj_img, bg="gray28", borderwidth=0)
+                            lbl_unit.image = obj_img
+                            lbl_unit.coord = (row_pos, col_pos)
+                            lbl_unit.pack(fill='both', expand=True, padx=2, pady=2)
+                            CreateToolTip(lbl_unit, text=f"{item['name']}: {row_pos}, {col_pos}", left_disp=True)
 
         for being in self.root.token_list:
             token_type = being["type"]
@@ -749,6 +747,10 @@ class BattleMap():
         for being in self.root.token_list:
             name = being["name"]
             new_token_dict[name] = being
+        new_object_dict = {}
+        for obj in self.root.obj_list:
+            obj_name = obj["name"]
+            new_object_dict[obj_name] = obj
         battle_dict = {
             "map_size": self.map_size,
             "round": self.round,
@@ -757,8 +759,10 @@ class BattleMap():
         battleJSON = json.dumps(battle_dict, indent=4)
         with ZipFile(self.root.filename, "w") as savefile:
             creatJSON = json.dumps(new_token_dict, indent=4)
+            objJSON = json.dumps(new_object_dict, indent=4)
             savefile.writestr('battle_info.json', battleJSON)
             savefile.writestr('creatures.json', creatJSON)
+            savefile.writestr('objects.json', objJSON)
         self.go_back.clear_all()
 
     def clear_map(self):
@@ -898,14 +902,14 @@ class BattleMap():
         self.in_win.btn_submit.configure(command=lambda arg=['in_win', 'submit']: self.change_token_list(arg))
 
     def input_object_window(self):
-        self.obj_win = ObjectBuilder(self.root)
+        self.obj_win = ObjectBuilder(self.root, self.map_size)
         try:
-            self.obj_win.btn_submit.configure(command=lambda e: self.change_obj_list())
+            self.obj_win.btn_submit.configure(command=lambda: self.change_obj_list())
         except AttributeError:
             self.root.destroy()
 
     def change_obj_list(self):
-        change_complete = self.obj_win.obj_win.submit()
+        change_complete = self.obj_win.submit()
         if change_complete:
             self.obj_win.obj_win.destroy()
             self.refresh_map()
@@ -1030,8 +1034,10 @@ class BattleMap():
             battleJSON = json.dumps(battle_dict, indent=4)
             with ZipFile(self.root.filename, "w") as savefile:
                 creatJSON = json.dumps(empty_dict)
+                objJSON = json.dumps(empty_dict)
                 savefile.writestr('battle_info.json', battleJSON)
                 savefile.writestr('creatures.json', creatJSON)
+                savefile.writestr('objects.json', objJSON)
             self.refresh_map(reset=True)
         self.go_back.clear_all()
 

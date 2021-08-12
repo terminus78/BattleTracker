@@ -141,7 +141,7 @@ class StartWindow():
         }
 
         # !!! REMOVE AFTER TESTING !!!
-
+        '''
         tmp_obj_dict = {
             "chair": {
                 "chair_1": {
@@ -184,12 +184,12 @@ class StartWindow():
                 }
             }
         }
+        '''
         battleJSON = json.dumps(battle_dict, indent=4)
-        tmp_obj_JSON = json.dumps(tmp_obj_dict, indent=4)
         with ZipFile(self.master.filename, 'w') as brpg_file:
             brpg_file.writestr("battle_info.json", battleJSON)
             brpg_file.writestr("creatures.json", "{}")
-            brpg_file.writestr("objects.json", tmp_obj_JSON)
+            brpg_file.writestr("objects.json", "{}")
         save_dir = os.path.dirname(self.master.filename)
         if save_dir != self.cache_info['last_dir']:
             self.cache_info['last_dir'] = save_dir

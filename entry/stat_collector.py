@@ -309,10 +309,14 @@ class StatCollector():
             read_bytes = savefile.read('creatures.json')
             read_obj = json.loads(read_bytes.decode('utf-8'))
             read_obj.update(self.stats)
+            stuff_bytes = savefile.read('objects.json')
+            stuff_obj = json.loads(stuff_bytes.decode('utf-8'))
         with ZipFile(self.master.filename, "w") as savefile:
             readJSON = json.dumps(read_obj, indent=4)
+            stuffJSON = json.dumps(stuff_obj, indent=4)
             savefile.writestr('battle_info.json', battleJSON)
             savefile.writestr('creatures.json', readJSON)
+            savefile.writestr('objects.json', stuffJSON)
 
     def roll_dice(self):
         die_face = self.dice.roll()[0]
