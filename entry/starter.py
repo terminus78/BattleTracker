@@ -45,6 +45,7 @@ class StartWindow():
         self.countdown = 3
         self.master.cwd = os.getcwd()
         self.cache_loc = self.master.cwd + "\\entry\\bin\\cache.json"
+        self.version_loc = self.master.cwd + "\\entry\\bin\\version.json"
         self.done = False
         try:
             with open(self.cache_loc, 'r') as cache_file:
@@ -57,6 +58,14 @@ class StartWindow():
                 json.dump(default_loc, cache_file, indent=4)
             with open(self.cache_loc, 'r') as cache_file:
                 self.cache_info = json.load(cache_file)
+
+        try:
+            with open(self.version_loc, 'r') as ver_file:
+                version = json.load(ver_file)
+            self.master.version = version['version']
+        except IOError:
+            messagebox.showerror("File Corruption", "File corruption possible. Please reinstall the BattleTracker")
+            return False
 
         self.top_frame = ttk.Frame(master=self.win_start)
         self.top_frame.grid(row=0, column=0)

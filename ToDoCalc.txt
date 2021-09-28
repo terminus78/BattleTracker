@@ -37,13 +37,13 @@ To Do List:
 	T# Input scrubbing
 	T# Collisions
 	T# Initiative picture on player window (label currently)
-	- Integrate template usage to build tokens
+	R Integrate template usage to build tokens
 	- Multiple images for all token types and options
 	- Ring highlights for effects like concentration and conditions
 	- Buff/Debuff conditions
 	- Line highlight canvas angle drawing
 	- Minion generator
-	- Objects
+	# Objects
 	- Word-wrap notes
 	- Libraries
 		- Creature Template Library
@@ -52,7 +52,7 @@ To Do List:
 		R Background Library
 		R Feat Library
 		R Spell Library
-	- TV Pixel resolution differences
+	# TV Pixel resolution differences
 	- Beautification of all aspects
 	- Mobile App Character Controller
 	-- Advanced Version Possibilities

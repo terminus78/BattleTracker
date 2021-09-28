@@ -405,6 +405,8 @@ class BattleMap():
         lbl_amount_move_title.grid(row=2, column=3, sticky='e', padx=20)
         self.lbl_amount_moved = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
         self.lbl_amount_moved.grid(row=3, column=3, sticky='e', padx=20)
+        lbl_version = ttk.Label(master=self.controller_frame, text="Version: " + self.root.version)
+        lbl_version.grid(row=4, column=3, sticky='e')
 
         self.z_delta = 0
 
@@ -527,9 +529,9 @@ class BattleMap():
                     o_col = int(f_wid / 5)
                     o_row = int(f_len / 5)
                     for x in range(o_col):
-                        col_pos = item["coordinate"][0] + x - 1
+                        col_pos = int(item["coordinate"][0]) + x
                         for y in range(o_row):
-                            row_pos = item["coordinate"][1] + y - 1
+                            row_pos = int(item["coordinate"][1]) + y
                             obj_img = ImageTk.PhotoImage(image=PIL.Image.open(item["img_ref"]).resize((30,30)))
                             lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=obj_img, bg="gray28", borderwidth=0)
                             lbl_unit.image = obj_img

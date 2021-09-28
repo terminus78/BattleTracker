@@ -207,6 +207,9 @@ class ObjectBuilder():
             obj_row = int(obj_row)
             obj_col = int(obj_col)
             obj_z = int(obj_z)
+            
+            obj_row -= 1
+            obj_col -= 1
  
         except ValueError:
             messagebox.showwarning("Object Error", "All fields that accept a number value must be positive whole numbers.")

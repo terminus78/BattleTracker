@@ -59,17 +59,24 @@ class EventManager():
         self.move_finish_frame.grid(row=1, column=1)
         lbl_selected = ttk.Label(master=self.selection_frame, text="Selected Token", font=self.font)
         lbl_selected.grid(row=0, column=0, sticky='w')
-        names = []
-        coordinates = []
+        self.names = []
+        self.coordinates = []
+        '''
         for being in self.root.token_list:
-            names.append(being["name"])
-            coordinates.append(being["coordinate"])
-        self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=names, state='readonly')
+            self.names.append(being["name"])
+            self.coordinates.append(being["coordinate"])
+        '''
+        self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=self.names, state='readonly')
         self.drop_selection.grid(row=0, column=1, sticky='w')
         self.drop_selection.current()
-        self.drop_selection.bind("<<ComboboxSelected>>", lambda e: self.show_coord(event=e, arg=[names, coordinates]))
+        self.drop_selection.bind("<<ComboboxSelected>>", lambda e: self.show_coord(event=e, arg=[self.names, self.coordinates]))
         self.lbl_act_coord = ttk.Label(master=self.selection_frame, text=" ", font=self.font)
         self.lbl_act_coord.grid(row=1, column=1, sticky='w', columnspan=2)
+        self.creat_or_obj = tk.StringVar()
+        self.rbn_creature = ttk.Radiobutton(self.selection_frame, text="Creature", variable=self.creat_or_obj, value='creature', command=self.fill_drop_select)
+        self.rbn_creature.grid(row=0, column=2, sticky='w')
+        self.rbn_object = ttk.Radiobutton(self.selection_frame, text="Object", variable=self.creat_or_obj, value='object', command=self.fill_drop_select)
+        self.rbn_object.grid(row=0, column=3, sticky='w')
         #lbl_init_title = ttk.Label(master=self.selection_frame, text="Change Initiative", font=self.font)
         #lbl_init_title.grid(row=2, column=0, sticky='w')
         #init_frame = ttk.Frame(master=self.selection_frame)
@@ -113,6 +120,20 @@ class EventManager():
         self.btn_remove.grid(row=0, column=1, sticky='w')
         self.lbl_set_finished = ttk.Label(master=self.move_finish_frame, text=" ", font=self.font)
         self.lbl_set_finished.grid(row=0, column=2, sticky='w')
+
+    def fill_drop_select(self):
+        self.names = []
+        self.coordinates = []
+        cr_or_obj = self.creat_or_obj.get()
+        if cr_or_obj == "creature":
+            for being in self.root.token_list:
+                self.names.append(being["name"])
+                self.coordinates.append(being["coordinate"])
+        else:
+            for thing in self.root.obj_list:
+                self.names.append(thing["name"])
+                self.coordinates.append(thing["coordinate"])
+        self.drop_selection.config(values=self.names)
 
     def show_coord(self, arg, event):
         selected_option = self.drop_selection.get()
@@ -162,20 +183,32 @@ class EventManager():
         #removing_token = arg[0]
         selected_option = self.drop_selection.get()
         if selected_option == "":
-            messagebox.showinfo("Info", "Must select a creature.")
+            messagebox.showinfo("Info", "Must select a creature or object.")
             return False
 
         name_list = []
         name_exists = False
-        for being in self.root.token_list:
-            name_list.append(being['name'])
-            if being['name'] == selected_option:
-                name_exists = True
-        if name_exists == False:
-            messagebox.showinfo("Info", "Creature does not exist in current game.")
-            return
+        if self.creat_or_obj.get() == 'creature':
+            for being in self.root.token_list:
+                name_list.append(being['name'])
+                if being['name'] == selected_option:
+                    name_exists = True
+            if name_exists == False:
+                messagebox.showinfo("Info", "Creature does not exist in current game.")
+                return False
+        else:
+            for thing in self.root.obj_list:
+                name_list.append(thing['name'])
+                if thing['name'] == selected_option:
+                    name_exists = True
+            if name_exists == False:
+                messagebox.showinfo("Info", "Object does not exist in current game.")
+                return False
         index = name_list.index(selected_option)
-        size = self.root.token_list[index]['size']
+        if self.creat_or_obj.get() == 'creature':
+            size = self.root.token_list[index]['size']
+        else:
+            size = self.root.obj_list[index]['size']
         one_space = False
         if size == 'tiny' or size == 'small' or size == 'medium':
             one_space = True
@@ -188,7 +221,10 @@ class EventManager():
         delta_up_down_str = self.ent_z_delta.get()
 
         if go_forward_back != "" or go_left_right != "" or go_up_down != "":
-            coordinate = self.root.token_list[index]['coordinate']
+            if self.creat_or_obj.get() == 'creature':
+                coordinate = self.root.token_list[index]['coordinate']
+            else:
+                coordinate = self.root.obj_list[index]['coordinate']
             if coordinate[0] != "" and coordinate[1] != "" and coordinate[2] != "":
                 any_move_allowed = True
 
@@ -308,25 +344,34 @@ class EventManager():
                 new_init = self.root.token_list[index]['initiative']
             except TypeError:
                 new_init = self.root.token_list[index]['initiative']
-        '''
-
+        
         for being in self.root.token_list:
             if being["coordinate"] == new_coord:
                     messagebox.showerror("Error", "Space already taken!")
                     return
+        '''
         
-        self.root.token_list[index]['coordinate'] = new_coord
+        if self.creat_or_obj.get() == 'creature':
+            self.root.token_list[index]['coordinate'] = new_coord
+        else:
+            self.root.obj_list[index]['coordinate'] = new_coord
         return True
     
     def remove_token(self):
         selected_option = self.drop_selection.get()
         if selected_option == "":
-            messagebox.showinfo("Info", "Must select a creature.")
+            messagebox.showinfo("Info", "Must select a creature or object.")
             return False
         new_coord = ["", "", ""]
-        for being in self.root.token_list:
-            if being["name"] == selected_option:
-                being["coordinate"] = [new_coord[0], new_coord[1], new_coord[2]]
+        if self.creat_or_obj.get() == 'creature':
+            for being in self.root.token_list:
+                if being["name"] == selected_option:
+                    being["coordinate"] = [new_coord[0], new_coord[1], new_coord[2]]
+        else:
+            name_list = []
+            for thing in self.root.obj_list:
+                name_list.append(thing['name'])
+            self.root.obj_list.pop(name_list.index(selected_option))
         return True
 
     # Unused
