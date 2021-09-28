@@ -68,7 +68,7 @@ class StartWindow():
             return False
 
         self.top_frame = ttk.Frame(master=self.win_start)
-        self.top_frame.grid(row=0, column=0)
+        self.top_frame.grid(row=0, column=0, padx=20)
         self.bottom_frame = ttk.Frame(master=self.win_start)
         self.bottom_frame.grid(row=1, column=0)
         self.warning_frame = ttk.Frame(master=self.win_start)
@@ -79,6 +79,8 @@ class StartWindow():
         self.btn_new_file.grid(row=0, column=0, sticky='e')
         self.btn_open_existing = ttk.Button(master=self.bottom_frame, text="Open Existing")#, command=self.open_file)
         self.btn_open_existing.grid(row=0, column=1, sticky='w')
+        lbl_version = ttk.Label(master=self.win_start, text="Version: " + self.master.version)
+        lbl_version.grid(row=3, column=0, sticky='e')
 
     def new_file(self):
         self.game_start_win = tk.Toplevel(master=self.win_start)

@@ -405,8 +405,6 @@ class BattleMap():
         lbl_amount_move_title.grid(row=2, column=3, sticky='e', padx=20)
         self.lbl_amount_moved = tk.Label(master=self.controller_frame, text="", font=self.reg_font, bg='gray28', fg='gray70')
         self.lbl_amount_moved.grid(row=3, column=3, sticky='e', padx=20)
-        lbl_version = ttk.Label(master=self.controller_frame, text="Version: " + self.root.version)
-        lbl_version.grid(row=4, column=3, sticky='e')
 
         self.z_delta = 0
 
