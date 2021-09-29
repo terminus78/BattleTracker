@@ -178,13 +178,13 @@ class BattleMap():
         highlight_img = ImageTk.PhotoImage(image=PIL.Image.open(highlight_path).resize((20,20)))
 
         ally_path = "entry\\bin\\ally_token.png"
-        self.ally_img = ImageTk.PhotoImage(image=PIL.Image.open(ally_path).resize((30,30)))
+        self.ally_img = ImageTk.PhotoImage(image=PIL.Image.open(ally_path).resize((27,27)))
         enemy_path = "entry\\bin\\enemy_token.png"
-        self.enemy_img = ImageTk.PhotoImage(image=PIL.Image.open(enemy_path).resize((30,30)))
+        self.enemy_img = ImageTk.PhotoImage(image=PIL.Image.open(enemy_path).resize((27,27)))
         bystander_path = "entry\\bin\\bystander_token.png"
-        self.bystander_img = ImageTk.PhotoImage(image=PIL.Image.open(bystander_path).resize((30,30)))
+        self.bystander_img = ImageTk.PhotoImage(image=PIL.Image.open(bystander_path).resize((27,27)))
         dead_path = "entry\\bin\\dead_token.png"
-        self.dead_img = ImageTk.PhotoImage(image=PIL.Image.open(dead_path).resize((30,30)))
+        self.dead_img = ImageTk.PhotoImage(image=PIL.Image.open(dead_path).resize((27,27)))
 
         up_btn_path = "entry\\bin\\up_button.png"
         down_btn_path = "entry\\bin\\down_button.png"
@@ -563,12 +563,7 @@ class BattleMap():
                     lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
                     lbl_unit.image = token_img
                     lbl_unit.coord = (row_pos, col_pos)
-                    #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
-                    #row_count = int(space_count / 3)
-                    #col_count = space_count % 3
-                    #lbl_unit.grid(row=row_count, column=col_count, sticky='nsew')
                     lbl_unit.pack(fill='both', expand=True, padx=2, pady=2)
-                    #lbl_unit.bind("<Button-3>", self.em.right_click_menu)
                     self.token_labels[col_pos][row_pos] = lbl_unit
                     CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
                     if being['initiative'] != math.inf:
@@ -594,13 +589,7 @@ class BattleMap():
                                 lbl_unit = tk.Label(master=self.map_frames[col_pos][row_pos], image=token_img, bg="gray28", borderwidth=0)
                                 lbl_unit.image = token_img
                                 lbl_unit.coord = (row_pos, col_pos)
-                                #space_count = len(self.map_frames[col_pos][row_pos].grid_slaves())
-                                #row_count = int(space_count / 3)
-                                #col_count = space_count % 3
-                                #lbl_unit.grid(row=row_count, column=col_count)
                                 lbl_unit.pack(fill='both', expand=True)
-                                #lbl_unit.bind("<Button-3>", self.em.right_click_menu)
-                                #self.token_labels[row_pos][col_pos] = lbl_unit
                                 CreateToolTip(lbl_unit, text="{0}, {1}".format(being["name"], being["coordinate"][2]), left_disp=True)
                 else:
                     messagebox.showerror("Internal Error", "Restart program\nError 0x006")
@@ -690,6 +679,8 @@ class BattleMap():
             for being in self.root.token_list:
                 if being['name'] == self.turn_obj['name']:
                     being['coordinate'] = [str(self.move_path[-1][0]), str(self.move_path[-1][1]), str(self.move_path[-1][2])]
+            if self.root.copy_win_open:
+                self.copy_win.gray_map()
             self.refresh_map()
             #self.refresh_initiatives()
 
@@ -702,6 +693,8 @@ class BattleMap():
         for being in self.root.token_list:
             if being['name'] == self.turn_obj['name']:
                 being['coordinate'] = [str(self.move_path[-1][0]), str(self.move_path[-1][1]), str(self.move_path[-1][2])]
+        if self.root.copy_win_open:
+            self.copy_win.gray_map()
         self.refresh_map()
         #self.refresh_initiatives()
 
@@ -721,7 +714,7 @@ class BattleMap():
     def refresh_map(self, reset=False):
         for row in self.map_frames:
             for col in row:
-                remove_tokens = col.pack_slaves()#grid_slaves()
+                remove_tokens = col.pack_slaves()
                 if len(remove_tokens) > 0:
                     for token in remove_tokens:
                         token.destroy()
@@ -842,6 +835,8 @@ class BattleMap():
                     row_offset += 1
 
         self.move_path.append(curr_pos)
+        if self.root.copy_win_open:
+            self.copy_win.track_moves(self.move_path)
         feet_moved = int(self.lbl_amount_moved.cget('text'))
         feet_moved += 5
         self.lbl_amount_moved.config(text=feet_moved)
@@ -1150,6 +1145,9 @@ class BattleMap():
             if col_offset == next_row_num:
                 col_offset = 0
                 row_offset += 1
+        if self.root.copy_win_open:
+            self.copy_win.gray_map()
+            self.copy_win.track_moves(self.move_path)
 
     def log_action(self, origin, restore_data=None):
         if self.btn_undo['state'] == 'disabled':

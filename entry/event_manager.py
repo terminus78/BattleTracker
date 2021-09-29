@@ -61,11 +61,6 @@ class EventManager():
         lbl_selected.grid(row=0, column=0, sticky='w')
         self.names = []
         self.coordinates = []
-        '''
-        for being in self.root.token_list:
-            self.names.append(being["name"])
-            self.coordinates.append(being["coordinate"])
-        '''
         self.drop_selection = ttk.Combobox(self.selection_frame, width=27, values=self.names, state='readonly')
         self.drop_selection.grid(row=0, column=1, sticky='w')
         self.drop_selection.current()
@@ -77,14 +72,7 @@ class EventManager():
         self.rbn_creature.grid(row=0, column=2, sticky='w')
         self.rbn_object = ttk.Radiobutton(self.selection_frame, text="Object", variable=self.creat_or_obj, value='object', command=self.fill_drop_select)
         self.rbn_object.grid(row=0, column=3, sticky='w')
-        #lbl_init_title = ttk.Label(master=self.selection_frame, text="Change Initiative", font=self.font)
-        #lbl_init_title.grid(row=2, column=0, sticky='w')
-        #init_frame = ttk.Frame(master=self.selection_frame)
-        #init_frame.grid(row=2, column=1, sticky='e')
-        #self.ent_init = ttk.Entry(master=init_frame, width=5)
-        #self.ent_init.grid(row=0, column=0, sticky='w')
-        #btn_roll = ttk.Button(master=init_frame, text="Roll", width=5, command=self.roll_init)
-        #btn_roll.grid(row=0, column=1, sticky='w')
+        self.rbn_creature.invoke()
         lbl_set_new_coord = ttk.Label(master=self.move_to_frame, text="Set New Coordinate", font=self.font)
         lbl_set_new_coord.grid(row=0, column=0, sticky='w')
         coord_frame = ttk.Frame(master=self.move_to_frame)
